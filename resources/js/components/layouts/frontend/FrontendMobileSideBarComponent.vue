@@ -36,7 +36,7 @@
                             page.title }}</router-link>
                 </nav>
 
-                <div v-if="setting.site_language_switch === enums.activityEnum.ENABLE">
+                <div v-if="setting.site_language_switch === enums.activityEnum.ENABLE && languages.length > 1">
                     <button type="button"
                         class="language-toggle flex items-center justify-start text-left gap-2 py-3 w-full border-b border-slate-100"
                         @click="colspanHideShow($event, 'mobile-language-colspan')">
