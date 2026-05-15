@@ -1,0 +1,46 @@
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
+/public/js/app.js
+/public/css/app.css
+public/js/app.js
+public/js/*js
+public/css/app.css
+/storage/media-library
+storage/media-library
+*/storage/media-library
+docker-compose.yml
+
+# Imagens demo (pesadas, ficam no servidor)
+/public/images/seeder
+
+# Logs e cache
+/storage/logs/*.log
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/storage/app/public
+
+# Claude Code
+.claude/
+
+# Arquivos temporários de deploy
+run_seeder.php
+check_counts.php
+*.bak
