@@ -2833,6 +2833,12 @@ class ProductTableSeeder extends Seeder
             ]
         ];
 
+        // --- Parallel seeding support ---
+        if (getenv('SEEDER_INDICES') !== false && getenv('SEEDER_INDICES') !== '') {
+            $keep = array_map('intval', explode(',', getenv('SEEDER_INDICES')));
+            $fashionProducts = array_values(array_filter($fashionProducts, fn($k) => in_array($k, $keep), ARRAY_FILTER_USE_KEY));
+        }
+
         $envService = new EnvEditor();
         if ($envService->getValue('DEMO') && $envService->getValue('DISPLAY_TYPE') == 'fashion') {
             foreach ($fashionProducts as $fashionProduct) {

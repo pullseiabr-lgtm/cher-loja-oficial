@@ -322,3 +322,192 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         
     }
 }
+
+
+/* ========== HEADER COR #00b8a9 ========== */
+
+/* Fundo do header (normal e sticky) */
+header.mb-5,
+header.fixed {
+    background-color: #00b8a9 !important;
+}
+
+/* Links do menu de navegacao */
+.header-nav-menu {
+    color: #ffffff !important;
+}
+.header-nav-menu:hover {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.header-nav-menu.router-link-active {
+    color: #ffffff !important;
+}
+
+/* Active underline do nav */
+.header-nav-item a::before,
+.header-nav-item .header-nav-menu::before {
+    background-color: #ffffff !important;
+}
+
+/* Icones do header */
+header .lab-line-humburger,
+header .lab-line-search,
+header .lab-line-heart,
+header .lab-line-user,
+header .lab-line-bag {
+    color: #ffffff !important;
+}
+
+/* Icone do carrinho (bag) - fundo secondary */
+header .lab-line-bag.bg-secondary {
+    background-color: rgba(255,255,255,0.25) !important;
+    color: #ffffff !important;
+}
+
+/* Seta dropdown (Categorias) */
+.header-nav .down-arrow::after,
+header .down-arrow::after {
+    border-top-color: #ffffff !important;
+}
+header .down-arrow {
+    color: #ffffff !important;
+}
+
+/* Barra de pesquisa desktop */
+header form.hidden {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+}
+header form.hidden input {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+header form.hidden input::placeholder {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+header form.hidden button.lab-line-search {
+    color: #ffffff !important;
+}
+
+/* Icone de busca mobile */
+header > button .lab-line-search,
+header > div > button .lab-line-search {
+    color: #ffffff !important;
+}
+
+/* Seletor de idioma */
+header .relative.group > button {
+    color: #ffffff !important;
+}
+header .relative.group > button span {
+    color: #ffffff !important;
+}
+
+/* Wishlist badge mantém branco */
+header .bg-primary.text-white {
+    background-color: rgba(255,255,255,0.3) !important;
+    border-color: #00b8a9 !important;
+    color: #ffffff !important;
+}
+
+/* Mobile search top bar */
+header > button:last-of-type i {
+    color: #ffffff !important;
+}
+
+/* ========== END HEADER ========== */
+
+
+
+/* ========== HEADER COR #00b8a9 ========== */
+
+/* Fundo do header (normal e sticky) */
+header.mb-5,
+header.fixed {
+    background-color: #00b8a9 !important;
+}
+
+/* Links do menu de navegacao */
+.header-nav-menu {
+    color: #ffffff !important;
+}
+.header-nav-menu:hover {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.header-nav-menu.router-link-active {
+    color: #ffffff !important;
+}
+
+/* Active underline do nav */
+.header-nav-item a::before,
+.header-nav-item .header-nav-menu::before {
+    background-color: #ffffff !important;
+}
+
+/* Icones do header */
+header .lab-line-humburger,
+header .lab-line-search,
+header .lab-line-heart,
+header .lab-line-user,
+header .lab-line-bag {
+    color: #ffffff !important;
+}
+
+/* Icone do carrinho (bag) - fundo secondary */
+header .lab-line-bag.bg-secondary {
+    background-color: rgba(255,255,255,0.25) !important;
+    color: #ffffff !important;
+}
+
+/* Seta dropdown (Categorias) */
+.header-nav .down-arrow::after,
+header .down-arrow::after {
+    border-top-color: #ffffff !important;
+}
+header .down-arrow {
+    color: #ffffff !important;
+}
+
+/* Barra de pesquisa desktop */
+header form.hidden {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+}
+header form.hidden input {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+header form.hidden input::placeholder {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+header form.hidden button.lab-line-search {
+    color: #ffffff !important;
+}
+
+/* Icone de busca mobile */
+header > button .lab-line-search,
+header > div > button .lab-line-search {
+    color: #ffffff !important;
+}
+
+/* Seletor de idioma */
+header .relative.group > button {
+    color: #ffffff !important;
+}
+header .relative.group > button span {
+    color: #ffffff !important;
+}
+
+/* Wishlist badge mantém branco */
+header .bg-primary.text-white {
+    background-color: rgba(255,255,255,0.3) !important;
+    border-color: #00b8a9 !important;
+    color: #ffffff !important;
+}
+
+/* Mobile search top bar */
+header > button:last-of-type i {
+    color: #ffffff !important;
+}
+
+/* ========== END HEADER ========== */
