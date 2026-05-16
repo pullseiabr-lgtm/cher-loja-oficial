@@ -15,10 +15,10 @@
                 <thead class="db-table-head">
                 <tr class="db-table-head-tr">
                     <th class="db-table-head-th">
-                        {{ $t("label.title") }}
+                        {{ $t("label.image") }}
                     </th>
                     <th class="db-table-head-th">
-                        {{ $t("label.image") }}
+                        {{ $t("label.title") }}
                     </th>
                     <th class="db-table-head-th">
                         {{ $t("label.status") }}
@@ -31,12 +31,12 @@
                 <tbody class="db-table-body" v-if="sliders.length > 0">
                 <tr class="db-table-body-tr" v-for="slider in sliders" :key="slider">
                     <td class="db-table-body-td">
-                        {{ textShortener(slider.title) }}
-                    </td>
-                    <td class="db-table-body-td">
                         <img v-if="slider.image" :src="slider.image" alt="banner"
                             class="w-24 h-14 object-cover rounded-lg border border-gray-100 shadow-sm" />
                         <span v-else class="text-gray-400 text-xs">—</span>
+                    </td>
+                    <td class="db-table-body-td">
+                        {{ textShortener(slider.title) }}
                     </td>
                     <td class="db-table-body-td">
                             <span :class="statusClass(slider.status)">
