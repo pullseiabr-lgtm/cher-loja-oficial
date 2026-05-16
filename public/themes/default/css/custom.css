@@ -331,6 +331,11 @@ header {
     background-color: #00b8a9 !important;
 }
 
+/* Logo padding */
+header a.flex-shrink-0 img {
+    padding: 8px 4px;
+}
+
 /* Links do menu de navegacao */
 .header-nav-menu {
     color: #ffffff !important;
