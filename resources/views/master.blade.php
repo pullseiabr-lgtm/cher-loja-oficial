@@ -7,15 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- CUSTOM STYLE -->
-    <link rel="stylesheet" href="{{ asset('themes/default/css/custom.css') }}">
     <!-- PAGE TITLE -->
     <title>{{ Settings::group('company')->get('company_name') }}</title>
 
     <!-- FAV ICON -->
     <link rel="icon" type="image" href="{{ $favicon }}">
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- CUSTOM STYLE (depois do Vite para sobrescrever Tailwind) -->
+    <link rel="stylesheet" href="{{ asset('themes/default/css/custom.css') }}">
 
     @if (!blank($analytics))
         @foreach ($analytics as $analytic)
