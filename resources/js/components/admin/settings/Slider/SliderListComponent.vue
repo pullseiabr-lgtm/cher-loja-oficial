@@ -18,6 +18,9 @@
                         {{ $t("label.title") }}
                     </th>
                     <th class="db-table-head-th">
+                        {{ $t("label.image") }}
+                    </th>
+                    <th class="db-table-head-th">
                         {{ $t("label.status") }}
                     </th>
                     <th class="db-table-head-th">
@@ -29,6 +32,11 @@
                 <tr class="db-table-body-tr" v-for="slider in sliders" :key="slider">
                     <td class="db-table-body-td">
                         {{ textShortener(slider.title) }}
+                    </td>
+                    <td class="db-table-body-td">
+                        <img v-if="slider.image" :src="slider.image" alt="banner"
+                            class="w-24 h-14 object-cover rounded-lg border border-gray-100 shadow-sm" />
+                        <span v-else class="text-gray-400 text-xs">—</span>
                     </td>
                     <td class="db-table-body-td">
                             <span :class="statusClass(slider.status)">
@@ -46,7 +54,7 @@
                 </tbody>
                 <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="3">
+                            <td class="db-table-body-td text-center" colspan="4">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL+'/images/default/not-found/not_found.png'" alt="Not Found">
