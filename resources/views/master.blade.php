@@ -16,7 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- CUSTOM STYLE (depois do Vite para sobrescrever Tailwind) -->
-    <link rel="stylesheet" href="{{ asset('themes/default/css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('themes/default/css/custom.css') }}?v={{ filemtime(public_path('themes/default/css/custom.css')) }}">
 
     @if (!blank($analytics))
         @foreach ($analytics as $analytic)
