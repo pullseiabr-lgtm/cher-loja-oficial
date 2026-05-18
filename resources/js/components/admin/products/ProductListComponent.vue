@@ -5,6 +5,12 @@
             <div class="db-card-header border-none">
                 <h3 class="db-card-title">{{ $t('menu.products') }}</h3>
                 <div class="db-card-filter">
+                    <button v-if="selectedIds.length > 0 && permissionChecker('products_delete')"
+                        @click="bulkDestroy"
+                        class="db-btn py-2 text-white bg-red-500 flex items-center gap-1.5">
+                        <i class="lab lab-line-trash lab-font-size-16"></i>
+                        <span>Excluir ({{ selectedIds.length }})</span>
+                    </button>
                     <TableLimitComponent :method="list" :search="props.search" :page="paginationPage" />
                     <FilterComponent @click.prevent="handleSlide('product-filter')" />
                     <div class="dropdown-group">
@@ -178,6 +184,9 @@
                 <table class="db-table stripe" id="print">
                     <thead class="db-table-head">
                         <tr class="db-table-head-tr">
+                            <th class="db-table-head-th hidden-print w-10" v-if="permissionChecker('products_delete')">
+                                <input type="checkbox" class="cursor-pointer" :checked="isAllSelected" @change="toggleSelectAll" />
+                            </th>
                             <th class="db-table-head-th">
                                 {{ $t('label.name') }}
                             </th>
@@ -201,6 +210,11 @@
                     </thead>
                     <tbody class="db-table-body" v-if="products.length > 0">
                         <tr class="db-table-body-tr" v-for="product in products" :key="product">
+                            <td class="db-table-body-td hidden-print" v-if="permissionChecker('products_delete')">
+                                <input type="checkbox" class="cursor-pointer"
+                                    :value="product.id"
+                                    v-model="selectedIds" />
+                            </td>
                             <td class="db-table-body-td">
                                 {{ textShortener(product.name, 40) }}
                             </td>
@@ -312,6 +326,7 @@ export default {
                     [statusEnum.INACTIVE]: this.$t("label.inactive")
                 },
             },
+            selectedIds: [],
             printLoading: true,
             printObj: {
                 id: "print",
@@ -391,6 +406,9 @@ export default {
         },
         barcodes: function () {
             return this.$store.getters['barcode/lists'];
+        },
+        isAllSelected: function () {
+            return this.products.length > 0 && this.selectedIds.length === this.products.length;
         }
     },
     mounted() {
@@ -445,10 +463,41 @@ export default {
         },
         list: function (page = 1) {
             this.loading.isActive = true;
+            this.selectedIds = [];
             this.props.search.page = page;
             this.$store.dispatch('product/lists', this.props.search).then(res => {
                 this.loading.isActive = false;
             }).catch((err) => {
+                this.loading.isActive = false;
+            });
+        },
+        toggleSelectAll: function () {
+            if (this.isAllSelected) {
+                this.selectedIds = [];
+            } else {
+                this.selectedIds = this.products.map(p => p.id);
+            }
+        },
+        bulkDestroy: function () {
+            appService.destroyConfirmation().then(() => {
+                try {
+                    this.loading.isActive = true;
+                    this.$store.dispatch('product/destroyBulk', {
+                        ids: this.selectedIds,
+                        search: this.props.search
+                    }).then(() => {
+                        this.loading.isActive = false;
+                        this.selectedIds = [];
+                        alertService.successFlip(null, this.$t('menu.products'));
+                    }).catch((err) => {
+                        this.loading.isActive = false;
+                        alertService.error(err.response.data.message);
+                    });
+                } catch (err) {
+                    this.loading.isActive = false;
+                    alertService.error(err.response.data.message);
+                }
+            }).catch(() => {
                 this.loading.isActive = false;
             });
         },

@@ -272,6 +272,16 @@ export const product = {
                     reject(err);
                 });
             });
+        },
+        destroyBulk: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.post('admin/product/bulk-delete', { ids: payload.ids }).then((res) => {
+                    context.dispatch('lists', payload.search).then().catch();
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
         }
     },
     mutations: {

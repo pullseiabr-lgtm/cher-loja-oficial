@@ -45,6 +45,7 @@ class ProductController extends AdminController implements HasMiddleware
             new Middleware('permission:products_create', only: ['import']),
             new Middleware('permission:products_edit', only: ['update']),
             new Middleware('permission:products_delete', only: ['destroy']),
+            new Middleware('permission:products_delete', only: ['destroyBulk']),
             new Middleware('permission:products_delete', only: ['deleteImage']),
             new Middleware('permission:products_show', only: ['show']),
             new Middleware('permission:products_show', only: ['shippingAndReturn']),
@@ -92,6 +93,23 @@ class ProductController extends AdminController implements HasMiddleware
     {
         try {
             $this->productService->destroy($product);
+            return response('', 202);
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function destroyBulk(Request $request): \Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            $ids = $request->input('ids', []);
+            if (empty($ids) || !is_array($ids)) {
+                return response(['status' => false, 'message' => 'Nenhum produto selecionado.'], 422);
+            }
+            $products = Product::whereIn('id', $ids)->get();
+            foreach ($products as $product) {
+                $this->productService->destroy($product);
+            }
             return response('', 202);
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
