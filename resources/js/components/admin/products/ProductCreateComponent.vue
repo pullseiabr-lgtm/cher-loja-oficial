@@ -22,8 +22,8 @@
                     <div class="form-col-12 sm:form-col-6">
                         <label for="sku" class="db-field-title required">{{ $t("label.sku") }}</label>
                         <div class="db-group-field">
-                            <input v-on:keypress="onlyNumber($event)" v-model="props.form.sku"
-                                v-bind:class="errors.sku ? 'invalid' : ''" type="text" id="sku">
+                            <input v-model="props.form.sku"
+                                v-bind:class="errors.sku ? 'invalid' : ''" type="text" id="sku" maxlength="50">
                             <button type="button" @click="getSku" class="lab lab-fill-shuffle"></button>
                         </div>
                         <small class="db-field-alert" v-if="errors.sku">{{ errors.sku[0] }}</small>
