@@ -3,18 +3,18 @@ import axios from 'axios'
 export const frontendCategorySection = {
     namespaced: true,
     state: {
-        lists: [],
+        sections: [],
     },
     getters: {
-        lists: function (state) {
-            return state.lists;
+        sections: function (state) {
+            return state.sections;
         },
     },
     actions: {
-        lists: function (context) {
+        sections: function (context) {
             return new Promise((resolve, reject) => {
                 axios.get('frontend/category-section/categories').then((res) => {
-                    context.commit('lists', res.data.data);
+                    context.commit('sections', res.data.data);
                     resolve(res);
                 }).catch((err) => {
                     reject(err);
@@ -23,8 +23,8 @@ export const frontendCategorySection = {
         },
     },
     mutations: {
-        lists: function (state, payload) {
-            state.lists = payload;
+        sections: function (state, payload) {
+            state.sections = payload;
         },
     },
 }

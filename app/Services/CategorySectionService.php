@@ -111,11 +111,11 @@ class CategorySectionService
     }
 
     /**
-     * Returns a flat list of active product categories from all active sections.
+     * Returns active sections each with their active categories (for frontend homepage).
      *
      * @throws Exception
      */
-    public function activeSectionCategories()
+    public function activeSectionsWithCategories()
     {
         try {
             return CategorySection::active()
@@ -124,9 +124,7 @@ class CategorySectionService
                 }])
                 ->orderBy('id', 'asc')
                 ->get()
-                ->pluck('productCategories')
-                ->flatten()
-                ->unique('id')
+                ->filter(fn($section) => $section->productCategories->isNotEmpty())
                 ->values();
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
