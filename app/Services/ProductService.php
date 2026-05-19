@@ -128,12 +128,14 @@ class ProductService
                     }
                 }
 
-                $generator = new BarcodeGeneratorJPG();
-                if ($this->product->barcode_id == BarcodeType::EAN_13) {
+                $generator   = new BarcodeGeneratorJPG();
+                $skuIsNumeric = ctype_digit((string) $request->sku);
+                if ($this->product->barcode_id == BarcodeType::EAN_13 && $skuIsNumeric) {
                     $barcode = $generator->getBarcode($barcode_value, $generator::TYPE_EAN_13);
-                }
-                if ($this->product->barcode_id == BarcodeType::UPC_A) {
+                } elseif ($this->product->barcode_id == BarcodeType::UPC_A && $skuIsNumeric) {
                     $barcode = $generator->getBarcode($barcode_value, $generator::TYPE_UPC_A);
+                } else {
+                    $barcode = $generator->getBarcode($request->sku, $generator::TYPE_CODE_128);
                 }
                 $tempFilePath = storage_path('app/public/barcode.jpg');
                 file_put_contents($tempFilePath, $barcode);
@@ -163,12 +165,14 @@ class ProductService
                     }
                     $product->update($request->validated() + ['slug' => Str::slug($request->name)]);
 
-                    $generator = new BarcodeGeneratorJPG();
-                    if ($product->barcode_id === BarcodeType::EAN_13) {
+                    $generator    = new BarcodeGeneratorJPG();
+                    $skuIsNumeric = ctype_digit((string) $request->sku);
+                    if ($product->barcode_id === BarcodeType::EAN_13 && $skuIsNumeric) {
                         $barcode = $generator->getBarcode($barcode_value, $generator::TYPE_EAN_13);
-                    }
-                    if ($product->barcode_id === BarcodeType::UPC_A) {
+                    } elseif ($product->barcode_id === BarcodeType::UPC_A && $skuIsNumeric) {
                         $barcode = $generator->getBarcode($barcode_value, $generator::TYPE_UPC_A);
+                    } else {
+                        $barcode = $generator->getBarcode($request->sku, $generator::TYPE_CODE_128);
                     }
                     $tempFilePath = storage_path('app/public/barcode.jpg');
                     file_put_contents($tempFilePath, $barcode);
