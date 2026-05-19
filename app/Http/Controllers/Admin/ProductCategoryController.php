@@ -136,4 +136,15 @@ class ProductCategoryController extends AdminController implements HasMiddleware
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
     }
+
+    public function updateOrder(\Illuminate\Http\Request $request, ProductCategory $productCategory): \Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            $request->validate(['menu_order' => 'required|integer|min:0']);
+            $productCategory->update(['menu_order' => $request->menu_order]);
+            return response(['status' => true], 200);
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
 }

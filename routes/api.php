@@ -276,6 +276,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
             Route::get('/export', [ProductCategoryController::class, 'export']);
             Route::get('/download-attachment', [ProductCategoryController::class, 'downloadAttachment']);
             Route::post('/import/file', [ProductCategoryController::class, 'import']);
+            Route::patch('/{productCategory}/order', [ProductCategoryController::class, 'updateOrder']);
         });
 
         Route::prefix('product-brand')->name('product-brand.')->group(function () {

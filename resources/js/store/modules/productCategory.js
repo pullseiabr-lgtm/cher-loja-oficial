@@ -142,6 +142,17 @@ export const productCategory = {
                 });
             });
         },
+        updateOrder: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.patch(`admin/setting/product-category/${payload.id}/order`, { menu_order: payload.menu_order }).then((res) => {
+                    // update the item in local state without reloading
+                    context.commit('updateMenuOrder', payload);
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
     },
     mutations: {
         depthTrees: function (state, payload) {
@@ -172,6 +183,10 @@ export const productCategory = {
         reset: function (state) {
             state.temp.temp_id = null;
             state.temp.isEditing = false;
+        },
+        updateMenuOrder: function (state, payload) {
+            const item = state.lists.find(c => c.id === payload.id);
+            if (item) item.menu_order = payload.menu_order;
         }
     },
 }

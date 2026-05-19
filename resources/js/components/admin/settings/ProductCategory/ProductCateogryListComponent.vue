@@ -30,6 +30,7 @@
                     <tr class="db-table-head-tr">
                         <th class="db-table-head-th">{{ $t('label.name') }}</th>
                         <th class="db-table-head-th">{{ $t('label.parent_category') }}</th>
+                        <th class="db-table-head-th hidden-print w-28">Ordem Menu</th>
                         <th class="db-table-head-th">{{ $t('label.status') }}</th>
                         <th class="db-table-head-th hidden-print">{{ $t('label.action') }}</th>
                     </tr>
@@ -38,6 +39,17 @@
                     <tr class="db-table-body-tr" v-for="productCategory in productCategories" :key="productCategory">
                         <td class="db-table-body-td">{{ productCategory.name }}</td>
                         <td class="db-table-body-td">{{ productCategory.parent_category }}</td>
+                        <td class="db-table-body-td hidden-print">
+                            <input
+                                v-if="!productCategory.parent_id"
+                                type="number" min="0" max="999"
+                                :value="productCategory.menu_order"
+                                @change="saveOrder(productCategory, $event)"
+                                class="w-16 h-8 text-center border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary"
+                                title="Ordem no menu (menor = primeiro)"
+                            />
+                            <span v-else class="text-gray-300 text-xs">—</span>
+                        </td>
                         <td class="db-table-body-td">
                             <span :class="statusClass(productCategory.status)">
                                 {{ enums.statusEnumArray[productCategory.status] }}
@@ -230,6 +242,17 @@ export default {
             }).catch((err) => {
                 this.loading.isActive = false;
                 alertService.error(err.response.data.message);
+            });
+        },
+        saveOrder: function (productCategory, event) {
+            const order = parseInt(event.target.value) || 0;
+            this.$store.dispatch('productCategory/updateOrder', {
+                id: productCategory.id,
+                menu_order: order,
+            }).then(() => {
+                alertService.successFlip(1, 'Ordem');
+            }).catch((err) => {
+                alertService.error(err?.response?.data?.message || 'Erro ao salvar ordem');
             });
         },
         download: function () {
