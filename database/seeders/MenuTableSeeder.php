@@ -190,10 +190,10 @@ class MenuTableSeeder extends Seeder
 
                     ],
                     [
-                        'name'       => 'Product Sections',
-                        'language'   => 'product_sections',
-                        'url'        => 'product-sections',
-                        'icon'       => 'lab lab-line-product-section',
+                        'name'       => 'Seções do Site',
+                        'language'   => 'site_sections',
+                        'url'        => 'settings/site-sections',
+                        'icon'       => 'lab lab-line-item-section',
                         'priority'   => 100,
                         'status'     => 1,
                         'created_at' => now(),
