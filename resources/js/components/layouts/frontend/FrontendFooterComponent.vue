@@ -34,14 +34,14 @@
                         <h4 class="text-sm font-bold uppercase tracking-widest mb-5 text-white">{{ group.title }}</h4>
                         <nav class="flex flex-col gap-3">
                             <template v-for="child in group.children" :key="child.id">
-                                <router-link v-if="child.status === 1 && child.type === 'page' && child.url"
+                                <router-link v-if="child.status === 1 && child.type === 'page' && (child.reference_slug || child.url)"
                                     class="text-sm text-white/90 hover:text-white transition-all duration-300"
-                                    :to="{ name: 'frontend.page', params: { slug: child.url } }">
+                                    :to="{ name: 'frontend.page', params: { slug: child.reference_slug || child.url } }">
                                     {{ child.title }}
                                 </router-link>
-                                <router-link v-else-if="child.status === 1 && child.type === 'category' && child.url"
+                                <router-link v-else-if="child.status === 1 && child.type === 'category' && (child.reference_slug || child.url)"
                                     class="text-sm text-white/90 hover:text-white transition-all duration-300"
-                                    :to="{ name: 'frontend.product', query: { category: child.url } }">
+                                    :to="{ name: 'frontend.product', query: { category: child.reference_slug || child.url } }">
                                     {{ child.title }}
                                 </router-link>
                                 <router-link v-else-if="child.status === 1 && child.type === 'custom' && child.url && isInternalUrl(child.url)"

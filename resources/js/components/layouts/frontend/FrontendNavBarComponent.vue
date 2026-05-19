@@ -76,7 +76,7 @@
                             <!-- category: specific category link -->
                             <li v-else-if="item.type === 'category' && item.status === 1" class="header-nav-item">
                                 <router-link class="header-nav-menu"
-                                    :to="{ name: 'frontend.product', query: { category: item.url } }">
+                                    :to="{ name: 'frontend.product', query: { category: item.reference_slug || item.url } }">
                                     {{ item.title }}
                                 </router-link>
                             </li>
