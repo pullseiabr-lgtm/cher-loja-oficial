@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use Exception;
+use App\Http\Controllers\Controller;
 use App\Services\SiteMenuService;
 use App\Services\SiteMenuItemService;
 use App\Http\Resources\SiteMenuItemResource;
