@@ -60,7 +60,10 @@ class ProductCategoryService
     public function tree()
     {
         try {
-            return ProductCategory::active()->tree()->get();
+            return ProductCategory::active()->tree()
+                ->orderByRaw('CASE WHEN menu_order = 0 THEN 9999 ELSE menu_order END ASC')
+                ->orderBy('name', 'asc')
+                ->get();
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception(QueryExceptionLibrary::message($exception), 422);
