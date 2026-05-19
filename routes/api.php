@@ -97,7 +97,10 @@ use App\Http\Controllers\Frontend\ProductBrandController as FrontendProductBrand
 use App\Http\Controllers\Frontend\ProductCategoryController as FrontendProductCategoryController;
 use App\Http\Controllers\Frontend\ProductController as FrontendProductController;
 use App\Http\Controllers\Frontend\ProductReviewController;
+use App\Http\Controllers\Admin\SiteMenuController;
+use App\Http\Controllers\Admin\SiteMenuItemController;
 use App\Http\Controllers\Frontend\CategorySectionController as FrontendCategorySectionController;
+use App\Http\Controllers\Frontend\SiteMenuController as FrontendSiteMenuController;
 use App\Http\Controllers\Frontend\ProductSectionController as FrontendProductSectionController;
 use App\Http\Controllers\Frontend\ProductSectionProductController as FrontendProductSectionProductController;
 use App\Http\Controllers\Frontend\ProductVariationController as FrontendProductVariationController;
@@ -617,6 +620,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::delete('/category/{categorySection}/{categorySectionCategory}', [CategorySectionCategoryController::class, 'destroy']);
     });
 
+    Route::prefix('site-menu')->name('site-menu.')->group(function () {
+        Route::get('/', [SiteMenuController::class, 'index']);
+        Route::post('/', [SiteMenuController::class, 'store']);
+        Route::get('/show/{siteMenu}', [SiteMenuController::class, 'show']);
+        Route::match(['post', 'put', 'patch'], '/{siteMenu}', [SiteMenuController::class, 'update']);
+        Route::delete('/{siteMenu}', [SiteMenuController::class, 'destroy']);
+        Route::get('/{siteMenu}/item', [SiteMenuItemController::class, 'index']);
+        Route::post('/{siteMenu}/item', [SiteMenuItemController::class, 'store']);
+        Route::match(['post', 'put', 'patch'], '/{siteMenu}/item/{siteMenuItem}', [SiteMenuItemController::class, 'update']);
+        Route::delete('/{siteMenu}/item/{siteMenuItem}', [SiteMenuItemController::class, 'destroy']);
+        Route::post('/{siteMenu}/item/{siteMenuItem}/move-up', [SiteMenuItemController::class, 'moveUp']);
+        Route::post('/{siteMenu}/item/{siteMenuItem}/move-down', [SiteMenuItemController::class, 'moveDown']);
+    });
+
     Route::prefix('transaction')->name('transaction.')->middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [TransactionController::class, 'index']);
         Route::get('/export', [TransactionController::class, 'export']);
@@ -819,6 +836,10 @@ Route::prefix('frontend')->name('frontend.')->middleware(['installed', 'apiKey',
 
     Route::prefix('category-section')->name('category-section.')->group(function () {
         Route::get('/categories', [FrontendCategorySectionController::class, 'categories']);
+    });
+
+    Route::prefix('site-menu')->name('frontend.site-menu.')->group(function () {
+        Route::get('/{location}', [FrontendSiteMenuController::class, 'byLocation']);
     });
 
     Route::prefix('product-brand')->name('product-brand.')->group(function () {

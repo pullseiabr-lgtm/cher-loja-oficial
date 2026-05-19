@@ -78,6 +78,9 @@ import { productBrand } from "./modules/productBrand";
 import { productCategory } from "./modules/productCategory";
 import { categorySection } from "./modules/categorySection";
 import { categorySectionCategory } from "./modules/categorySectionCategory";
+import { siteMenu } from "./modules/siteMenu";
+import { siteMenuItem } from "./modules/siteMenuItem";
+import { frontendSiteMenu } from "./modules/frontendSiteMenu";
 import { productSection } from "./modules/productSection";
 import { productSectionProduct } from "./modules/productSectionProduct";
 import { productSeo } from "./modules/productSeo";
@@ -167,6 +170,9 @@ export default new createStore({
         promotionProduct,
         categorySection,
         categorySectionCategory,
+        siteMenu,
+        siteMenuItem,
+        frontendSiteMenu,
         productSection,
         productSectionProduct,
         benefit,

@@ -26,56 +26,44 @@
                 <!-- MenuBar Start -->
                 <nav class="header-nav hidden lg:block">
                     <ul class="header-nav-list">
-                        <li class="header-nav-item">
-                            <router-link class="header-nav-menu"
-                                :class="checkIsPathAndRoutePathSame('/home') ? 'router-link-active router-link-exact-active' : ''"
-                                :to="{ name: 'frontend.home' }">
-                                {{ $t("label.home") }}
-                            </router-link>
-                        </li>
-
-                        <li class="header-nav-item">
-                            <button type="button" class="header-nav-menu down-arrow">
-                                {{ $t('label.categories') }}
-                            </button>
-                            <div
-                                class="fixed top-[64px] left-0 z-10 w-full origin-top scale-y-0 transition-all duration-300">
-                                <div class="container">
-                                    <div class="w-full rounded-b-2xl shadow-paper bg-white">
-                                        <nav class="w-full flex items-center justify-center">
-                                            <router-link v-for="(category, index) in categories" :key="index"
-                                                :to="{ name: 'frontend.product', query: { category: category.slug } }"
-                                                @mouseover.prevent="activeTab = 'category_' + category.slug"
-                                                class="capitalize text-sm font-semibold tracking-wide px-5 py-4 transition-all duration-300 relative before:content-[''] before:absolute before:bottom-0 before:left-0 before:h-0.5 before:bg-primary hover:text-primary"
-                                                :class="{ 'text-primary before:w-full before:transition-all before:duration-300': activeTab === 'category_' + category.slug }">
-                                                {{ category.name }}
-                                            </router-link>
-                                        </nav>
-                                        <div v-for="category in categories">
-                                            <div v-if="category.children.length > 0"
-                                                :class="{ 'block': activeTab === 'category_' + category.slug, 'hidden': activeTab !== 'category_' + category.slug }"
-                                                class="flex items-start gap-5 pb-5 border-t border-gray-200">
-                                                <div class="w-60 h-80 flex-shrink-0 pt-5 ltr:pl-5 rtl:pr-5">
-                                                    <img class="w-full h-full object-top object-cover rounded-lg"
-                                                        :src="category.cover" alt="category" />
-                                                </div>
-                                                <div class="w-full h-80 thin-scrolling pt-5 ltr:pr-5 rtl:pl-5">
-                                                    <div class="w-full grid gap-5 grid-cols-3">
-                                                        <div v-for="children in category.children" class="self-start">
-                                                            <h3
-                                                                class="text-sm font-semibold capitalize pb-3 border-b border-slate-200">
-                                                                <router-link
-                                                                    :to="{ name: 'frontend.product', query: { category: children.slug } }"
-                                                                    class="hover:text-primary transition-all duration-300">
-                                                                    {{ children.name }}
-                                                                </router-link>
-                                                            </h3>
-
-                                                            <nav v-if="children.children.length > 0"
-                                                                class="flex flex-col mt-2">
-                                                                <MenuChildrenComponent
-                                                                    :categories="children.children" />
-                                                            </nav>
+                        <template v-for="item in headerMenuItems" :key="item.id">
+                            <!-- categories_all: full dropdown -->
+                            <li v-if="item.type === 'categories_all' && item.status === 1" class="header-nav-item">
+                                <button type="button" class="header-nav-menu down-arrow">
+                                    {{ item.title }}
+                                </button>
+                                <div class="fixed top-[64px] left-0 z-10 w-full origin-top scale-y-0 transition-all duration-300">
+                                    <div class="container">
+                                        <div class="w-full rounded-b-2xl shadow-paper bg-white">
+                                            <nav class="w-full flex items-center justify-center">
+                                                <router-link v-for="(category, index) in categories" :key="index"
+                                                    :to="{ name: 'frontend.product', query: { category: category.slug } }"
+                                                    @mouseover.prevent="activeTab = 'category_' + category.slug"
+                                                    class="capitalize text-sm font-semibold tracking-wide px-5 py-4 transition-all duration-300 relative before:content-[''] before:absolute before:bottom-0 before:left-0 before:h-0.5 before:bg-primary hover:text-primary"
+                                                    :class="{ 'text-primary before:w-full before:transition-all before:duration-300': activeTab === 'category_' + category.slug }">
+                                                    {{ category.name }}
+                                                </router-link>
+                                            </nav>
+                                            <div v-for="category in categories">
+                                                <div v-if="category.children.length > 0"
+                                                    :class="{ 'block': activeTab === 'category_' + category.slug, 'hidden': activeTab !== 'category_' + category.slug }"
+                                                    class="flex items-start gap-5 pb-5 border-t border-gray-200">
+                                                    <div class="w-60 h-80 flex-shrink-0 pt-5 ltr:pl-5 rtl:pr-5">
+                                                        <img class="w-full h-full object-top object-cover rounded-lg" :src="category.cover" alt="category" />
+                                                    </div>
+                                                    <div class="w-full h-80 thin-scrolling pt-5 ltr:pr-5 rtl:pl-5">
+                                                        <div class="w-full grid gap-5 grid-cols-3">
+                                                            <div v-for="children in category.children" class="self-start">
+                                                                <h3 class="text-sm font-semibold capitalize pb-3 border-b border-slate-200">
+                                                                    <router-link :to="{ name: 'frontend.product', query: { category: children.slug } }"
+                                                                        class="hover:text-primary transition-all duration-300">
+                                                                        {{ children.name }}
+                                                                    </router-link>
+                                                                </h3>
+                                                                <nav v-if="children.children.length > 0" class="flex flex-col mt-2">
+                                                                    <MenuChildrenComponent :categories="children.children" />
+                                                                </nav>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -83,16 +71,48 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
 
-                        <li class="header-nav-item">
-                            <router-link class="header-nav-menu"
-                                :class="checkIsPathAndRoutePathSame('/offers') ? 'router-link-active router-link-exact-active' : ''"
-                                :to="{ name: 'frontend.offers' }">
-                                {{ $t("label.offers") }}
-                            </router-link>
-                        </li>
+                            <!-- category: specific category link -->
+                            <li v-else-if="item.type === 'category' && item.status === 1" class="header-nav-item">
+                                <router-link class="header-nav-menu"
+                                    :to="{ name: 'frontend.product', query: { category: item.url } }">
+                                    {{ item.title }}
+                                </router-link>
+                            </li>
+
+                            <!-- page: page link -->
+                            <li v-else-if="item.type === 'page' && item.status === 1" class="header-nav-item">
+                                <router-link class="header-nav-menu"
+                                    :to="{ name: 'frontend.page', params: { slug: item.url } }">
+                                    {{ item.title }}
+                                </router-link>
+                            </li>
+
+                            <!-- custom: any link -->
+                            <li v-else-if="item.type === 'custom' && item.status === 1" class="header-nav-item">
+                                <router-link v-if="isInternalUrl(item.url)" class="header-nav-menu"
+                                    :class="checkIsPathAndRoutePathSame(item.url) ? 'router-link-active router-link-exact-active' : ''"
+                                    :to="item.url">
+                                    {{ item.title }}
+                                </router-link>
+                                <a v-else :href="item.url" :target="item.target" class="header-nav-menu">
+                                    {{ item.title }}
+                                </a>
+                            </li>
+                        </template>
+
+                        <!-- Fallback if no menu configured -->
+                        <template v-if="headerMenuItems.length === 0">
+                            <li class="header-nav-item">
+                                <router-link class="header-nav-menu" :to="{ name: 'frontend.home' }">
+                                    {{ $t("label.home") }}
+                                </router-link>
+                            </li>
+                            <li class="header-nav-item">
+                                <button type="button" class="header-nav-menu down-arrow">{{ $t('label.categories') }}</button>
+                            </li>
+                        </template>
                     </ul>
                 </nav>
                 <!-- MenuBar End -->
@@ -402,6 +422,9 @@ export default {
         defaultMenu: function () {
             return this.$store.getters.authDefaultMenu;
         },
+        headerMenuItems: function () {
+            return this.$store.getters['frontendSiteMenu/header'] || [];
+        },
     },
     mounted() {
         this.currentRoute = this.$route.path;
@@ -483,6 +506,8 @@ export default {
             this.loading.isActive = false;
         });
 
+        this.$store.dispatch('frontendSiteMenu/header').then().catch();
+
         if (this.logged) {
             this.loading.isActive = true;
             this.$store.dispatch("frontendWishlist/lists").then((res) => {
@@ -507,6 +532,10 @@ export default {
             if (this.currentRoute === path) {
                 return true;
             }
+        },
+        isInternalUrl(url) {
+            if (!url) return true;
+            return url.startsWith('/') && !url.startsWith('//');
         },
         changeLanguage: function (id, code, mode) {
             this.defaultLanguage = id;

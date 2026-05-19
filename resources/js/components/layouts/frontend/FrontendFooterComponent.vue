@@ -28,29 +28,60 @@
                     </div>
                 </div>
 
-                <!-- EMPRESA -->
-                <div class="min-w-[140px]">
-                    <h4 class="text-sm font-bold uppercase tracking-widest mb-5 text-white">EMPRESA</h4>
-                    <nav class="flex flex-col gap-3">
-                        <router-link v-for="page in supportPages" :key="page.slug"
-                            class="text-sm text-white/90 hover:text-white transition-all duration-300"
-                            :to="{ name: 'frontend.page', params: { slug: page.slug } }">
-                            {{ page.title }}
-                        </router-link>
-                    </nav>
-                </div>
+                <!-- Footer Menu Sections (dynamic from DB) -->
+                <template v-if="footerMenuGroups.length > 0">
+                    <div v-for="group in footerMenuGroups" :key="group.id" class="min-w-[140px]">
+                        <h4 class="text-sm font-bold uppercase tracking-widest mb-5 text-white">{{ group.title }}</h4>
+                        <nav class="flex flex-col gap-3">
+                            <template v-for="child in group.children" :key="child.id">
+                                <router-link v-if="child.status === 1 && child.type === 'page' && child.url"
+                                    class="text-sm text-white/90 hover:text-white transition-all duration-300"
+                                    :to="{ name: 'frontend.page', params: { slug: child.url } }">
+                                    {{ child.title }}
+                                </router-link>
+                                <router-link v-else-if="child.status === 1 && child.type === 'category' && child.url"
+                                    class="text-sm text-white/90 hover:text-white transition-all duration-300"
+                                    :to="{ name: 'frontend.product', query: { category: child.url } }">
+                                    {{ child.title }}
+                                </router-link>
+                                <router-link v-else-if="child.status === 1 && child.type === 'custom' && child.url && isInternalUrl(child.url)"
+                                    class="text-sm text-white/90 hover:text-white transition-all duration-300"
+                                    :to="child.url">
+                                    {{ child.title }}
+                                </router-link>
+                                <a v-else-if="child.status === 1 && child.type === 'custom' && child.url"
+                                    :href="child.url" :target="child.target"
+                                    class="text-sm text-white/90 hover:text-white transition-all duration-300">
+                                    {{ child.title }}
+                                </a>
+                            </template>
+                        </nav>
+                    </div>
+                </template>
 
-                <!-- AJUDA -->
-                <div class="min-w-[180px]">
-                    <h4 class="text-sm font-bold uppercase tracking-widest mb-5 text-white">AJUDA</h4>
-                    <nav class="flex flex-col gap-3">
-                        <router-link v-for="page in legalPages" :key="page.slug"
-                            class="text-sm text-white/90 hover:text-white transition-all duration-300"
-                            :to="{ name: 'frontend.page', params: { slug: page.slug } }">
-                            {{ page.title }}
-                        </router-link>
-                    </nav>
-                </div>
+                <!-- Fallback to old page sections if no footer menu configured -->
+                <template v-else>
+                    <div class="min-w-[140px]">
+                        <h4 class="text-sm font-bold uppercase tracking-widest mb-5 text-white">EMPRESA</h4>
+                        <nav class="flex flex-col gap-3">
+                            <router-link v-for="page in supportPages" :key="page.slug"
+                                class="text-sm text-white/90 hover:text-white transition-all duration-300"
+                                :to="{ name: 'frontend.page', params: { slug: page.slug } }">
+                                {{ page.title }}
+                            </router-link>
+                        </nav>
+                    </div>
+                    <div class="min-w-[180px]">
+                        <h4 class="text-sm font-bold uppercase tracking-widest mb-5 text-white">AJUDA</h4>
+                        <nav class="flex flex-col gap-3">
+                            <router-link v-for="page in legalPages" :key="page.slug"
+                                class="text-sm text-white/90 hover:text-white transition-all duration-300"
+                                :to="{ name: 'frontend.page', params: { slug: page.slug } }">
+                                {{ page.title }}
+                            </router-link>
+                        </nav>
+                    </div>
+                </template>
 
                 <!-- ATENDIMENTO + PAGAMENTO + SELOS -->
                 <div class="min-w-[190px] flex flex-col gap-6">
@@ -164,9 +195,24 @@ export default {
     computed: {
         setting: function () {
             return this.$store.getters['frontendSetting/lists'];
-        }
+        },
+        footerMenuRaw: function () {
+            return this.$store.getters['frontendSiteMenu/footer'] || [];
+        },
+        footerMenuGroups: function () {
+            // top-level items with children become section groups
+            const topLevel = this.footerMenuRaw.filter(i => !i.parent_id && i.status === 1);
+            return topLevel.map(group => ({
+                ...group,
+                children: this.footerMenuRaw.filter(i => i.parent_id === group.id && i.status === 1),
+            })).filter(g => g.children.length > 0);
+        },
     },
     mounted() {
+        // Load footer menu from DB
+        this.$store.dispatch('frontendSiteMenu/footer').then().catch();
+
+        // Also load pages for fallback
         this.loading.isActive = true;
         this.$store.dispatch("frontendPage/lists", {
             paginate: 0,
@@ -187,6 +233,12 @@ export default {
         }).catch((err) => {
             this.loading.isActive = false;
         });
-    }
+    },
+    methods: {
+        isInternalUrl(url) {
+            if (!url) return false;
+            return url.startsWith('/') && !url.startsWith('//');
+        },
+    },
 }
 </script>

@@ -37,6 +37,20 @@
                     </div>
                 </router-link>
 
+                <!-- Configuração de Menus -->
+                <router-link :to="{ name: 'admin.site-menus' }" class="site-section-card">
+                    <div class="site-section-icon bg-[#ede7f6]">
+                        <i class="lab lab-line-navigation text-[#512da8]"></i>
+                    </div>
+                    <div class="site-section-info">
+                        <h4 class="site-section-title">Configuração de Menus</h4>
+                        <p class="site-section-desc">Configure os itens exibidos no header e footer da loja.</p>
+                    </div>
+                    <div class="site-section-arrow">
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </div>
+                </router-link>
+
                 <!-- Seções de Depoimentos -->
                 <router-link :to="{ name: 'admin.settings.siteSection.testimonials' }" class="site-section-card">
                     <div class="site-section-icon bg-[#fce4ec]">
