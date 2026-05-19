@@ -25,7 +25,6 @@ import {Swiper, SwiperSlide} from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import statusEnum from "../../../enums/modules/statusEnum";
 import LoadingComponent from "../components/LoadingComponent";
 
 
@@ -61,20 +60,14 @@ export default {
     },
     computed: {
         categories: function () {
-            return this.$store.getters["frontendProductCategory/lists"];
+            return this.$store.getters["frontendCategorySection/lists"];
         },
     },
     mounted() {
         this.loading.isActive = true;
-        this.$store.dispatch("frontendProductCategory/lists", {
-            paginate: 0,
-            order_column: "id",
-            order_type: "asc",
-            parent_id: null,
-            status: statusEnum.ACTIVE,
-        }).then(res => {
+        this.$store.dispatch("frontendCategorySection/lists").then(() => {
             this.loading.isActive = false;
-        }).catch((err) => {
+        }).catch(() => {
             this.loading.isActive = false;
         });
     },

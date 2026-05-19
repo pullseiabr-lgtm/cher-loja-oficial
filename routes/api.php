@@ -42,6 +42,8 @@ use App\Http\Controllers\Admin\ProductAttributeOptionController;
 use App\Http\Controllers\Admin\ProductBrandController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategorySectionController;
+use App\Http\Controllers\Admin\CategorySectionCategoryController;
 use App\Http\Controllers\Admin\ProductSectionController;
 use App\Http\Controllers\Admin\ProductSectionProductController;
 use App\Http\Controllers\Admin\ProductSeoController;
@@ -95,6 +97,7 @@ use App\Http\Controllers\Frontend\ProductBrandController as FrontendProductBrand
 use App\Http\Controllers\Frontend\ProductCategoryController as FrontendProductCategoryController;
 use App\Http\Controllers\Frontend\ProductController as FrontendProductController;
 use App\Http\Controllers\Frontend\ProductReviewController;
+use App\Http\Controllers\Frontend\CategorySectionController as FrontendCategorySectionController;
 use App\Http\Controllers\Frontend\ProductSectionController as FrontendProductSectionController;
 use App\Http\Controllers\Frontend\ProductSectionProductController as FrontendProductSectionProductController;
 use App\Http\Controllers\Frontend\ProductVariationController as FrontendProductVariationController;
@@ -602,6 +605,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::delete('/product/{productSection}/{productSectionProduct}', [ProductSectionProductController::class, 'destroy']);
     });
 
+    Route::prefix('category-section')->name('category-section.')->group(function () {
+        Route::get('/', [CategorySectionController::class, 'index']);
+        Route::get('/show/{categorySection}', [CategorySectionController::class, 'show']);
+        Route::post('/', [CategorySectionController::class, 'store']);
+        Route::match(['post', 'put', 'patch'], '/{categorySection}', [CategorySectionController::class, 'update']);
+        Route::delete('/{categorySection}', [CategorySectionController::class, 'destroy']);
+
+        Route::get('/category/{categorySection}', [CategorySectionCategoryController::class, 'index']);
+        Route::post('/category/{categorySection}', [CategorySectionCategoryController::class, 'store']);
+        Route::delete('/category/{categorySection}/{categorySectionCategory}', [CategorySectionCategoryController::class, 'destroy']);
+    });
+
     Route::prefix('transaction')->name('transaction.')->middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [TransactionController::class, 'index']);
         Route::get('/export', [TransactionController::class, 'export']);
@@ -800,6 +815,10 @@ Route::prefix('frontend')->name('frontend.')->middleware(['installed', 'apiKey',
         Route::get('/', [FrontendProductSectionController::class, 'index']);
         Route::get('/show/{productSection:slug}', [FrontendProductSectionController::class, 'show']);
         Route::get('/products/{productSection:slug}', [FrontendProductSectionProductController::class, 'index']);
+    });
+
+    Route::prefix('category-section')->name('category-section.')->group(function () {
+        Route::get('/categories', [FrontendCategorySectionController::class, 'categories']);
     });
 
     Route::prefix('product-brand')->name('product-brand.')->group(function () {

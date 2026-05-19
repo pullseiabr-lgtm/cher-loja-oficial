@@ -40,6 +40,7 @@ import { frontendProduct } from "./modules/frontend/frontendProduct";
 import { frontendProductBrand } from "./modules/frontend/frontendProductBrand";
 import { frontendProductCategory } from "./modules/frontend/frontendProductCategory";
 import { frontendProductReview } from "./modules/frontend/frontendProductReview";
+import { frontendCategorySection } from "./modules/frontendCategorySection";
 import { frontendProductSection } from "./modules/frontend/frontendProductSection";
 import { frontendProductVariation } from "./modules/frontend/frontendProductVariation";
 import { frontendPromotion } from "./modules/frontend/frontendPromotion";
@@ -75,6 +76,8 @@ import { productAttribute } from "./modules/productAttribute";
 import { productAttributeOption } from "./modules/productAttributeOption";
 import { productBrand } from "./modules/productBrand";
 import { productCategory } from "./modules/productCategory";
+import { categorySection } from "./modules/categorySection";
+import { categorySectionCategory } from "./modules/categorySectionCategory";
 import { productSection } from "./modules/productSection";
 import { productSectionProduct } from "./modules/productSectionProduct";
 import { productSeo } from "./modules/productSeo";
@@ -162,6 +165,8 @@ export default new createStore({
         productSeo,
         promotion,
         promotionProduct,
+        categorySection,
+        categorySectionCategory,
         productSection,
         productSectionProduct,
         benefit,
@@ -181,6 +186,7 @@ export default new createStore({
         frontendProduct,
         frontendBenefit,
         frontendPromotion,
+        frontendCategorySection,
         frontendProductSection,
         frontendWishlist,
         frontendProductVariation,

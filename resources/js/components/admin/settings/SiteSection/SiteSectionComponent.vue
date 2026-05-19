@@ -24,7 +24,7 @@
                 </router-link>
 
                 <!-- Seções de Categorias -->
-                <router-link :to="{ name: 'admin.settings.productCategory' }" class="site-section-card">
+                <router-link :to="{ name: 'admin.category-sections' }" class="site-section-card">
                     <div class="site-section-icon bg-[#e3f2fd]">
                         <i class="lab lab-line-item-categories text-[#1565c0]"></i>
                     </div>
