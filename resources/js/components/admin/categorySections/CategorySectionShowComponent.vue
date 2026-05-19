@@ -3,6 +3,13 @@
 
     <div class="col-12">
         <div id="categorySection" class="db-tab-div active">
+            <div class="mb-4">
+                <router-link :to="{ name: 'admin.category-sections' }"
+                    class="db-btn h-[37px] text-white bg-gray-500 hover:bg-gray-600">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                    <span>Voltar</span>
+                </router-link>
+            </div>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-5">
                 <button
                     @click.prevent="multiTargets($event, 'tab-action', 'tab-content', 'categorySectionInformation')"
