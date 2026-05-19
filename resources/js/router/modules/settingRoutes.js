@@ -1,4 +1,6 @@
 const SettingsComponent = () =>  import("../../components/admin/settings/SettingsComponent");
+const SiteSectionComponent = () => import("../../components/admin/settings/SiteSection/SiteSectionComponent");
+const TestimonialsComponent = () => import("../../components/admin/settings/SiteSection/TestimonialsComponent");
 const CompanyComponent = () =>  import("../../components/admin/settings/Company/CompanyComponent");
 const SiteComponent = () =>  import("../../components/admin/settings/Site/SiteComponent");
 const MailComponent = () =>  import("../../components/admin/settings/Mail/MailComponent");
@@ -715,6 +717,28 @@ export default [
                     permissionUrl: "settings",
                     breadcrumb: "license",
                 }
+            },
+            {
+                path: "site-sections",
+                component: SiteSectionComponent,
+                name: "admin.settings.siteSection",
+                meta: {
+                    isFrontend: false,
+                    auth: true,
+                    permissionUrl: "settings",
+                    breadcrumb: "site_sections",
+                },
+            },
+            {
+                path: "site-sections/testimonials",
+                component: TestimonialsComponent,
+                name: "admin.settings.siteSection.testimonials",
+                meta: {
+                    isFrontend: false,
+                    auth: true,
+                    permissionUrl: "settings",
+                    breadcrumb: "testimonials",
+                },
             },
             {
                 path: "location-setup",

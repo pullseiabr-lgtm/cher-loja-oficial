@@ -121,6 +121,10 @@
                 <i class="lab-line-license-code text-sm"></i>
                 {{ $t("menu.license") }}
             </router-link>
+            <router-link :to="{ name: 'admin.settings.siteSection' }" class="db-tab-btn">
+                <i class="lab lab-line-item-section text-sm"></i>
+                Seções do Site
+            </router-link>
         </nav>
     </div>
 </template>
