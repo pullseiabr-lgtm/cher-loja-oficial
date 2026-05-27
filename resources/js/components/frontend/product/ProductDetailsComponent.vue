@@ -82,16 +82,12 @@
                                     class="lab-fill-circle-plus text-lg leading-none transition-all duration-300 hover:text-primary"></button>
                             </div>
                             <div v-if="!initialVariations.length || selectedVariation != null">
-                                <!-- Produto não comprável (free/display): sempre disponível -->
-                                <p v-if="!temp.can_purchasable" class="capitalize text-green-600 font-medium">
-                                    {{ $t('label.available') }}
-                                </p>
                                 <!-- show_stock_out = ENABLE: sempre disponível mesmo sem estoque -->
-                                <p v-else-if="temp.show_stock_out" class="capitalize">
+                                <p v-if="temp.show_stock_out" class="capitalize">
                                     {{ $t('label.available') }}
                                     <span v-if="temp.stock > 0">: <b>({{ temp.stock }})</b> {{ product.unit }}</span>
                                 </p>
-                                <!-- Estoque normal: mostra quantidade real -->
+                                <!-- Estoque normal: mostra quantidade real do banco -->
                                 <p v-else-if="temp.stock > 0" class="capitalize">
                                     {{ $t('label.available') }}:
                                     <b>({{ temp.stock }})</b>
@@ -474,8 +470,8 @@ export default {
                             this.variationComponent = true;
                         }
 
-                        const alwaysAvailable = res.data.data.show_stock_out || !res.data.data.can_purchasable;
-                        if (!initVariationRes.data.data.length && (res.data.data.stock > 0 || alwaysAvailable)) {
+                        // Habilitar botão: stock real > 0 OU produto sempre disponível (show_stock_out)
+                        if (!initVariationRes.data.data.length && (res.data.data.stock > 0 || res.data.data.show_stock_out)) {
                             this.enableAddToCardButton = false;
                         }
                         this.loading.isActive = false;
