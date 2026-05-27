@@ -11,6 +11,19 @@
                         <i class="lab lab-line-trash lab-font-size-16"></i>
                         <span>Excluir ({{ selectedIds.length }})</span>
                     </button>
+                    <button v-if="bulkEditMode && permissionChecker('products_edit')"
+                        @click="saveBulkStock"
+                        class="db-btn py-2 text-white bg-green-600 flex items-center gap-1.5">
+                        <i class="lab lab-line-check lab-font-size-16"></i>
+                        <span>Salvar Alterações</span>
+                    </button>
+                    <button v-if="permissionChecker('products_edit')"
+                        @click="toggleBulkEdit"
+                        :class="bulkEditMode ? 'bg-gray-500' : 'bg-blue-600'"
+                        class="db-btn py-2 text-white flex items-center gap-1.5">
+                        <i :class="bulkEditMode ? 'lab-line-cross' : 'lab-line-edit'" class="lab lab-font-size-16"></i>
+                        <span>{{ bulkEditMode ? 'Cancelar' : 'Editar em Massa' }}</span>
+                    </button>
                     <TableLimitComponent :method="list" :search="props.search" :page="paginationPage" />
                     <FilterComponent @click.prevent="handleSlide('product-filter')" />
                     <div class="dropdown-group">
@@ -197,10 +210,10 @@
                                 {{ $t('label.category') }}
                             </th>
                             <th class="db-table-head-th">
-                                {{ $t('label.buying_price') }}
+                                {{ $t('label.selling_price') }}
                             </th>
                             <th class="db-table-head-th">
-                                {{ $t('label.selling_price') }}
+                                Estoque
                             </th>
                             <th class="db-table-head-th">
                                 {{ $t('label.status') }}
@@ -229,8 +242,17 @@
                                 {{ textShortener(product.name, 40) }}
                             </td>
                             <td class="db-table-body-td">{{ product.category_name }}</td>
-                            <td class="db-table-body-td">{{ product.flat_buying_price }}</td>
                             <td class="db-table-body-td">{{ product.flat_selling_price }}</td>
+                            <td class="db-table-body-td">
+                                <input v-if="bulkEditMode"
+                                    type="number" min="0"
+                                    :value="stockEdits[product.id] !== undefined ? stockEdits[product.id] : product.stock"
+                                    @input="stockEdits[product.id] = parseInt($event.target.value) || 0"
+                                    class="w-20 border border-gray-300 rounded px-2 py-1 text-sm text-center" />
+                                <span v-else class="font-medium" :class="product.stock <= 0 ? 'text-red-500' : 'text-gray-800'">
+                                    {{ product.stock }}
+                                </span>
+                            </td>
                             <td class="db-table-body-td">
                                 <span :class="statusClass(product.status)">
                                     {{ enums.statusEnumArray[product.status] }}
@@ -251,7 +273,7 @@
                     </tbody>
                     <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="6">
+                            <td class="db-table-body-td text-center" colspan="7">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL+'/images/default/not-found/not_found.png'" alt="Not Found">
@@ -337,6 +359,8 @@ export default {
                 },
             },
             selectedIds: [],
+            bulkEditMode: false,
+            stockEdits: {},
             printLoading: true,
             printObj: {
                 id: "print",
@@ -570,6 +594,35 @@ export default {
             }).catch((err) => {
                 this.loading.isActive = false;
             })
+        },
+        toggleBulkEdit: function () {
+            this.bulkEditMode = !this.bulkEditMode;
+            if (!this.bulkEditMode) {
+                this.stockEdits = {};
+            }
+        },
+        saveBulkStock: function () {
+            const items = Object.entries(this.stockEdits).map(([id, quantity]) => ({
+                id: parseInt(id),
+                quantity: parseInt(quantity) || 0
+            }));
+
+            if (items.length === 0) {
+                this.bulkEditMode = false;
+                return;
+            }
+
+            this.loading.isActive = true;
+            this.$store.dispatch('product/bulkStockUpdate', { items }).then(() => {
+                this.loading.isActive = false;
+                this.bulkEditMode = false;
+                this.stockEdits = {};
+                alertService.successFlip(null, 'Estoque');
+                this.list(this.props.search.page);
+            }).catch((err) => {
+                this.loading.isActive = false;
+                alertService.error(err?.response?.data?.message || 'Erro ao salvar estoque.');
+            });
         },
         xls: function () {
             this.loading.isActive = true;

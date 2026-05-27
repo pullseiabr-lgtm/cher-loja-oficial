@@ -63,7 +63,7 @@ class ProductService
             $orderColumn = $request->get('order_column') ?? 'id';
             $orderType   = $request->get('order_type') ?? 'desc';
 
-            return Product::with('media', 'category', 'brand', 'taxes', 'tags', 'reviews')->with(['wishlist' => fn($query) => $query->where('user_id', Auth::check() ? Auth::user()->id : 0)])->withReviewRating()->where(function ($query) use ($requests) {
+            return Product::with('media', 'category', 'brand', 'taxes', 'tags', 'reviews')->with(['wishlist' => fn($query) => $query->where('user_id', Auth::check() ? Auth::user()->id : 0)])->withSum('stockItems', 'quantity')->withReviewRating()->where(function ($query) use ($requests) {
                 foreach ($requests as $key => $request) {
                     if (in_array($key, $this->productFilter)) {
                         if ($key == "except") {

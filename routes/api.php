@@ -449,6 +449,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::get('/pos-product/{product}', [ProductController::class, 'posProduct']);
         Route::post('/', [ProductController::class, 'store']);
         Route::post('/bulk-delete', [ProductController::class, 'destroyBulk']);
+        Route::post('/bulk-stock-update', [ProductController::class, 'bulkStockUpdate']);
         Route::match(['post', 'put', 'patch'], '/{product}', [ProductController::class, 'update']);
         Route::delete('/{product}', [ProductController::class, 'destroy']);
         Route::post('/upload-image/{product}', [ProductController::class, 'uploadImage']);

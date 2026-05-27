@@ -175,6 +175,15 @@ export const product = {
                 }).catch((err) => { reject(err); });
             });
         },
+        bulkStockUpdate: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.post('/admin/product/bulk-stock-update', { items: payload.items }).then((res) => {
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
         reset: function (context) {
             context.commit('reset');
         },

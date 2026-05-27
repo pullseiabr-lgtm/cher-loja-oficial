@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use Exception;
+use App\Enums\Status;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Exports\ProductExport;
 use App\Imports\ProductImport;
 use App\Services\ProductService;
@@ -47,6 +50,7 @@ class ProductController extends AdminController implements HasMiddleware
             new Middleware('permission:products_edit', only: ['update']),
             new Middleware('permission:products_delete', only: ['destroy']),
             new Middleware('permission:products_delete', only: ['destroyBulk']),
+            new Middleware('permission:products_edit', only: ['bulkStockUpdate']),
             new Middleware('permission:products_delete', only: ['deleteImage']),
             new Middleware('permission:products_show', only: ['show']),
             new Middleware('permission:products_show', only: ['shippingAndReturn']),
@@ -150,6 +154,59 @@ class ProductController extends AdminController implements HasMiddleware
                 $product->update($data);
             }
             return new ProductDetailsAdminResource($product->fresh());
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function bulkStockUpdate(Request $request): \Illuminate\Http\Response|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            $items = $request->input('items', []);
+            if (empty($items) || !is_array($items)) {
+                return response(['status' => false, 'message' => 'Nenhum item fornecido.'], 422);
+            }
+
+            DB::transaction(function () use ($items) {
+                foreach ($items as $item) {
+                    $productId  = (int)($item['id'] ?? 0);
+                    $desiredQty = max(0, (int)($item['quantity'] ?? 0));
+
+                    if (!$productId) continue;
+
+                    // Deactivate all previous manual admin adjustments for this product
+                    Stock::where('model_type', Product::class)
+                         ->where('item_type', Product::class)
+                         ->where('item_id', $productId)
+                         ->update(['status' => Status::INACTIVE]);
+
+                    // Sum non-manual ACTIVE stock (purchases, orders, damages, etc.)
+                    $nonManualStock = (int) Stock::where('item_type', Product::class)
+                                                  ->where('item_id', $productId)
+                                                  ->where('status', Status::ACTIVE)
+                                                  ->sum('quantity');
+
+                    // Create a manual adjustment so the total equals the desired quantity
+                    Stock::create([
+                        'model_type'      => Product::class,
+                        'model_id'        => $productId,
+                        'item_type'       => Product::class,
+                        'item_id'         => $productId,
+                        'product_id'      => $productId,
+                        'quantity'        => $desiredQty - $nonManualStock,
+                        'price'           => 0,
+                        'discount'        => 0,
+                        'tax'             => 0,
+                        'subtotal'        => 0,
+                        'total'           => 0,
+                        'status'          => Status::ACTIVE,
+                        'sku'             => '',
+                        'variation_names' => null,
+                    ]);
+                }
+            });
+
+            return response(['status' => true, 'message' => 'Estoque atualizado com sucesso.'], 200);
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
