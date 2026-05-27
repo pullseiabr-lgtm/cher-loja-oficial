@@ -37,13 +37,6 @@
                                 </svg>
                             </div>
 
-                            <!-- Stars -->
-                            <div class="flex items-center gap-0.5 mb-3">
-                                <span v-for="star in 5" :key="star"
-                                    :class="star <= item.rating ? 'text-yellow-400' : 'text-gray-200'"
-                                    class="text-lg leading-none">&#9733;</span>
-                            </div>
-
                             <!-- Content -->
                             <p class="testimonial-content">
                                 "{{ item.content }}"
@@ -56,11 +49,10 @@
                                 </div>
                                 <div class="min-w-0">
                                     <h4 class="testimonial-name">{{ item.name }}</h4>
-                                    <div class="flex items-center gap-1">
-                                        <span class="testimonial-verified">
-                                            <i class="fa-solid fa-circle-check text-primary text-xs"></i>
-                                            Cliente verificado
-                                        </span>
+                                    <div class="flex items-center gap-0.5 mt-0.5">
+                                        <span v-for="star in 5" :key="star"
+                                            :class="star <= item.rating ? 'text-yellow-400' : 'text-gray-200'"
+                                            class="text-sm leading-none">&#9733;</span>
                                     </div>
                                 </div>
                             </div>
