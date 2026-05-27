@@ -134,6 +134,18 @@ class ProductController extends AdminController implements HasMiddleware
         }
     }
 
+    public function updateCoverPosition(Request $request, Product $product): \Illuminate\Foundation\Application|\Illuminate\Http\Response|ProductDetailsAdminResource|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            $allowed = ['left top', 'center top', 'right top', 'left center', 'center', 'right center', 'left bottom', 'center bottom', 'right bottom'];
+            $position = in_array($request->input('cover_position'), $allowed) ? $request->input('cover_position') : 'center';
+            $product->update(['cover_position' => $position]);
+            return new ProductDetailsAdminResource($product->fresh());
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
     public function export(PaginateRequest $request): \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         try {

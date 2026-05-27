@@ -14,7 +14,8 @@
             <router-link class="overflow-hidden rounded-xl w-full"
                 :to="{ name: 'frontend.product.details', params: { slug: product.slug } }">
                 <img :src="product.cover" alt="product"
-                    class="w-full rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:rotate-3">
+                    class="w-full rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:rotate-3 object-cover aspect-square"
+                    :style="{ objectPosition: product.cover_position || 'center' }">
             </router-link>
         </div>
 

@@ -64,6 +64,7 @@ class ProductDetailsAdminResource extends JsonResource
             'taxes'                        => SimpleTaxResource::collection($this->taxes),
             'thumb'                        => $this->thumb,
             "barcode_image"                => $this->barcodeImage,
+            'cover_position'               => $this->cover_position ?? 'center',
         ];
     }
 }

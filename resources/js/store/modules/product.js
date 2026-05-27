@@ -151,6 +151,16 @@ export const product = {
                 });
             });
         },
+        updateCoverPosition: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.post(`/admin/product/cover-position/${payload.id}`, { cover_position: payload.position }).then(res => {
+                    context.commit('show', res.data.data);
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
         reset: function (context) {
             context.commit('reset');
         },

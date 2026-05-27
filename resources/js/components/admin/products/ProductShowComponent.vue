@@ -221,28 +221,70 @@
 
             <div class="db-card tab-content px-4" id="image">
                 <div class="row py-4 p-3">
-                    <div class="w-full max-w-[620px] flex flex-col-reverse sm:flex-row gap-3 sm:gap-5">
-                        <nav class="flex-shrink-0 w-full sm:max-w-[90px] flex flex-row sm:flex-col gap-3 sm:gap-5">
-                            <label for="addImage" v-if="product.images && product.images.length < 6"
-                                class="relative w-full h-16 sm:h-20 flex items-center justify-center rounded-2xl cursor-pointer text-heading bg-gray-200">
-                                <input type="file" id="addImage" @change="saveImage" ref="imageProperty"
-                                    class="w-full h-full absolute -z-10 rounded-2xl opacity-0"
-                                    accept="image/png, image/jpeg, image/jpg">
-                                <i class="lab-fill-circle-plus text-xl sm:text-3xl"></i>
-                            </label>
+                    <div class="w-full flex flex-col gap-6">
 
-                            <button class="w-full" type="button" v-for="(image, index) in product.images">
-                                <img class="w-full h-16 sm:h-20 object-top object-cover rounded-2xl" :src="image"
-                                    alt="product" @click.prevent="switchImage(image, index)" />
-                            </button>
-                        </nav>
-                        <div class="w-full relative" v-if="livePreview">
-                            <img class="w-full h-96 sm:h-[480px] object-top object-cover rounded-2xl" alt="products"
-                                :src="livePreview" />
-                            <button v-if="imageCount > 0" @click.prevent="deleteImage"
-                                class="lab-line-cross text-3xl absolute -top-3 -right-3 w-9 h-9 leading-9 text-center rounded-full shadow-md bg-white text-danger"
-                                type="button"></button>
+                        <!-- Image gallery -->
+                        <div class="w-full max-w-[620px] flex flex-col-reverse sm:flex-row gap-3 sm:gap-5">
+                            <nav class="flex-shrink-0 w-full sm:max-w-[90px] flex flex-row sm:flex-col gap-3 sm:gap-5">
+                                <label for="addImage" v-if="product.images && product.images.length < 6"
+                                    class="relative w-full h-16 sm:h-20 flex items-center justify-center rounded-2xl cursor-pointer text-heading bg-gray-200">
+                                    <input type="file" id="addImage" @change="saveImage" ref="imageProperty"
+                                        class="w-full h-full absolute -z-10 rounded-2xl opacity-0"
+                                        accept="image/png, image/jpeg, image/jpg">
+                                    <i class="lab-fill-circle-plus text-xl sm:text-3xl"></i>
+                                </label>
+                                <button class="w-full" type="button" v-for="(image, index) in product.images" :key="index"
+                                    @click.prevent="switchImage(image, index)"
+                                    :class="deleteIndex === index ? 'ring-2 ring-primary rounded-2xl' : ''">
+                                    <img class="w-full h-16 sm:h-20 object-cover object-top rounded-2xl" :src="image" alt="product" />
+                                </button>
+                            </nav>
+                            <div class="w-full relative" v-if="livePreview">
+                                <img class="w-full h-96 sm:h-[480px] object-cover rounded-2xl"
+                                    :style="{ objectPosition: coverPosition }"
+                                    alt="products" :src="livePreview" />
+                                <button v-if="imageCount > 0" @click.prevent="deleteImage"
+                                    class="lab-line-cross text-3xl absolute -top-3 -right-3 w-9 h-9 leading-9 text-center rounded-full shadow-md bg-white text-danger"
+                                    type="button"></button>
+                            </div>
                         </div>
+
+                        <!-- Square preview + position selector -->
+                        <div v-if="livePreview" class="flex flex-wrap items-start gap-6 pt-4 border-t border-gray-100">
+
+                            <!-- Square preview -->
+                            <div class="flex flex-col gap-2">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Prévia quadrada</span>
+                                <div class="w-40 h-40 rounded-xl overflow-hidden border border-gray-200 shadow-sm flex-shrink-0">
+                                    <img :src="livePreview" alt="square preview"
+                                        class="w-full h-full object-cover"
+                                        :style="{ objectPosition: coverPosition }" />
+                                </div>
+                            </div>
+
+                            <!-- Position grid -->
+                            <div class="flex flex-col gap-2">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Posição de exibição</span>
+                                <p class="text-xs text-gray-400 -mt-1">Define o ponto focal da imagem em cards quadrados</p>
+                                <div class="inline-grid grid-cols-3 gap-1.5 mt-1">
+                                    <button v-for="pos in positionGrid" :key="pos.value" type="button"
+                                        @click.prevent="setCoverPosition(pos.value)"
+                                        :title="pos.label"
+                                        :class="[
+                                            'w-10 h-10 rounded-lg border text-sm transition-all duration-150 flex items-center justify-center',
+                                            coverPosition === pos.value
+                                                ? 'bg-primary border-primary text-white shadow-md scale-110'
+                                                : 'bg-white border-gray-200 text-gray-500 hover:border-primary hover:text-primary'
+                                        ]">
+                                        <i :class="pos.icon"></i>
+                                    </button>
+                                </div>
+                                <span class="text-xs text-gray-400 mt-1">
+                                    Atual: <strong class="text-gray-600">{{ positionLabel }}</strong>
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -537,6 +579,18 @@ export default {
             previewImage: null,
             barcodeImage: null,
             livePreview: null,
+            coverPosition: 'center',
+            positionGrid: [
+                { value: 'left top',      icon: 'fa-solid fa-arrow-up-left',    label: 'Superior esquerdo' },
+                { value: 'center top',    icon: 'fa-solid fa-arrow-up',         label: 'Superior central' },
+                { value: 'right top',     icon: 'fa-solid fa-arrow-up-right',   label: 'Superior direito' },
+                { value: 'left center',   icon: 'fa-solid fa-arrow-left',       label: 'Meio esquerdo' },
+                { value: 'center',        icon: 'fa-solid fa-circle-dot',       label: 'Centro' },
+                { value: 'right center',  icon: 'fa-solid fa-arrow-right',      label: 'Meio direito' },
+                { value: 'left bottom',   icon: 'fa-solid fa-arrow-down-left',  label: 'Inferior esquerdo' },
+                { value: 'center bottom', icon: 'fa-solid fa-arrow-down',       label: 'Inferior central' },
+                { value: 'right bottom',  icon: 'fa-solid fa-arrow-down-right', label: 'Inferior direito' },
+            ],
             form: {
                 add_to_flash_sale: "",
                 discount: "",
@@ -557,7 +611,10 @@ export default {
         product: function () {
             return this.$store.getters["product/show"];
         },
-
+        positionLabel() {
+            const found = this.positionGrid.find(p => p.value === this.coverPosition);
+            return found ? found.label : 'Centro';
+        },
     },
     mounted() {
         this.loading.isActive = true;
@@ -581,6 +638,7 @@ export default {
                 this.barcodeImage = res.data.data.barcode_image;
                 this.livePreview = res.data.data.image;
                 this.imageCount = res.data.data.images.length;
+                this.coverPosition = res.data.data.cover_position || 'center';
                 this.shippingAndReturnForm.shipping_and_return = res.data.data.shipping_and_return;
                 this.shippingAndReturnForm.shipping_type = res.data.data.shipping_type;
                 this.shippingAndReturnForm.shipping_cost = res.data.data.shipping_cost;
@@ -646,6 +704,17 @@ export default {
                 }
             }).catch((err) => {
                 this.loading.isActive = false;
+            });
+        },
+        setCoverPosition: function (position) {
+            this.coverPosition = position;
+            this.$store.dispatch('product/updateCoverPosition', {
+                id: this.$route.params.id,
+                position,
+            }).then(() => {
+                alertService.success(this.$t('message.update'));
+            }).catch((err) => {
+                alertService.error(err?.response?.data?.message || 'Erro ao salvar posição');
             });
         },
         saveShippingAndReturn: function () {
