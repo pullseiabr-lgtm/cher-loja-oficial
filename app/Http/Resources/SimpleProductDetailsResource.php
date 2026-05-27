@@ -39,7 +39,11 @@ class SimpleProductDetailsResource extends JsonResource
             'shipping_and_return'       => $this->shipping_and_return,
             'category_slug'             => $this->category?->slug,
             'unit'                      => $this->unit?->name,
-            'stock'                     => $this->show_stock_out == Activity::DISABLE ? ($this->can_purchasable == Ask::NO ? (int)env('NON_PURCHASE_QUANTITY') : (int)$this->stock_items_sum_quantity) : 0,
+            'stock'                     => $this->can_purchasable == Ask::NO
+                                            ? (int)env('NON_PURCHASE_QUANTITY', 9999)
+                                            : (int)$this->stock_items_sum_quantity,
+            'show_stock_out'            => $this->show_stock_out == Activity::ENABLE,
+            'can_purchasable'           => $this->can_purchasable == Ask::YES,
             'sku'                       => $this->sku,
             "maximum_purchase_quantity" => $this->maximum_purchase_quantity,
             'shipping'                  => [

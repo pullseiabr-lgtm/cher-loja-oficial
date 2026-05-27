@@ -78,13 +78,23 @@
                                 <input type="number" v-model="temp.quantity" v-on:keypress="onlyNumber($event)"
                                     v-on:keyup="quantityUp" class="text-center w-full h-5 text-sm font-medium">
                                 <button @click.prevent="quantityIncrement" type="button"
-                                    :class="temp.stock === temp.quantity ? 'cursor-not-allowed' : temp.quantity === temp.maximum_purchase_quantity ? 'cursor-not-allowed' : ''"
+                                    :class="(!temp.show_stock_out && !(!temp.can_purchasable)) && temp.stock === temp.quantity ? 'cursor-not-allowed' : temp.maximum_purchase_quantity > 0 && temp.quantity >= temp.maximum_purchase_quantity ? 'cursor-not-allowed' : ''"
                                     class="lab-fill-circle-plus text-lg leading-none transition-all duration-300 hover:text-primary"></button>
                             </div>
                             <div v-if="!initialVariations.length || selectedVariation != null">
-                                <p v-if="temp.stock > 0" class="capitalize">
+                                <!-- Produto não comprável (free/display): sempre disponível -->
+                                <p v-if="!temp.can_purchasable" class="capitalize text-green-600 font-medium">
+                                    {{ $t('label.available') }}
+                                </p>
+                                <!-- show_stock_out = ENABLE: sempre disponível mesmo sem estoque -->
+                                <p v-else-if="temp.show_stock_out" class="capitalize">
+                                    {{ $t('label.available') }}
+                                    <span v-if="temp.stock > 0">: <b>({{ temp.stock }})</b> {{ product.unit }}</span>
+                                </p>
+                                <!-- Estoque normal: mostra quantidade real -->
+                                <p v-else-if="temp.stock > 0" class="capitalize">
                                     {{ $t('label.available') }}:
-                                    <b>({{ temp.stock }}) </b>
+                                    <b>({{ temp.stock }})</b>
                                     {{ product.unit }}
                                 </p>
                                 <p v-else class="capitalize text-danger">
@@ -319,6 +329,8 @@ export default {
                 variationId: null,
                 sku: null,
                 stock: 0,
+                show_stock_out: false,
+                can_purchasable: true,
                 quantity: 1,
                 discount: 0,
                 price: 0,
@@ -334,6 +346,8 @@ export default {
                 productId: 0,
                 sku: null,
                 stock: 0,
+                show_stock_out: false,
+                can_purchasable: true,
                 taxes: {},
                 shipping: {},
                 quantity: 1,
@@ -420,6 +434,8 @@ export default {
                         variationId: null,
                         sku: res.data.data.sku,
                         stock: res.data.data.stock,
+                        show_stock_out: res.data.data.show_stock_out ?? false,
+                        can_purchasable: res.data.data.can_purchasable ?? true,
                         quantity: 1,
                         discount: 0,
                         price: res.data.data.price,
@@ -435,6 +451,8 @@ export default {
                         productId: res.data.data.id,
                         sku: res.data.data.sku,
                         stock: res.data.data.stock,
+                        show_stock_out: res.data.data.show_stock_out ?? false,
+                        can_purchasable: res.data.data.can_purchasable ?? true,
                         taxes: res.data.data.taxes,
                         shipping: res.data.data.shipping,
                         quantity: 1,
@@ -456,7 +474,8 @@ export default {
                             this.variationComponent = true;
                         }
 
-                        if (!initVariationRes.data.data.length && res.data.data.stock > 0) {
+                        const alwaysAvailable = res.data.data.show_stock_out || !res.data.data.can_purchasable;
+                        if (!initVariationRes.data.data.length && (res.data.data.stock > 0 || alwaysAvailable)) {
                             this.enableAddToCardButton = false;
                         }
                         this.loading.isActive = false;
@@ -538,13 +557,16 @@ export default {
             if (this.temp.quantity === 0) {
                 this.temp.quantity = 1;
             }
-            if (this.temp.quantity > this.temp.stock) {
-                this.temp.quantity = this.temp.stock
+
+            // Limit by stock only when stock is tracked (purchasable + not always-available)
+            const unlimitedStock = this.temp.show_stock_out || !this.temp.can_purchasable;
+            if (!unlimitedStock && this.temp.quantity > this.temp.stock) {
+                this.temp.quantity = this.temp.stock;
             }
 
-            if (this.temp.quantity > this.temp.maximum_purchase_quantity) {
+            if (this.temp.maximum_purchase_quantity > 0 && this.temp.quantity > this.temp.maximum_purchase_quantity) {
                 alertService.error(this.$t('message.purchase_limit_exceeded'));
-                this.temp.quantity = this.temp.maximum_purchase_quantity
+                this.temp.quantity = this.temp.maximum_purchase_quantity;
             }
 
             this.totalPriceSetup();
@@ -555,11 +577,12 @@ export default {
                 this.temp.quantity = 1;
             }
 
-            if (this.temp.quantity > this.temp.stock) {
+            const unlimitedStock = this.temp.show_stock_out || !this.temp.can_purchasable;
+            if (!unlimitedStock && this.temp.quantity > this.temp.stock) {
                 this.temp.quantity--;
             }
 
-            if (this.temp.quantity > this.temp.maximum_purchase_quantity) {
+            if (this.temp.maximum_purchase_quantity > 0 && this.temp.quantity > this.temp.maximum_purchase_quantity) {
                 this.temp.quantity--;
             }
             this.totalPriceSetup();
