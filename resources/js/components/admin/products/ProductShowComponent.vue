@@ -224,48 +224,73 @@
                     <div class="w-full flex flex-col gap-6">
 
                         <!-- Image gallery -->
-                        <div class="w-full max-w-[620px] flex flex-col-reverse sm:flex-row gap-3 sm:gap-5">
-                            <nav class="flex-shrink-0 w-full sm:max-w-[90px] flex flex-row sm:flex-col gap-3 sm:gap-5">
+                        <div class="w-full max-w-[640px] flex flex-col-reverse sm:flex-row gap-3 sm:gap-5">
+
+                            <!-- Thumbnails sidebar -->
+                            <nav class="flex-shrink-0 w-full sm:max-w-[90px] flex flex-row sm:flex-col gap-3">
                                 <label for="addImage" v-if="product.images && product.images.length < 6"
-                                    class="relative w-full h-16 sm:h-20 flex items-center justify-center rounded-2xl cursor-pointer text-heading bg-gray-200">
+                                    class="relative w-full h-16 sm:h-20 flex items-center justify-center rounded-2xl cursor-pointer text-heading bg-gray-200 hover:bg-gray-300 transition">
                                     <input type="file" id="addImage" @change="saveImage" ref="imageProperty"
                                         class="w-full h-full absolute -z-10 rounded-2xl opacity-0"
                                         accept="image/png, image/jpeg, image/jpg">
                                     <i class="lab-fill-circle-plus text-xl sm:text-3xl"></i>
                                 </label>
-                                <button class="w-full" type="button" v-for="(image, index) in product.images" :key="index"
-                                    @click.prevent="switchImage(image, index)"
-                                    :class="deleteIndex === index ? 'ring-2 ring-primary rounded-2xl' : ''">
-                                    <img class="w-full h-16 sm:h-20 object-cover object-top rounded-2xl" :src="image" alt="product" />
-                                </button>
+
+                                <!-- Each thumbnail with "Set as Cover" overlay -->
+                                <div v-for="(image, index) in product.images" :key="index"
+                                    class="relative w-full group/thumb cursor-pointer"
+                                    @click.prevent="switchImage(image, index)">
+                                    <img class="w-full h-16 sm:h-20 object-cover object-top rounded-2xl transition"
+                                        :class="deleteIndex === index ? 'ring-2 ring-primary' : 'ring-1 ring-gray-200'"
+                                        :src="image" alt="product" />
+
+                                    <!-- Cover star badge -->
+                                    <span v-if="index === 0"
+                                        class="absolute top-1 left-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow"
+                                        title="Imagem de capa">
+                                        <i class="fa-solid fa-star text-white text-[9px]"></i>
+                                    </span>
+
+                                    <!-- "Set as cover" button (appears on hover, hidden for index 0) -->
+                                    <button v-if="index !== 0" type="button"
+                                        @click.stop="setAsCover(index)"
+                                        class="absolute inset-0 w-full h-full rounded-2xl bg-black/50 opacity-0 group-hover/thumb:opacity-100 transition flex flex-col items-center justify-center gap-0.5 text-white text-[10px] font-semibold">
+                                        <i class="fa-solid fa-star text-yellow-300 text-sm"></i>
+                                        <span>Capa</span>
+                                    </button>
+                                </div>
                             </nav>
+
+                            <!-- Main preview -->
                             <div class="w-full relative" v-if="livePreview">
-                                <img class="w-full h-96 sm:h-[480px] object-cover rounded-2xl"
-                                    :style="{ objectPosition: coverPosition }"
-                                    alt="products" :src="livePreview" />
+                                <div class="w-full h-96 sm:h-[480px] rounded-2xl overflow-hidden">
+                                    <img class="w-full h-full object-cover transition-all duration-300"
+                                        :style="{ objectPosition: coverPosition, transform: `scale(${coverZoom})`, transformOrigin: coverPosition }"
+                                        alt="products" :src="livePreview" />
+                                </div>
                                 <button v-if="imageCount > 0" @click.prevent="deleteImage"
                                     class="lab-line-cross text-3xl absolute -top-3 -right-3 w-9 h-9 leading-9 text-center rounded-full shadow-md bg-white text-danger"
                                     type="button"></button>
                             </div>
                         </div>
 
-                        <!-- Square preview + position selector -->
-                        <div v-if="livePreview" class="flex flex-wrap items-start gap-6 pt-4 border-t border-gray-100">
+                        <!-- Controls row: Square preview + Position grid + Zoom -->
+                        <div v-if="livePreview" class="flex flex-wrap items-start gap-8 pt-5 border-t border-gray-100">
 
-                            <!-- Square preview -->
-                            <div class="flex flex-col gap-2">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Prévia quadrada</span>
-                                <div class="w-40 h-40 rounded-xl overflow-hidden border border-gray-200 shadow-sm flex-shrink-0">
+                            <!-- Square preview (live) -->
+                            <div class="flex flex-col gap-2 flex-shrink-0">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Prévia do card</span>
+                                <div class="w-44 h-44 rounded-xl overflow-hidden border-2 border-gray-200 shadow-sm">
                                     <img :src="livePreview" alt="square preview"
-                                        class="w-full h-full object-cover"
-                                        :style="{ objectPosition: coverPosition }" />
+                                        class="w-full h-full object-cover transition-all duration-200"
+                                        :style="{ objectPosition: coverPosition, transform: `scale(${coverZoom})`, transformOrigin: coverPosition }" />
                                 </div>
                             </div>
 
                             <!-- Position grid -->
                             <div class="flex flex-col gap-2">
-                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Posição de exibição</span>
-                                <p class="text-xs text-gray-400 -mt-1">Define o ponto focal da imagem em cards quadrados</p>
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ponto focal</span>
+                                <p class="text-xs text-gray-400 -mt-1">Área visível ao recortar em quadrado</p>
                                 <div class="inline-grid grid-cols-3 gap-1.5 mt-1">
                                     <button v-for="pos in positionGrid" :key="pos.value" type="button"
                                         @click.prevent="setCoverPosition(pos.value)"
@@ -273,16 +298,36 @@
                                         :class="[
                                             'w-10 h-10 rounded-lg border text-sm transition-all duration-150 flex items-center justify-center',
                                             coverPosition === pos.value
-                                                ? 'bg-primary border-primary text-white shadow-md scale-110'
+                                                ? 'bg-primary border-primary text-white shadow-md'
                                                 : 'bg-white border-gray-200 text-gray-500 hover:border-primary hover:text-primary'
                                         ]">
                                         <i :class="pos.icon"></i>
                                     </button>
                                 </div>
                                 <span class="text-xs text-gray-400 mt-1">
-                                    Atual: <strong class="text-gray-600">{{ positionLabel }}</strong>
+                                    Foco: <strong class="text-gray-600">{{ positionLabel }}</strong>
                                 </span>
                             </div>
+
+                            <!-- Zoom slider -->
+                            <div class="flex flex-col gap-2 min-w-[160px]">
+                                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Zoom</span>
+                                <p class="text-xs text-gray-400 -mt-1">Aproximação da imagem no card</p>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+                                    <input type="range" min="1.0" max="3.0" step="0.1"
+                                        v-model.number="coverZoom"
+                                        @change="saveCoverZoom"
+                                        class="w-full h-1.5 accent-primary cursor-pointer rounded-full" />
+                                    <span class="text-xs font-semibold text-gray-600 w-10 text-right">{{ Math.round(coverZoom * 100) }}%</span>
+                                </div>
+                                <button v-if="coverZoom !== 1.0" type="button"
+                                    @click="coverZoom = 1.0; saveCoverZoom()"
+                                    class="text-xs text-primary hover:underline self-start mt-0.5">
+                                    Resetar zoom
+                                </button>
+                            </div>
+
                         </div>
 
                     </div>
@@ -580,6 +625,7 @@ export default {
             barcodeImage: null,
             livePreview: null,
             coverPosition: 'center',
+            coverZoom: 1.0,
             positionGrid: [
                 { value: 'left top',      icon: 'fa-solid fa-arrow-up-left',    label: 'Superior esquerdo' },
                 { value: 'center top',    icon: 'fa-solid fa-arrow-up',         label: 'Superior central' },
@@ -639,6 +685,7 @@ export default {
                 this.livePreview = res.data.data.image;
                 this.imageCount = res.data.data.images.length;
                 this.coverPosition = res.data.data.cover_position || 'center';
+                this.coverZoom    = res.data.data.cover_zoom    || 1.0;
                 this.shippingAndReturnForm.shipping_and_return = res.data.data.shipping_and_return;
                 this.shippingAndReturnForm.shipping_type = res.data.data.shipping_type;
                 this.shippingAndReturnForm.shipping_cost = res.data.data.shipping_cost;
@@ -711,10 +758,31 @@ export default {
             this.$store.dispatch('product/updateCoverPosition', {
                 id: this.$route.params.id,
                 position,
-            }).then(() => {
-                alertService.success(this.$t('message.update'));
             }).catch((err) => {
                 alertService.error(err?.response?.data?.message || 'Erro ao salvar posição');
+            });
+        },
+        saveCoverZoom: function () {
+            this.$store.dispatch('product/updateCoverZoom', {
+                id: this.$route.params.id,
+                zoom: this.coverZoom,
+            }).catch((err) => {
+                alertService.error(err?.response?.data?.message || 'Erro ao salvar zoom');
+            });
+        },
+        setAsCover: function (index) {
+            this.loading.isActive = true;
+            this.$store.dispatch('product/setCoverImage', {
+                id: this.$route.params.id,
+                index,
+            }).then((res) => {
+                this.loading.isActive = false;
+                this.livePreview  = res.data.data.image;
+                this.imageCount   = res.data.data.images.length;
+                alertService.success(this.$t('message.update'));
+            }).catch((err) => {
+                this.loading.isActive = false;
+                alertService.error(err?.response?.data?.message || 'Erro ao definir capa');
             });
         },
         saveShippingAndReturn: function () {

@@ -454,6 +454,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::post('/upload-image/{product}', [ProductController::class, 'uploadImage']);
         Route::get('/delete-image/{product}/{index}', [ProductController::class, 'deleteImage']);
         Route::post('/cover-position/{product}', [ProductController::class, 'updateCoverPosition']);
+        Route::post('/set-cover-image/{product}/{index}', [ProductController::class, 'setCoverImage']);
         Route::get('/export', [ProductController::class, 'export']);
         Route::get('/generate-sku', [ProductController::class, 'generateSku']);
         Route::post('/shipping-and-return/{product}', [ProductController::class, 'shippingAndReturn']);

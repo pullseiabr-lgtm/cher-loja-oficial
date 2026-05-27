@@ -49,6 +49,7 @@ class Product extends Model implements HasMedia
         'shipping_cost',
         'is_product_quantity_multiply',
         'cover_position',
+        'cover_zoom',
 
     ];
     protected array $dates = ['deleted_at'];
@@ -83,6 +84,7 @@ class Product extends Model implements HasMedia
         'shipping_cost'                => 'string',
         'is_product_quantity_multiply' => 'integer',
         'cover_position'               => 'string',
+        'cover_zoom'                   => 'float',
 
     ];
 

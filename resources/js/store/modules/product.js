@@ -156,9 +156,23 @@ export const product = {
                 axios.post(`/admin/product/cover-position/${payload.id}`, { cover_position: payload.position }).then(res => {
                     context.commit('show', res.data.data);
                     resolve(res);
-                }).catch((err) => {
-                    reject(err);
-                });
+                }).catch((err) => { reject(err); });
+            });
+        },
+        updateCoverZoom: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.post(`/admin/product/cover-position/${payload.id}`, { cover_zoom: payload.zoom }).then(res => {
+                    context.commit('show', res.data.data);
+                    resolve(res);
+                }).catch((err) => { reject(err); });
+            });
+        },
+        setCoverImage: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.post(`/admin/product/set-cover-image/${payload.id}/${payload.index}`).then(res => {
+                    context.commit('show', res.data.data);
+                    resolve(res);
+                }).catch((err) => { reject(err); });
             });
         },
         reset: function (context) {

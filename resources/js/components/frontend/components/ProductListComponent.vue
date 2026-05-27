@@ -11,11 +11,17 @@
                 class="w-7 h-7 leading-7 rounded-full text-center text-base shadow-badge absolute top-3 right-3 z-10 bg-white">
             </button>
 
-            <router-link class="overflow-hidden rounded-xl w-full"
+            <router-link class="overflow-hidden rounded-xl w-full block"
                 :to="{ name: 'frontend.product.details', params: { slug: product.slug } }">
-                <img :src="product.cover" alt="product"
-                    class="w-full rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:rotate-3 object-cover aspect-square"
-                    :style="{ objectPosition: product.cover_position || 'center' }">
+                <div class="relative overflow-hidden rounded-xl aspect-square">
+                    <img :src="product.cover" alt="product"
+                        class="absolute inset-0 w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                        :style="{
+                            objectPosition: product.cover_position || 'center',
+                            transform: `scale(${product.cover_zoom || 1})`,
+                            transformOrigin: product.cover_position || 'center',
+                        }">
+                </div>
             </router-link>
         </div>
 

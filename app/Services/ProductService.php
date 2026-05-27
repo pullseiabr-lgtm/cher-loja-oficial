@@ -326,6 +326,29 @@ class ProductService
         }
     }
 
+    /**
+     * Reorder media so the selected index becomes the cover (first).
+     * @throws Exception
+     */
+    public function setCoverImage(Product $product, int $index): Product
+    {
+        try {
+            $media = $product->getMedia('product');
+            if ($index < 0 || $index >= count($media)) {
+                return $product;
+            }
+            $ids = $media->pluck('id')->toArray();
+            $selectedId = $ids[$index];
+            $remaining   = array_values(array_filter($ids, fn($id) => $id !== $selectedId));
+            $newOrder    = array_merge([$selectedId], $remaining);
+            \Spatie\MediaLibrary\MediaCollections\Models\Media::setNewOrder($newOrder);
+            return Product::find($product->id);
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception(QueryExceptionLibrary::message($exception), 422);
+        }
+    }
+
 
     /**
      * @throws Exception

@@ -187,6 +187,9 @@
                             <th class="db-table-head-th hidden-print w-10" v-if="permissionChecker('products_delete')">
                                 <input type="checkbox" class="cursor-pointer" :checked="isAllSelected" @change="toggleSelectAll" />
                             </th>
+                            <th class="db-table-head-th w-14 hidden-print">
+                                {{ $t('label.images') }}
+                            </th>
                             <th class="db-table-head-th">
                                 {{ $t('label.name') }}
                             </th>
@@ -214,6 +217,13 @@
                                 <input type="checkbox" class="cursor-pointer"
                                     :value="product.id"
                                     v-model="selectedIds" />
+                            </td>
+                            <td class="db-table-body-td hidden-print">
+                                <div class="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 flex-shrink-0">
+                                    <img :src="product.thumb" :alt="product.name"
+                                        class="w-full h-full object-cover"
+                                        :style="{ objectPosition: product.cover_position || 'center' }" />
+                                </div>
                             </td>
                             <td class="db-table-body-td">
                                 {{ textShortener(product.name, 40) }}

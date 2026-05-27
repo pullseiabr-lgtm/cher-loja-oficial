@@ -65,6 +65,7 @@ class ProductDetailsAdminResource extends JsonResource
             'thumb'                        => $this->thumb,
             "barcode_image"                => $this->barcodeImage,
             'cover_position'               => $this->cover_position ?? 'center',
+            'cover_zoom'                   => (float)($this->cover_zoom ?? 1.0),
         ];
     }
 }

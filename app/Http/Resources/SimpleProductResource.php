@@ -24,6 +24,7 @@ class SimpleProductResource extends JsonResource
             'currency_price'    => AppLibrary::currencyAmountFormat($price),
             'cover'             => $this->cover,
             'cover_position'    => $this->cover_position ?? 'center',
+            'cover_zoom'        => (float)($this->cover_zoom ?? 1.0),
             'flash_sale'        => $this->add_to_flash_sale == Ask::YES,
             'is_offer'          => AppLibrary::isBetweenDate($this->offer_start_date, $this->offer_end_date),
             'discounted_price'  => AppLibrary::currencyAmountFormat($price - (($price / 100) * $this->discount)),

@@ -42,6 +42,7 @@ class ProductController extends AdminController implements HasMiddleware
             new Middleware('permission:products', only: ['downloadAttachment']),
             new Middleware('permission:products_create', only: ['store']),
             new Middleware('permission:products_create', only: ['uploadImage']),
+            new Middleware('permission:products_create', only: ['setCoverImage']),
             new Middleware('permission:products_create', only: ['import']),
             new Middleware('permission:products_edit', only: ['update']),
             new Middleware('permission:products_delete', only: ['destroy']),
@@ -137,10 +138,27 @@ class ProductController extends AdminController implements HasMiddleware
     public function updateCoverPosition(Request $request, Product $product): \Illuminate\Foundation\Application|\Illuminate\Http\Response|ProductDetailsAdminResource|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
+            $data = [];
             $allowed = ['left top', 'center top', 'right top', 'left center', 'center', 'right center', 'left bottom', 'center bottom', 'right bottom'];
-            $position = in_array($request->input('cover_position'), $allowed) ? $request->input('cover_position') : 'center';
-            $product->update(['cover_position' => $position]);
+            if ($request->has('cover_position')) {
+                $data['cover_position'] = in_array($request->input('cover_position'), $allowed) ? $request->input('cover_position') : 'center';
+            }
+            if ($request->has('cover_zoom')) {
+                $data['cover_zoom'] = max(1.0, min(3.0, (float)$request->input('cover_zoom')));
+            }
+            if (!empty($data)) {
+                $product->update($data);
+            }
             return new ProductDetailsAdminResource($product->fresh());
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function setCoverImage(Product $product, int $index): \Illuminate\Foundation\Application|\Illuminate\Http\Response|ProductDetailsAdminResource|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            return new ProductDetailsAdminResource($this->productService->setCoverImage($product, $index));
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
