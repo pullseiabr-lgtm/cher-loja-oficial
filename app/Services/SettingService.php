@@ -16,6 +16,12 @@ class SettingService
         $array = array_merge($array, Settings::group('otp')->all());
         $array = array_merge($array, Settings::group('social_media')->all());
         $array = array_merge($array, Settings::group('notification')->all());
-        return array_merge($array, Settings::group('cookies')->all());
+        $array = array_merge($array, Settings::group('cookies')->all());
+        $testimonials = Settings::group('testimonials')->all();
+        $array = array_merge($array, array_merge([
+            'testimonials_section_status'   => \App\Enums\Activity::DISABLE,
+            'testimonials_section_per_page' => 3,
+        ], $testimonials));
+        return $array;
     }
 }

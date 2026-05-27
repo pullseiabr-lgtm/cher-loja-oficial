@@ -13,6 +13,8 @@
 
     <ProductBrandComponent />
 
+    <TestimonialComponent />
+
     <BenefitComponent />
 </template>
 
@@ -26,6 +28,7 @@ import ProductSectionComponent from "./ProductSectionComponent.vue";
 import FlashSaleComponent from "./FlashSaleComponent.vue";
 import ProductBrandComponent from "./ProductBrandComponent.vue";
 import MostPopularComponent from "./MostPopularComponent.vue";
+import TestimonialComponent from "./TestimonialComponent.vue";
 
 export default {
     name: "HomeComponent",
@@ -37,7 +40,8 @@ export default {
         CategoryComponent,
         PromotionComponent,
         ProductSectionComponent,
-        ProductBrandComponent
+        ProductBrandComponent,
+        TestimonialComponent,
     }
 };
 </script>

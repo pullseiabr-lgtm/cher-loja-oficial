@@ -95,6 +95,8 @@ import { returnAndRefund } from "./modules/returnAndRefund";
 import { returnOrder } from "./modules/returnOrder";
 import { returnReason } from "./modules/returnReason";
 import { review } from "./modules/review";
+import { testimonial } from "./modules/testimonial";
+import { frontendTestimonial } from "./modules/frontend/frontendTestimonial";
 import { role } from "./modules/role";
 import { salesReport } from "./modules/salesReport";
 import { shippingSetup } from "./modules/shippingSetup";
@@ -229,6 +231,8 @@ export default new createStore({
         state,
         city,
         review,
+        testimonial,
+        frontendTestimonial,
     },
     plugins: [
         createPersistedState({

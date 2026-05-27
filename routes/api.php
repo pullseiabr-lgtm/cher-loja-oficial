@@ -99,8 +99,10 @@ use App\Http\Controllers\Frontend\ProductController as FrontendProductController
 use App\Http\Controllers\Frontend\ProductReviewController;
 use App\Http\Controllers\Admin\SiteMenuController;
 use App\Http\Controllers\Admin\SiteMenuItemController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CategorySectionController as FrontendCategorySectionController;
 use App\Http\Controllers\Frontend\SiteMenuController as FrontendSiteMenuController;
+use App\Http\Controllers\Frontend\TestimonialController as FrontendTestimonialController;
 use App\Http\Controllers\Frontend\ProductSectionController as FrontendProductSectionController;
 use App\Http\Controllers\Frontend\ProductSectionProductController as FrontendProductSectionProductController;
 use App\Http\Controllers\Frontend\ProductVariationController as FrontendProductVariationController;
@@ -621,6 +623,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::delete('/category/{categorySection}/{categorySectionCategory}', [CategorySectionCategoryController::class, 'destroy']);
     });
 
+    Route::prefix('testimonial')->name('testimonial.')->group(function () {
+        Route::get('/', [TestimonialController::class, 'index']);
+        Route::get('/show/{testimonial}', [TestimonialController::class, 'show']);
+        Route::post('/', [TestimonialController::class, 'store']);
+        Route::match(['post', 'put', 'patch'], '/{testimonial}', [TestimonialController::class, 'update']);
+        Route::delete('/{testimonial}', [TestimonialController::class, 'destroy']);
+        Route::get('/setting/config', [TestimonialController::class, 'setting']);
+        Route::match(['post', 'put', 'patch'], '/setting/config', [TestimonialController::class, 'updateSetting']);
+    });
+
     Route::prefix('site-menu')->name('site-menu.')->group(function () {
         Route::get('/', [SiteMenuController::class, 'index']);
         Route::post('/', [SiteMenuController::class, 'store']);
@@ -841,6 +853,11 @@ Route::prefix('frontend')->name('frontend.')->middleware(['installed', 'apiKey',
 
     Route::prefix('site-menu')->name('frontend.site-menu.')->group(function () {
         Route::get('/{location}', [FrontendSiteMenuController::class, 'byLocation']);
+    });
+
+    Route::prefix('testimonial')->name('frontend.testimonial.')->group(function () {
+        Route::get('/', [FrontendTestimonialController::class, 'index']);
+        Route::get('/setting', [FrontendTestimonialController::class, 'setting']);
     });
 
     Route::prefix('product-brand')->name('product-brand.')->group(function () {
