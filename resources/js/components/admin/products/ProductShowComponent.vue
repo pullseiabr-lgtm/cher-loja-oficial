@@ -236,28 +236,20 @@
                                     <i class="lab-fill-circle-plus text-xl sm:text-3xl"></i>
                                 </label>
 
-                                <!-- Each thumbnail with "Set as Cover" overlay -->
+                                <!-- Each thumbnail — only switches the preview -->
                                 <div v-for="(image, index) in product.images" :key="index"
-                                    class="relative w-full group/thumb cursor-pointer"
+                                    class="relative w-full cursor-pointer"
                                     @click.prevent="switchImage(image, index)">
                                     <img class="w-full h-16 sm:h-20 object-cover object-top rounded-2xl transition"
                                         :class="deleteIndex === index ? 'ring-2 ring-primary' : 'ring-1 ring-gray-200'"
                                         :src="image" alt="product" />
 
-                                    <!-- Cover star badge -->
+                                    <!-- Cover star badge (index 0 = current cover) -->
                                     <span v-if="index === 0"
                                         class="absolute top-1 left-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow"
-                                        title="Imagem de capa">
+                                        title="Imagem de capa atual">
                                         <i class="fa-solid fa-star text-white text-[9px]"></i>
                                     </span>
-
-                                    <!-- "Set as cover" button (appears on hover, hidden for index 0) -->
-                                    <button v-if="index !== 0" type="button"
-                                        @click.stop="setAsCover(index)"
-                                        class="absolute inset-0 w-full h-full rounded-2xl bg-black/50 opacity-0 group-hover/thumb:opacity-100 transition flex flex-col items-center justify-center gap-0.5 text-white text-[10px] font-semibold">
-                                        <i class="fa-solid fa-star text-yellow-300 text-sm"></i>
-                                        <span>Capa</span>
-                                    </button>
                                 </div>
                             </nav>
 
@@ -284,6 +276,21 @@
                                     <img :src="livePreview" alt="square preview"
                                         class="w-full h-full object-cover transition-all duration-200"
                                         :style="{ objectPosition: coverPosition, transform: `scale(${coverZoom})`, transformOrigin: coverPosition }" />
+                                </div>
+
+                                <!-- Cover action: shown below the square preview -->
+                                <div class="mt-1">
+                                    <span v-if="deleteIndex === 0"
+                                        class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                        Imagem de capa atual
+                                    </span>
+                                    <button v-else type="button"
+                                        @click.prevent="setAsCover(deleteIndex)"
+                                        class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-yellow-400 text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition">
+                                        <i class="fa-solid fa-star text-yellow-400"></i>
+                                        Definir como Capa
+                                    </button>
                                 </div>
                             </div>
 
