@@ -363,7 +363,7 @@ export default {
                 image: null,
             };
             this.$store.dispatch('testimonial/reset');
-            appService.sideDrawerShow();
+            useCanvas().openCanvas('sidebar');
         },
 
         openEditDrawer(item) {
@@ -379,7 +379,7 @@ export default {
                 image: null,
             };
             this.$store.dispatch('testimonial/edit', item.id);
-            appService.sideDrawerShow();
+            useCanvas().openCanvas('sidebar');
         },
 
         resetDrawer() {
