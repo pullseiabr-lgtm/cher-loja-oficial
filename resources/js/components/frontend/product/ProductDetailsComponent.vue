@@ -7,23 +7,56 @@
                     <CategoryBreadcrumbComponent :categories="categories" />
                 </div>
 
+                <!-- Galeria com miniaturas na esquerda -->
                 <div v-if="images.length" class="col-12 sm:col-6 lg:col-5">
-                    <Swiper dir="ltr" :spaceBetween="10" :navigation="true" :thumbs="{ swiper: thumbsSwiper }"
-                        :modules="modules" class="gallery-swiper">
-                        <SwiperSlide v-for="(image, index) in images" :key="index" class="w-full">
-                            <inner-image-zoom :src="image" :zoomSrc="image" :zoomScale='1' zoomType="hover"
-                                :hideHint='true' />
-                        </SwiperSlide>
-                    </Swiper>
+                    <div class="flex gap-3 items-start">
 
-                    <Swiper dir="ltr" @swiper="setThumbsSwiper" :spaceBetween="12" :slidesPerView="4" :freeMode="true"
-                        :watchSlidesProgress="true" :modules="modules" class="thumb-swiper">
-                        <SwiperSlide v-for="(image, index) in images" :key="index"
-                            class="w-full cursor-pointer rounded-lg border border-gray-200 transition-all duration-500">
-                            <img class="w-full rounded-lg border-2 border-gray-200 transition-all duration-500"
-                                :src="image" alt="gallery" />
-                        </SwiperSlide>
-                    </Swiper>
+                        <!-- Miniaturas verticais à esquerda -->
+                        <div class="relative flex-shrink-0 w-[76px]">
+                            <!-- Seta cima (só aparece se > 5 imagens) -->
+                            <button v-if="images.length > 5"
+                                class="thumb-nav-btn thumb-nav-prev w-full flex justify-center items-center py-1 mb-1 rounded-lg bg-gray-100 hover:bg-primary hover:text-white transition text-gray-500">
+                                <i class="lab-line-up-arrow text-sm"></i>
+                            </button>
+
+                            <Swiper
+                                @swiper="setThumbsSwiper"
+                                direction="vertical"
+                                :slidesPerView="5"
+                                :spaceBetween="8"
+                                :freeMode="true"
+                                :watchSlidesProgress="true"
+                                :navigation="images.length > 5 ? { prevEl: '.thumb-nav-prev', nextEl: '.thumb-nav-next' } : false"
+                                :modules="modules"
+                                class="thumb-swiper-vertical"
+                                style="height: 380px;">
+                                <SwiperSlide v-for="(image, index) in images" :key="index"
+                                    class="cursor-pointer rounded-lg overflow-hidden border-2 border-gray-200 hover:border-primary transition-all duration-300"
+                                    style="height: 68px !important;">
+                                    <img class="w-full h-full object-cover"
+                                        :src="image" alt="thumb" />
+                                </SwiperSlide>
+                            </Swiper>
+
+                            <!-- Seta baixo -->
+                            <button v-if="images.length > 5"
+                                class="thumb-nav-btn thumb-nav-next w-full flex justify-center items-center py-1 mt-1 rounded-lg bg-gray-100 hover:bg-primary hover:text-white transition text-gray-500">
+                                <i class="lab-line-down-arrow text-sm"></i>
+                            </button>
+                        </div>
+
+                        <!-- Imagem principal -->
+                        <div class="flex-1 min-w-0">
+                            <Swiper dir="ltr" :spaceBetween="10" :navigation="false"
+                                :thumbs="{ swiper: thumbsSwiper }"
+                                :modules="modules" class="gallery-swiper rounded-2xl overflow-hidden">
+                                <SwiperSlide v-for="(image, index) in images" :key="index" class="w-full">
+                                    <inner-image-zoom :src="image" :zoomSrc="image" :zoomScale='1' zoomType="hover"
+                                        :hideHint='true' />
+                                </SwiperSlide>
+                            </Swiper>
+                        </div>
+                    </div>
                 </div>
 
                 <div v-else class="col-12 sm:col-6 lg:col-5">
@@ -680,3 +713,39 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+/* Swiper vertical de miniaturas */
+.thumb-swiper-vertical {
+    width: 76px;
+}
+
+.thumb-swiper-vertical .swiper-slide {
+    height: 68px !important;
+    width: 76px !important;
+    border-radius: 8px;
+    overflow: hidden;
+    opacity: 0.65;
+    transition: opacity 0.2s, border-color 0.2s;
+}
+
+.thumb-swiper-vertical .swiper-slide-thumb-active {
+    opacity: 1;
+    border-color: var(--color-primary, #00b398) !important;
+    border-width: 2px !important;
+}
+
+/* Esconder setas nativas do Swiper na galeria principal */
+.gallery-swiper :deep(.swiper-button-next),
+.gallery-swiper :deep(.swiper-button-prev) {
+    display: none;
+}
+
+/* Botão de nav das miniaturas */
+.thumb-nav-btn {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    line-height: 1;
+}
+</style>
