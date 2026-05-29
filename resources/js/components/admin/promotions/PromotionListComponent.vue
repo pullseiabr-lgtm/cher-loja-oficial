@@ -69,6 +69,7 @@
                 <table class="db-table stripe" id="print">
                     <thead class="db-table-head">
                         <tr class="db-table-head-tr">
+                            <th class="db-table-head-th hidden-print">{{ $t("label.image") }}</th>
                             <th class="db-table-head-th">{{ $t("label.name") }}</th>
                             <th class="db-table-head-th">{{ $t("label.type") }}</th>
                             <th class="db-table-head-th">{{ $t("label.status") }}</th>
@@ -80,6 +81,11 @@
                     </thead>
                     <tbody class="db-table-body" v-if="promotions.length > 0">
                         <tr class="db-table-body-tr" v-for="promotion in promotions" :key="promotion">
+                            <td class="db-table-body-td hidden-print">
+                                <img v-if="promotion.cover" :src="promotion.cover" alt="promotion"
+                                    class="w-14 h-14 object-cover rounded-lg border border-gray-200" />
+                                <span v-else class="w-14 h-14 flex items-center justify-center rounded-lg bg-gray-100 text-gray-400 text-xs">—</span>
+                            </td>
                             <td class="db-table-body-td">
                                 <div v-if="promotion.name.length < 40">{{ promotion.name }}</div>
                                 <div v-else>{{ promotion.name.substring(0, 40) + ".." }}</div>
@@ -105,7 +111,7 @@
                     </tbody>
                     <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="4">
+                            <td class="db-table-body-td text-center" colspan="5">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL+'/images/default/not-found/not_found.png'" alt="Not Found">
