@@ -29,10 +29,25 @@ class Mercadopago extends PaymentAbstract
         $this->paymentGateway = PaymentGateway::with('gatewayOptions')->where(['slug' => 'mercadopago'])->first();
         if (!blank($this->paymentGateway)) {
             $this->paymentGatewayOption = $this->paymentGateway->gatewayOptions->pluck('value', 'option');
-            // Mercado Pago Brazil uses Access Token (not deprecated client_id/secret OAuth2)
-            $accessToken = $this->paymentGatewayOption['mercadopago_access_token']
-                ?? $this->paymentGatewayOption['mercadopago_client_id']
-                ?? null;
+
+            // Resolve Access Token: try dedicated field first, then detect by prefix in other fields
+            $accessToken = $this->paymentGatewayOption['mercadopago_access_token'] ?? null;
+
+            if (blank($accessToken)) {
+                // Access Token always starts with APP_USR- (production) or TEST- (sandbox)
+                foreach ($this->paymentGatewayOption as $value) {
+                    if (str_starts_with((string)$value, 'APP_USR-') || str_starts_with((string)$value, 'TEST-')) {
+                        $accessToken = $value;
+                        break;
+                    }
+                }
+            }
+
+            // Last resort: use client_id (legacy OAuth2 flow)
+            if (blank($accessToken)) {
+                $accessToken = $this->paymentGatewayOption['mercadopago_client_id'] ?? null;
+            }
+
             $this->gateway = new MP($accessToken);
         }
     }
