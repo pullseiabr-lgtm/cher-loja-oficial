@@ -44,3 +44,7 @@ docker-compose.yml
 run_seeder.php
 check_counts.php
 *.bak
+
+# Large seeder assets
+public/images/seeder.zip
+*.zip
