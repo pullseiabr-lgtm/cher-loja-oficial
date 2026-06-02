@@ -266,6 +266,10 @@ class PaymentGatewayDataTableSeeder extends Seeder
             "status"  => Activity::ENABLE,
             "options" => [
                 [
+                    "option" => 'mercadopago_access_token',
+                    "value"  => 'YOUR_MERCADOPAGO_ACCESS_TOKEN',
+                ],
+                [
                     "option" => 'mercadopago_client_id',
                     "value"  => 'YOUR_MERCADOPAGO_CLIENT_ID',
                 ],

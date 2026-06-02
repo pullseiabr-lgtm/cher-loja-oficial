@@ -434,6 +434,11 @@ class PaymentGatewayTableSeeder extends Seeder
             "status"  => Activity::DISABLE,
             "options" => [
                 [
+                    "option"     => 'mercadopago_access_token',
+                    "type"       => InputType::TEXT,
+                    "activities" => ''
+                ],
+                [
                     "option"     => 'mercadopago_client_id',
                     "type"       => InputType::TEXT,
                     "activities" => ''

@@ -29,7 +29,11 @@ class Mercadopago extends PaymentAbstract
         $this->paymentGateway = PaymentGateway::with('gatewayOptions')->where(['slug' => 'mercadopago'])->first();
         if (!blank($this->paymentGateway)) {
             $this->paymentGatewayOption = $this->paymentGateway->gatewayOptions->pluck('value', 'option');
-            $this->gateway = new MP($this->paymentGatewayOption['mercadopago_client_id'], $this->paymentGatewayOption['mercadopago_client_secret']);
+            // Mercado Pago Brazil uses Access Token (not deprecated client_id/secret OAuth2)
+            $accessToken = $this->paymentGatewayOption['mercadopago_access_token']
+                ?? $this->paymentGatewayOption['mercadopago_client_id']
+                ?? null;
+            $this->gateway = new MP($accessToken);
         }
     }
 
