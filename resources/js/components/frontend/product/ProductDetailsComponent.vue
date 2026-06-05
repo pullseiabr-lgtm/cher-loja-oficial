@@ -143,12 +143,18 @@
                         </dd>
                     </dl>
 
-                    <div class="flex flex-wrap items-center gap-8 mb-10">
+                    <div class="flex flex-wrap items-center gap-4 mb-10">
                         <button @click.prevent="addToCart" :disabled="enableAddToCardButton" type="button"
                             :class="enableAddToCardButton === false ? 'shadow-btn-primary !bg-primary' : ''"
                             class="flex items-center gap-3 px-8 h-12 leading-12 rounded-full transition-all duration-500 bg-slate-400 text-white">
                             <i class="lab-line-bag text-xl"></i>
                             <span class="whitespace-nowrap font-bold">{{ $t("button.add_to_cart") }}</span>
+                        </button>
+                        <button @click.prevent="buyNow" :disabled="enableAddToCardButton" type="button"
+                            :class="enableAddToCardButton === false ? '' : 'opacity-50 cursor-not-allowed'"
+                            class="flex items-center gap-3 px-8 h-12 leading-12 rounded-full transition-all duration-500 bg-secondary text-white font-bold shadow-btn-secondary">
+                            <i class="lab-line-arrow-right text-xl"></i>
+                            <span class="whitespace-nowrap font-bold">{{ $t("button.buy_now") }}</span>
                         </button>
                         <button type="button" @click="wishlist(product.wishlist = !product.wishlist)"
                             :class="product.wishlist ? 'text-primary' : 'text-secondary'"
@@ -625,6 +631,78 @@ export default {
         },
         totalPriceSetup: function () {
             this.temp.totalPrice = (this.temp.price * this.temp.quantity);
+        },
+        buildProductArray: function () {
+            return {
+                name: this.temp.name,
+                product_id: this.temp.productId,
+                image: this.temp.image,
+                variation_names: '',
+                variation_id: this.temp.variationId,
+                sku: this.temp.sku,
+                stock: this.temp.stock,
+                taxes: this.temp.taxes,
+                shipping: this.temp.shipping,
+                quantity: this.temp.quantity,
+                discount: this.temp.discount,
+                price: this.temp.price,
+                old_price: this.temp.oldPrice,
+                total_price: this.temp.totalPrice,
+                maximum_purchase_quantity: this.temp.maximum_purchase_quantity
+            };
+        },
+        resetTemp: function () {
+            this.productArray = {};
+            this.selectedVariation = null;
+            this.temp.isVariation = this.initProduct.isVariation;
+            this.temp.variationId = this.initProduct.variationId;
+            this.temp.sku = this.initProduct.sku;
+            this.temp.stock = this.initProduct.stock;
+            this.temp.quantity = this.initProduct.quantity;
+            this.temp.discount = this.initProduct.discount;
+            this.temp.price = this.initProduct.price;
+            this.temp.oldPrice = this.initProduct.oldPrice;
+            this.temp.totalPrice = this.initProduct.price;
+            this.temp.maximum_purchase_quantity = this.initProduct.maximum_purchase_quantity;
+        },
+        buyNow: function () {
+            if (+this.temp.quantity < 1 || this.enableAddToCardButton) return false;
+
+            this.enableAddToCardButton = true;
+            this.productArray = this.buildProductArray();
+
+            const goToCheckout = () => {
+                this.resetTemp();
+                router.push({ name: 'frontend.checkout.checkout' });
+            };
+
+            if (this.selectedVariation) {
+                this.$store.dispatch("frontendProductVariation/ancestorsToString", this.selectedVariation.id).then((res) => {
+                    this.productArray.variation_names = res.data.data;
+                    this.variationComponent = false;
+                    this.$store.dispatch("frontendCart/lists", this.productArray).then(() => {
+                        this.variationComponent = true;
+                        goToCheckout();
+                    }).catch(() => {
+                        alertService.error(this.$t('message.maximum_quantity'));
+                        this.variationComponent = true;
+                        this.selectedVariation = null;
+                        this.temp.stock = this.initProduct.stock;
+                        this.temp.quantity = this.initProduct.quantity;
+                        this.enableAddToCardButton = false;
+                    });
+                }).catch(() => {});
+            } else {
+                this.$store.dispatch("frontendCart/lists", this.productArray).then(() => {
+                    goToCheckout();
+                }).catch(() => {
+                    alertService.error(this.$t('message.maximum_quantity'));
+                    this.enableAddToCardButton = false;
+                    this.selectedVariation = null;
+                    this.temp.stock = this.initProduct.stock;
+                    this.temp.quantity = this.initProduct.quantity;
+                });
+            }
         },
         addToCart: function () {
 
