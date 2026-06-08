@@ -146,7 +146,7 @@
                     <div class="flex flex-wrap items-center gap-4 mb-10">
                         <button @click.prevent="addToCart" :disabled="enableAddToCardButton" type="button"
                             :class="enableAddToCardButton ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'"
-                            class="flex items-center gap-3 px-8 h-12 leading-none rounded-full transition-all duration-300 bg-primary text-white">
+                            class="flex items-center gap-3 px-8 h-12 leading-none rounded-full transition-all duration-300 bg-[#00b398] text-white">
                             <i class="lab-line-bag text-xl"></i>
                             <span class="whitespace-nowrap font-bold">{{ $t("button.add_to_cart") }}</span>
                         </button>
