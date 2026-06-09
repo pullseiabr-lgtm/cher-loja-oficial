@@ -147,13 +147,33 @@ export default {
                         if(this.setting.site_cash_on_delivery === this.ActivityEnum.ENABLE){
                             this.selectPaymentMethod(this.cashOnDelivery);
                         }
-
                     } else {
                         this.paymentGateways.push(gateway);
                     }
                 });
             }
-            this.loading.isActive = false;
+
+            // Auto-proceed when only 1 payment option is visible
+            this.$nextTick(() => {
+                const visibleOptions = [];
+
+                if (Object.keys(this.cashOnDelivery).length > 0 && this.setting.site_cash_on_delivery === this.ActivityEnum.ENABLE) {
+                    visibleOptions.push(this.cashOnDelivery);
+                }
+                if (Object.keys(this.credit).length > 0 && this.profile.balance >= this.total) {
+                    visibleOptions.push(this.credit);
+                }
+                if (this.setting.site_online_payment_gateway === this.ActivityEnum.ENABLE) {
+                    this.paymentGateways.forEach(gw => visibleOptions.push(gw));
+                }
+
+                if (visibleOptions.length === 1) {
+                    this.selectPaymentMethod(visibleOptions[0]);
+                    this.$nextTick(() => this.confirmOrder());
+                } else {
+                    this.loading.isActive = false;
+                }
+            });
         }).catch((err) => {
             this.loading.isActive = false;
         });
@@ -163,7 +183,7 @@ export default {
             this.$store.dispatch("frontendCart/paymentMethod", paymentMethod);
         },
         confirmOrder: function (e) {
-            e.target.disabled = true;
+            if (e && e.target) e.target.disabled = true;
             this.form = {
                 subtotal: this.subtotal,
                 discount: this.discount,
