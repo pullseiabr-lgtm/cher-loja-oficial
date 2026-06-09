@@ -26,13 +26,15 @@ class Mercadopago extends FormRequest
     {
         if (request()->mercadopago_status == Activity::ENABLE) {
             return [
-                'mercadopago_client_id'     => ['required', 'string'],
-                'mercadopago_client_secret' => ['required', 'string'],
+                'mercadopago_access_token'  => ['nullable', 'string'],
+                'mercadopago_client_id'     => ['nullable', 'string'],
+                'mercadopago_client_secret' => ['nullable', 'string'],
                 'mercadopago_mode'          => ['required', 'string'],
                 'mercadopago_status'        => ['nullable', 'numeric'],
             ];
         } else {
             return [
+                'mercadopago_access_token'  => ['nullable', 'string'],
                 'mercadopago_client_id'     => ['nullable', 'string'],
                 'mercadopago_client_secret' => ['nullable', 'string'],
                 'mercadopago_mode'          => ['nullable', 'string'],
