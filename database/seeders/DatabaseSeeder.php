@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PaymentGatewayDataTableSeeder::class);
         $this->call(ReturnReasonTableSeeder::class);
         $this->call(MailTableSeeder::class);
+        $this->call(EmailTemplateSeeder::class);
         $this->call(SliderTableSeeder::class);
         $this->call(ProductBrandTableSeeder::class);
         $this->call(ProductCategoryTableSeeder::class);

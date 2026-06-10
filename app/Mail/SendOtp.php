@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\EmailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -10,21 +11,24 @@ class SendOtp extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-
     public $pin;
+    public $body;
+    public $appName;
+
     public function __construct($pin)
     {
         $this->pin = $pin;
     }
 
-
     public function build()
     {
-        return $this->subject("Reset Password")->markdown('emails.password');
+        $template   = EmailTemplate::where('key', 'reset_password')->first();
+        $subject    = $template?->subject ?? 'Redefinição de Senha';
+        $this->body = $template
+            ? $template->render(['pin' => $this->pin])
+            : "<p>Seu código é: <strong>{$this->pin}</strong></p>";
+        $this->appName = config('app.name');
+
+        return $this->subject($subject)->markdown('emails.generic');
     }
 }

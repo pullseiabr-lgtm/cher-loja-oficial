@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\EmployeeAddressController;
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LicenseController;
+use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\MenuSectionController;
 use App\Http\Controllers\Admin\MenuTemplateController;
@@ -236,6 +237,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::prefix('mail')->name('mail.')->group(function () {
             Route::get('/', [MailController::class, 'index']);
             Route::match(['put', 'patch'], '/', [MailController::class, 'update']);
+        });
+
+        Route::prefix('email-template')->name('email-template.')->group(function () {
+            Route::get('/', [EmailTemplateController::class, 'index']);
+            Route::get('/{emailTemplate}', [EmailTemplateController::class, 'show']);
+            Route::match(['put', 'patch'], '/{emailTemplate}', [EmailTemplateController::class, 'update']);
         });
 
         Route::prefix('shipping-setup')->name('shipping-setup.')->group(function () {

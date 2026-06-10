@@ -53,6 +53,7 @@ import { frontendWishlist } from "./modules/frontend/frontendWishlist";
 import { globalState } from "./modules/frontend/globalState";
 import { language } from "./modules/language";
 import { license } from "./modules/license";
+import { emailTemplate } from "./modules/emailTemplate";
 import { mail } from "./modules/mail";
 import { menuSection } from "./modules/menuSection";
 import { menuTemplate } from "./modules/menuTemplate";
@@ -123,6 +124,7 @@ export default new createStore({
         auth,
         company,
         countryCode,
+        emailTemplate,
         mail,
         otp,
         notification,
