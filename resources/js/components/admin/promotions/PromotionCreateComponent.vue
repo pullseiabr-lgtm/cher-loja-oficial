@@ -73,7 +73,16 @@
                         </div>
                     </div>
 
-                    <div class="form-col-12 sm:form-col-6">
+                    <div class="form-col-12">
+                        <label class="db-field-title">Seção de Promoções</label>
+                        <vue-select class="db-field-control f-b-custom-select"
+                            v-model="props.form.section_id"
+                            :options="sections" label-by="name" value-by="id"
+                            :closeOnSelect="true" :searchable="true" :clearOnClose="true"
+                            placeholder="Nenhuma (adicionar depois)" search-placeholder="Buscar..." />
+                    </div>
+
+                    <div class="form-col-12">
                         <label class="db-field-title">Tipo de Link da Imagem</label>
                         <div class="db-field-radio-group">
                             <div class="db-field-radio">
@@ -103,18 +112,18 @@
                         </div>
                     </div>
 
-                    <div class="form-col-12 sm:form-col-6" v-if="props.form.link_type === 'category'">
-                        <label for="linkCategory" class="db-field-title">Categoria</label>
-                        <vue-select class="db-field-control f-b-custom-select" id="linkCategorySelect"
+                    <div class="form-col-12" v-if="props.form.link_type === 'category'">
+                        <label class="db-field-title">Categoria</label>
+                        <vue-select class="db-field-control f-b-custom-select"
                             v-bind:class="errors.link_url ? 'invalid' : ''"
                             v-model="props.form.link_url"
                             :options="categories" label-by="name" value-by="slug"
                             :closeOnSelect="true" :searchable="true" :clearOnClose="true"
-                            placeholder="Selecione..." search-placeholder="Buscar..." />
+                            placeholder="Selecione a categoria..." search-placeholder="Buscar..." />
                         <small class="db-field-alert" v-if="errors.link_url">{{ errors.link_url[0] }}</small>
                     </div>
 
-                    <div class="form-col-12 sm:form-col-6" v-if="props.form.link_type === 'custom'">
+                    <div class="form-col-12" v-if="props.form.link_type === 'custom'">
                         <label for="link_url" class="db-field-title">URL do Link</label>
                         <input v-model="props.form.link_url" v-bind:class="errors.link_url ? 'invalid' : ''"
                             type="text" id="link_url" class="db-field-control"
@@ -191,14 +200,21 @@ export default {
         categories: function () {
             return this.$store.getters['productCategory/lists'];
         },
+        sections: function () {
+            return this.$store.getters['promotionSection/lists'];
+        },
     },
     mounted() {
         this.$store.dispatch('productCategory/lists', {
             paginate: 0,
             order_column: 'name',
             order_type: 'asc',
-            parent_id: null,
             status: statusEnum.ACTIVE,
+        });
+        this.$store.dispatch('promotionSection/lists', {
+            paginate: 0,
+            order_column: 'name',
+            order_type: 'asc',
         });
     },
     methods: {
@@ -217,6 +233,7 @@ export default {
                 type: promotionTypeEnum.SMALL,
                 link_type: null,
                 link_url: null,
+                section_id: null,
                 status: statusEnum.ACTIVE,
             };
             if (this.image) {
@@ -248,22 +265,32 @@ export default {
                         search: this.props.search,
                     })
                     .then((res) => {
-                        useCanvas().closeCanvas('sidebar');
-                        this.loading.isActive = false;
-                        alertService.successFlip(
-                            tempId === null ? 0 : 1,
-                            this.$t("menu.promotions")
-                        );
-                        this.props.form = {
-                            name: "",
-                            type: promotionTypeEnum.SMALL,
-                            link_type: null,
-                            link_url: null,
-                            status: statusEnum.ACTIVE,
+                        const sectionId = this.props.form.section_id;
+                        const savedId = res.data.data?.id;
+                        const afterSave = () => {
+                            useCanvas().closeCanvas('sidebar');
+                            this.loading.isActive = false;
+                            alertService.successFlip(tempId === null ? 0 : 1, this.$t("menu.promotions"));
+                            this.props.form = {
+                                name: "",
+                                type: promotionTypeEnum.SMALL,
+                                link_type: null,
+                                link_url: null,
+                                section_id: null,
+                                status: statusEnum.ACTIVE,
+                            };
+                            this.image = "";
+                            this.errors = {};
+                            this.$refs.imageProperty.value = null;
                         };
-                        this.image = "";
-                        this.errors = {};
-                        this.$refs.imageProperty.value = null;
+                        if (sectionId && savedId && tempId === null) {
+                            this.$store.dispatch('promotionSectionPromotion/save', {
+                                id: sectionId,
+                                form: { promotion_id: savedId },
+                            }).then(afterSave).catch(afterSave);
+                        } else {
+                            afterSave();
+                        }
                     })
                     .catch((err) => {
                         this.loading.isActive = false;

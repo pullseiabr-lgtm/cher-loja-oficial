@@ -211,6 +211,7 @@ export default {
                     type: promotionTypeEnum.SMALL,
                     link_type: null,
                     link_url: null,
+                    section_id: null,
                     status: statusEnum.ACTIVE,
                 },
                 search: {
