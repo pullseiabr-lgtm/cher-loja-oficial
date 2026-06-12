@@ -90,6 +90,8 @@ import { productVariation } from "./modules/productVariation";
 import { productVideo } from "./modules/productVideo";
 import { promotion } from "./modules/promotion";
 import { promotionProduct } from "./modules/promotionProduct";
+import { promotionSection } from "./modules/promotionSection";
+import { promotionSectionPromotion } from "./modules/promotionSectionPromotion";
 import { purchase } from "./modules/purchase";
 import { pushNotification } from "./modules/pushNotification";
 import { returnAndRefund } from "./modules/returnAndRefund";
@@ -172,6 +174,8 @@ export default new createStore({
         productSeo,
         promotion,
         promotionProduct,
+        promotionSection,
+        promotionSectionPromotion,
         categorySection,
         categorySectionCategory,
         siteMenu,

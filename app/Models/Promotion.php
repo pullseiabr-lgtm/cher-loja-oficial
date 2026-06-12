@@ -17,7 +17,7 @@ class Promotion extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $table = "promotions";
-    protected $fillable = ['name', 'slug', 'type', 'status'];
+    protected $fillable = ['name', 'slug', 'type', 'link_type', 'link_url', 'status'];
     protected $casts = [
         'id'     => 'integer',
         'name'   => 'string',

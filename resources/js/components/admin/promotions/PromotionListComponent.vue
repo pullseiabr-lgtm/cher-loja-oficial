@@ -205,6 +205,8 @@ export default {
                 form: {
                     name: "",
                     type: promotionTypeEnum.SMALL,
+                    link_type: null,
+                    link_url: null,
                     status: statusEnum.ACTIVE,
                 },
                 search: {
@@ -282,6 +284,8 @@ export default {
                     this.props.form = {
                         name: promotion.name,
                         type: promotion.type,
+                        link_type: promotion.link_type || null,
+                        link_url: promotion.link_url || null,
                         status: promotion.status,
                     };
                 })

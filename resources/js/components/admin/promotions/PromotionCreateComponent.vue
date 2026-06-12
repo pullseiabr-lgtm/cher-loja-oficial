@@ -73,6 +73,55 @@
                         </div>
                     </div>
 
+                    <div class="form-col-12 sm:form-col-6">
+                        <label class="db-field-title">Tipo de Link da Imagem</label>
+                        <div class="db-field-radio-group">
+                            <div class="db-field-radio">
+                                <div class="custom-radio">
+                                    <input type="radio" v-model="props.form.link_type" id="linkNone"
+                                        :value="null" class="custom-radio-field" />
+                                    <span class="custom-radio-span"></span>
+                                </div>
+                                <label for="linkNone" class="db-field-label">Nenhum</label>
+                            </div>
+                            <div class="db-field-radio">
+                                <div class="custom-radio">
+                                    <input type="radio" v-model="props.form.link_type" id="linkCategory"
+                                        value="category" class="custom-radio-field" />
+                                    <span class="custom-radio-span"></span>
+                                </div>
+                                <label for="linkCategory" class="db-field-label">Categoria</label>
+                            </div>
+                            <div class="db-field-radio">
+                                <div class="custom-radio">
+                                    <input type="radio" v-model="props.form.link_type" id="linkCustom"
+                                        value="custom" class="custom-radio-field" />
+                                    <span class="custom-radio-span"></span>
+                                </div>
+                                <label for="linkCustom" class="db-field-label">Link personalizado</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-col-12 sm:form-col-6" v-if="props.form.link_type === 'category'">
+                        <label for="linkCategory" class="db-field-title">Categoria</label>
+                        <vue-select class="db-field-control f-b-custom-select" id="linkCategorySelect"
+                            v-bind:class="errors.link_url ? 'invalid' : ''"
+                            v-model="props.form.link_url"
+                            :options="categories" label-by="name" value-by="slug"
+                            :closeOnSelect="true" :searchable="true" :clearOnClose="true"
+                            placeholder="Selecione..." search-placeholder="Buscar..." />
+                        <small class="db-field-alert" v-if="errors.link_url">{{ errors.link_url[0] }}</small>
+                    </div>
+
+                    <div class="form-col-12 sm:form-col-6" v-if="props.form.link_type === 'custom'">
+                        <label for="link_url" class="db-field-title">URL do Link</label>
+                        <input v-model="props.form.link_url" v-bind:class="errors.link_url ? 'invalid' : ''"
+                            type="text" id="link_url" class="db-field-control"
+                            placeholder="https://..." />
+                        <small class="db-field-alert" v-if="errors.link_url">{{ errors.link_url[0] }}</small>
+                    </div>
+
                     <div class="form-col-12 sm:form-col-12">
                         <label class="db-field-title required">{{ $t("label.image") }} (540px,336px)</label>
                         <input @change="changeImage" v-bind:class="errors.image ? 'invalid' : ''" id="image" type="file"
@@ -138,7 +187,19 @@ export default {
     computed: {
         addButton: function () {
             return { title: this.$t("button.add_promotion") }
-        }
+        },
+        categories: function () {
+            return this.$store.getters['productCategory/lists'];
+        },
+    },
+    mounted() {
+        this.$store.dispatch('productCategory/lists', {
+            paginate: 0,
+            order_column: 'name',
+            order_type: 'asc',
+            parent_id: null,
+            status: statusEnum.ACTIVE,
+        });
     },
     methods: {
         floatNumber(e) {
@@ -154,6 +215,8 @@ export default {
             this.$props.props.form = {
                 name: "",
                 type: promotionTypeEnum.SMALL,
+                link_type: null,
+                link_url: null,
                 status: statusEnum.ACTIVE,
             };
             if (this.image) {
@@ -168,6 +231,12 @@ export default {
                 fd.append("name", this.props.form.name);
                 fd.append("type", this.props.form.type);
                 fd.append("status", this.props.form.status);
+                if (this.props.form.link_type) {
+                    fd.append("link_type", this.props.form.link_type);
+                    if (this.props.form.link_url) {
+                        fd.append("link_url", this.props.form.link_url);
+                    }
+                }
                 if (this.image) {
                     fd.append("image", this.image);
                 }
@@ -188,6 +257,8 @@ export default {
                         this.props.form = {
                             name: "",
                             type: promotionTypeEnum.SMALL,
+                            link_type: null,
+                            link_url: null,
                             status: statusEnum.ACTIVE,
                         };
                         this.image = "";

@@ -32,9 +32,11 @@ class PromotionRequest extends FormRequest
                 'max:190',
                 Rule::unique("promotions", "name")->ignore($this->route('promotion.id'))
             ],
-            'type'     => ['required', 'numeric', 'max:24'],
-            'status'     => ['required', 'numeric', 'max:24'],
-            'image'      => $this->route('promotion.id') ? ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'] : ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'type'      => ['required', 'numeric', 'max:24'],
+            'link_type' => ['nullable', 'string', 'in:category,custom'],
+            'link_url'  => ['nullable', 'string', 'max:500'],
+            'status'    => ['required', 'numeric', 'max:24'],
+            'image'     => $this->route('promotion.id') ? ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'] : ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ];
     }
 }

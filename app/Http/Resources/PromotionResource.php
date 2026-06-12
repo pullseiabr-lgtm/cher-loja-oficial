@@ -17,13 +17,15 @@ class PromotionResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id'      => $this->id,
-            'name'    => $this->name,
-            "slug"    => $this->slug,
-            "type"    => $this->type,
-            'status'  => $this->status,
-            'cover'   => $this->cover,
-            'preview' => $this->preview
+            'id'        => $this->id,
+            'name'      => $this->name,
+            "slug"      => $this->slug,
+            "type"      => $this->type,
+            'link_type' => $this->link_type,
+            'link_url'  => $this->link_url,
+            'status'    => $this->status,
+            'cover'     => $this->cover,
+            'preview'   => $this->preview
         ];
     }
 }

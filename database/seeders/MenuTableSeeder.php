@@ -180,6 +180,17 @@ class MenuTableSeeder extends Seeder
 
                     ],
                     [
+                        'name'       => 'Seções de Promoções',
+                        'language'   => 'promotion_sections',
+                        'url'        => 'promotion-sections',
+                        'icon'       => 'lab lab-line-promotion',
+                        'priority'   => 100,
+                        'status'     => 1,
+                        'created_at' => now(),
+                        'updated_at' => now()
+
+                    ],
+                    [
                         'name'       => 'Seções do Site',
                         'language'   => 'site_sections',
                         'url'        => 'settings/site-sections',

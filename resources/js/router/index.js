@@ -23,6 +23,7 @@ import productsReportRoutes from "./modules/productsReportRoutes";
 import productsRoutes from "./modules/productsRoutes";
 import profileRoutes from "./modules/profileRoutes";
 import PromotionRoutes from "./modules/PromotionRoutes";
+import PromotionSectionRoutes from "./modules/PromotionSectionRoutes";
 import purchaseRoutes from "./modules/purchaseRoutes";
 import pushNotificationRoutes from "./modules/pushNotificationRoutes";
 import returnAndRefundRoutes from "./modules/returnAndRefundRoutes";
@@ -82,6 +83,7 @@ const routes = baseRoutes.concat(
     productsRoutes,
     couponRoutes,
     PromotionRoutes,
+    PromotionSectionRoutes,
     CategorySectionRoutes,
     ProductSectionRoutes,
     SiteMenuRoutes,
