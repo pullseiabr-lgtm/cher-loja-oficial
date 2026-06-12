@@ -1,0 +1,30 @@
+import axios from 'axios'
+
+export const frontendPromotionSection = {
+    namespaced: true,
+    state: {
+        sections: [],
+    },
+    getters: {
+        sections: function (state) {
+            return state.sections;
+        },
+    },
+    actions: {
+        sections: function (context) {
+            return new Promise((resolve, reject) => {
+                axios.get('frontend/promotion-section/sections').then((res) => {
+                    context.commit('sections', res.data.data);
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
+    },
+    mutations: {
+        sections: function (state, payload) {
+            state.sections = payload;
+        },
+    },
+}

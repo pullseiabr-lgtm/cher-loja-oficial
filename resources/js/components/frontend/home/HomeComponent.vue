@@ -3,7 +3,7 @@
 
     <CategoryComponent />
 
-    <PromotionComponent />
+    <PromotionSectionComponent />
 
     <ProductSectionComponent />
 
@@ -22,7 +22,7 @@
 
 import SliderComponent from "./SliderComponent.vue";
 import CategoryComponent from "./CategoryComponent.vue";
-import PromotionComponent from "./PromotionComponent.vue";
+import PromotionSectionComponent from "./PromotionSectionComponent.vue";
 import BenefitComponent from "./BenefitComponent.vue";
 import ProductSectionComponent from "./ProductSectionComponent.vue";
 import FlashSaleComponent from "./FlashSaleComponent.vue";
@@ -38,7 +38,7 @@ export default {
         BenefitComponent,
         SliderComponent,
         CategoryComponent,
-        PromotionComponent,
+        PromotionSectionComponent,
         ProductSectionComponent,
         ProductBrandComponent,
         TestimonialComponent,

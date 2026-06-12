@@ -44,6 +44,7 @@ import { frontendCategorySection } from "./modules/frontendCategorySection";
 import { frontendProductSection } from "./modules/frontend/frontendProductSection";
 import { frontendProductVariation } from "./modules/frontend/frontendProductVariation";
 import { frontendPromotion } from "./modules/frontend/frontendPromotion";
+import { frontendPromotionSection } from "./modules/frontend/frontendPromotionSection";
 import { frontendReturnAndRefund } from "./modules/frontend/frontendReturnAndRefund";
 import { frontendReturnReason } from "./modules/frontend/frontendReturnReason";
 import { frontendSetting } from "./modules/frontend/frontendSetting";
@@ -200,6 +201,7 @@ export default new createStore({
         frontendProduct,
         frontendBenefit,
         frontendPromotion,
+        frontendPromotionSection,
         frontendCategorySection,
         frontendProductSection,
         frontendWishlist,

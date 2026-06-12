@@ -14,6 +14,10 @@
                             <ExcelComponent :method="xls" />
                         </div>
                     </div>
+                    <router-link :to="{ path: '/admin/promotion-sections' }" class="db-btn h-[37px] text-white bg-secondary">
+                        <i class="lab lab-line-image lab-font-size-16"></i>
+                        <span>{{ $t("menu.promotion_sections") }}</span>
+                    </router-link>
                     <PromotionCreateComponent :props="props" v-if="permissionChecker('promotions_create')" />
                 </div>
             </div>

@@ -104,6 +104,7 @@ use App\Http\Controllers\Admin\SiteMenuController;
 use App\Http\Controllers\Admin\SiteMenuItemController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\CategorySectionController as FrontendCategorySectionController;
+use App\Http\Controllers\Frontend\PromotionSectionController as FrontendPromotionSectionController;
 use App\Http\Controllers\Frontend\SiteMenuController as FrontendSiteMenuController;
 use App\Http\Controllers\Frontend\TestimonialController as FrontendTestimonialController;
 use App\Http\Controllers\Frontend\ProductSectionController as FrontendProductSectionController;
@@ -875,6 +876,10 @@ Route::prefix('frontend')->name('frontend.')->middleware(['installed', 'apiKey',
 
     Route::prefix('category-section')->name('category-section.')->group(function () {
         Route::get('/categories', [FrontendCategorySectionController::class, 'categories']);
+    });
+
+    Route::prefix('promotion-section')->name('frontend.promotion-section.')->group(function () {
+        Route::get('/sections', [FrontendPromotionSectionController::class, 'sections']);
     });
 
     Route::prefix('site-menu')->name('frontend.site-menu.')->group(function () {

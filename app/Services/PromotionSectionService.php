@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Exception;
 use Illuminate\Support\Str;
+use App\Enums\Status;
 use App\Models\PromotionSection;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\PaginateRequest;
@@ -90,6 +91,28 @@ class PromotionSectionService
         try {
             $promotionSection->promotionSectionPromotions()->delete();
             $promotionSection->delete();
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception(QueryExceptionLibrary::message($exception), 422);
+        }
+    }
+
+    /**
+     * Returns active sections each with their active promotions (for frontend homepage).
+     *
+     * @throws Exception
+     */
+    public function activeSectionsWithPromotions()
+    {
+        try {
+            return PromotionSection::active()
+                ->with(['promotions' => function ($query) {
+                    $query->where('status', Status::ACTIVE)->with('media');
+                }])
+                ->orderBy('id', 'asc')
+                ->get()
+                ->filter(fn($section) => $section->promotions->isNotEmpty())
+                ->values();
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception(QueryExceptionLibrary::message($exception), 422);
