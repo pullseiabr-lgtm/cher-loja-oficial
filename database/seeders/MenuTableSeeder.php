@@ -70,16 +70,6 @@ class MenuTableSeeder extends Seeder
                         'updated_at' => now()
                     ],
                     [
-                        'name'       => 'Stock',
-                        'url'        => 'stock',
-                        'language'   => 'stock',
-                        'icon'       => 'lab lab-line-stock',
-                        'priority'   => 100,
-                        'status'     => 1,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ],
-                    [
                         'name'       => 'Reviews',
                         'url'        => 'reviews',
                         'language'   => 'reviews',
