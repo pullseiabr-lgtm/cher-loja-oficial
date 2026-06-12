@@ -518,6 +518,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::post('/', [CountryController::class, 'store']);
         Route::delete('/{country}', [CountryController::class, 'destroy']);
         Route::match(['put', 'patch', 'post'], '/{country}', [CountryController::class, 'update']);
+        Route::delete('/bulk/destroy', [CountryController::class, 'bulkDestroy']);
+        Route::post('/bulk/status', [CountryController::class, 'bulkStatusUpdate']);
     });
 
     Route::prefix('state')->name('state')->group(function () {

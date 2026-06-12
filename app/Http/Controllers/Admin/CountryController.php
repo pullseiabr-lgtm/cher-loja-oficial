@@ -8,6 +8,7 @@ use App\Services\CountryService;
 use App\Http\Requests\CountryRequest;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Resources\CountryResource;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
@@ -26,7 +27,7 @@ class CountryController extends AdminController implements HasMiddleware
     {
         return [
             new Middleware('permission:settings|administrators|customers|employees', only: ['index']),
-            new Middleware('permission:settings', only: ['store', 'update', 'destroy']),
+            new Middleware('permission:settings', only: ['store', 'update', 'destroy', 'bulkDestroy', 'bulkStatusUpdate']),
         ];
     }
 
@@ -58,6 +59,32 @@ class CountryController extends AdminController implements HasMiddleware
     public function destroy(Country $country) {
         try {
             $this->countryService->destroy($country);
+            return response('', 202);
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        try {
+            $ids = $request->validate(['ids' => 'required|array', 'ids.*' => 'integer'])['ids'];
+            $this->countryService->bulkDestroy($ids);
+            return response('', 202);
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function bulkStatusUpdate(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'ids'    => 'required|array',
+                'ids.*'  => 'integer',
+                'status' => 'required|integer',
+            ]);
+            $this->countryService->bulkStatusUpdate($data['ids'], $data['status']);
             return response('', 202);
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);

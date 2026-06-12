@@ -107,6 +107,26 @@ export const country = {
             });
         },
 
+        bulkDestroy: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.delete('admin/country/bulk/destroy', { data: { ids: payload.ids } })
+                    .then((res) => {
+                        context.dispatch("lists", payload.search).then().catch();
+                        resolve(res);
+                    })
+                    .catch((err) => { reject(err); });
+            });
+        },
+        bulkStatusUpdate: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.post('admin/country/bulk/status', { ids: payload.ids, status: payload.status })
+                    .then((res) => {
+                        context.dispatch("lists", payload.search).then().catch();
+                        resolve(res);
+                    })
+                    .catch((err) => { reject(err); });
+            });
+        },
         export: function (context, payload) {
             return new Promise((resolve, reject) => {
                 let url = 'admin/country/export';

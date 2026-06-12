@@ -118,6 +118,32 @@ class CountryService
     /**
      * @throws Exception
      */
+    public function bulkDestroy(array $ids): void
+    {
+        try {
+            Country::whereIn('id', $ids)->delete();
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception(QueryExceptionLibrary::message($exception), 422);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function bulkStatusUpdate(array $ids, int $status): void
+    {
+        try {
+            Country::whereIn('id', $ids)->update(['status' => $status]);
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception(QueryExceptionLibrary::message($exception), 422);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
     public function show(Country $country): Country
     {
         try {

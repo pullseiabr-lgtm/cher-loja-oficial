@@ -8,6 +8,36 @@
                     <CountryCreateComponent :props="props" />
                 </div>
             </div>
+
+            <!-- Bulk action bar -->
+            <div v-if="selectedIds.length > 0"
+                class="flex items-center gap-3 px-4 py-2 bg-primary/5 border-b border-primary/20">
+                <span class="text-sm font-medium text-gray-700">
+                    {{ selectedIds.length }} {{ $t("label.selected") }}
+                </span>
+                <button @click="bulkStatusUpdate(enums.statusEnum.INACTIVE)"
+                    type="button"
+                    class="db-btn-outline h-8 text-xs text-yellow-600 border-yellow-400 hover:bg-yellow-50">
+                    <i class="lab lab-line-eye-off text-sm"></i>
+                    <span>{{ $t("button.deactivate") }}</span>
+                </button>
+                <button @click="bulkStatusUpdate(enums.statusEnum.ACTIVE)"
+                    type="button"
+                    class="db-btn-outline h-8 text-xs text-green-600 border-green-400 hover:bg-green-50">
+                    <i class="lab lab-line-check text-sm"></i>
+                    <span>{{ $t("button.activate") }}</span>
+                </button>
+                <button @click="bulkDestroy"
+                    type="button"
+                    class="db-btn-outline h-8 text-xs text-red-600 border-red-400 hover:bg-red-50">
+                    <i class="lab lab-line-trash text-sm"></i>
+                    <span>{{ $t("button.delete") }}</span>
+                </button>
+                <button @click="clearSelection" type="button" class="ml-auto text-xs text-gray-400 hover:text-gray-600">
+                    <i class="lab lab-line-cross text-sm"></i>
+                </button>
+            </div>
+
             <div class="table-filter-div" id="country-filter">
                 <form class="form-row p-4 sm:p-5 mb-5" @submit.prevent="search">
                     <div class="form-col-12 sm:form-col-6 lg:form-col-4">
@@ -50,6 +80,12 @@
                 <table class="db-table stripe" id="print">
                     <thead class="db-table-head">
                         <tr class="db-table-head-tr">
+                            <th class="db-table-head-th w-10">
+                                <input type="checkbox" class="accent-primary w-4 h-4 cursor-pointer"
+                                    :checked="allSelected"
+                                    :indeterminate.prop="someSelected"
+                                    @change="toggleSelectAll" />
+                            </th>
                             <th class="db-table-head-th">{{ $t("label.name") }}</th>
                             <th class="db-table-head-th">{{ $t("label.code") }}</th>
                             <th class="db-table-head-th">{{ $t("label.status") }}</th>
@@ -57,7 +93,13 @@
                         </tr>
                     </thead>
                     <tbody class="db-table-body" v-if="countries.length > 0">
-                        <tr class="db-table-body-tr" v-for="country in countries" :key="country">
+                        <tr class="db-table-body-tr" v-for="country in countries" :key="country.id"
+                            :class="selectedIds.includes(country.id) ? 'bg-primary/5' : ''">
+                            <td class="db-table-body-td">
+                                <input type="checkbox" class="accent-primary w-4 h-4 cursor-pointer"
+                                    :value="country.id"
+                                    v-model="selectedIds" />
+                            </td>
                             <td class="db-table-body-td">
                                 <div v-if="country.name.length < 40"> {{ country.name }}</div>
                                 <div v-else>{{ country.name.substring(0, 40) + ".." }}</div>
@@ -78,7 +120,7 @@
                     </tbody>
                     <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="4">
+                            <td class="db-table-body-td text-center" colspan="5">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL+'/images/default/not-found/not_found.png'" alt="Not Found">
@@ -164,6 +206,7 @@ export default {
             },
             errors: {},
             ENV: ENV,
+            selectedIds: [],
         };
     },
     mounted() {
@@ -178,6 +221,17 @@ export default {
         },
         paginationPage: function () {
             return this.$store.getters["country/page"];
+        },
+        allSelected: function () {
+            return this.countries.length > 0 && this.selectedIds.length === this.countries.length;
+        },
+        someSelected: function () {
+            return this.selectedIds.length > 0 && this.selectedIds.length < this.countries.length;
+        },
+    },
+    watch: {
+        countries() {
+            this.selectedIds = [];
         },
     },
     methods: {
@@ -246,6 +300,47 @@ export default {
                 }
             }).catch((err) => {
                 this.loading.isActive = false;
+            });
+        },
+        toggleSelectAll: function () {
+            if (this.allSelected) {
+                this.selectedIds = [];
+            } else {
+                this.selectedIds = this.countries.map((c) => c.id);
+            }
+        },
+        clearSelection: function () {
+            this.selectedIds = [];
+        },
+        bulkDestroy: function () {
+            appService.destroyConfirmation().then(() => {
+                this.loading.isActive = true;
+                this.$store.dispatch("country/bulkDestroy", {
+                    ids: this.selectedIds,
+                    search: this.props.search,
+                }).then(() => {
+                    this.loading.isActive = false;
+                    this.selectedIds = [];
+                    alertService.successFlip(null, this.$t("menu.countries"));
+                }).catch((err) => {
+                    this.loading.isActive = false;
+                    alertService.error(err.response.data.message);
+                });
+            }).catch(() => {});
+        },
+        bulkStatusUpdate: function (status) {
+            this.loading.isActive = true;
+            this.$store.dispatch("country/bulkStatusUpdate", {
+                ids: this.selectedIds,
+                status: status,
+                search: this.props.search,
+            }).then(() => {
+                this.loading.isActive = false;
+                this.selectedIds = [];
+                alertService.successFlip(null, this.$t("menu.countries"));
+            }).catch((err) => {
+                this.loading.isActive = false;
+                alertService.error(err.response.data.message);
             });
         },
     },
