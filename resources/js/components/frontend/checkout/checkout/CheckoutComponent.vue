@@ -2,7 +2,7 @@
     <LoadingComponent :props="loading"/>
     <div class="row">
         <div class="col-12 lg:col-8">
-            <div class="flex items-center rounded-2xl w-fit mb-6 text-focus bg-[#EAF6FF]">
+            <div class="hidden flex items-center rounded-2xl w-fit mb-6 text-focus bg-[#EAF6FF]">
                 <div class="relative cursor-pointer">
                     <input @change="changeOrderType(orderTypeEnum.DELIVERY)" id="checkout-delivery"
                            :checked="orderType === orderTypeEnum.DELIVERY"
