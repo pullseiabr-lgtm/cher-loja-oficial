@@ -27,22 +27,10 @@
                         {{ $t("label.phone") }}
                     </label>
                     <div :class="errors.phone ? 'invalid' : ''" class="field-control flex items-center">
-                        <div class="w-fit flex-shrink-0 dropdown-group">
-                            <button type="button" class="flex items-center gap-1 dropdown-btn">
-                                {{ flag }}
-                                <span class="whitespace-nowrap flex-shrink-0 text-xs">{{ form.country_code
-                                }}</span>
-                                <i class="fa-solid fa-caret-down text-xs"></i>
-                            </button>
-                            <ul
-                                class="p-1.5 w-24 rounded-lg shadow-xl absolute top-8 -left-4 z-10 border border-gray-200 bg-white scale-y-0 origin-top dropdown-list !h-52 !overflow-x-hidden !overflow-y-auto thin-scrolling">
-                                <li v-for="countryCode in countryCodes" @click="changeCountryCode(countryCode)"
-                                    class="flex items-center gap-2 p-1.5 rounded-md cursor-pointer hover:bg-gray-100">
-                                    {{ countryCode.flag_emoji }}
-                                    <span class="whitespace-nowrap text-xs">{{ countryCode.calling_code }}</span>
-                                </li>
-                            </ul>
-
+                        <div class="w-fit flex-shrink-0 px-2">
+                            <span class="flex items-center gap-1 text-xs whitespace-nowrap select-none">
+                                🇧🇷 +55
+                            </span>
                         </div>
                         <input v-model="form.phone" v-on:keypress="phoneNumber($event)" v-bind:class="errors.phone
                             ? 'invalid' : ''" type="text" id="phone" class="pl-2 text-sm w-full h-full" />
@@ -87,7 +75,6 @@ export default {
                 phone: "",
                 country_code: ""
             },
-            flag: "",
             image: "",
             errors: {},
         };
@@ -96,57 +83,21 @@ export default {
         try {
             this.loading.isActive = true;
             const profile = this.$store.getters.authInfo;
-            this.$store.dispatch('frontendCountryCode/lists');
             this.form = {
                 name: profile.name,
                 email: profile.email,
                 phone: profile.phone,
-                country_code: profile.country_code,
+                country_code: '+55',
             };
-
-            if (profile.country_code !== null) {
-                this.$store.dispatch('frontendCountryCode/callingCode', profile.country_code).then(res => {
-                    this.flag = res.data.data.flag_emoji;
-                    this.loading.isActive = false;
-                }).catch((err) => {
-                    this.loading.isActive = false;
-                });
-            }
-
-            this.$store.dispatch('frontendSetting/lists').then(companyRes => {
-                this.$store.dispatch('frontendCountryCode/show', companyRes.data.data.company_country_code).then(res => {
-
-                    if (profile.country_code === null) {
-                        this.flag = res.data.data.flag_emoji;
-                        this.form.country_code = res.data.data.calling_code;
-                    }
-
-                }).catch((err) => {
-                    this.loading.isActive = false;
-                });
-            }).catch((err) => {
-                this.loading.isActive = false;
-            });
             this.loading.isActive = false;
-
         } catch (err) {
             this.loading.isActive = false;
             alertService.error(err);
         }
     },
-    computed: {
-        countryCodes: function () {
-            return this.$store.getters['frontendCountryCode/lists'];
-        },
-    },
     methods: {
         phoneNumber(e) {
             return appService.phoneNumber(e);
-        },
-        changeCountryCode: function (e) {
-            this.flag = e.flag_emoji;
-            this.form.country_code = e.calling_code;
-
         },
         changeImage: function (e) {
             this.image = e.target.files[0];
