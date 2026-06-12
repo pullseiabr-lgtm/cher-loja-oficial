@@ -73,22 +73,10 @@
                             {{ $t("label.phone") }}
                         </label>
                         <div :class="errors.phone ? 'invalid' : ''" class="field-control flex items-center">
-                            <div class="w-fit flex-shrink-0 dropdown-group">
-                                <button type="button" class="flex items-center gap-1 dropdown-btn">
-                                    {{ address.flag }}
-                                    <span class="whitespace-nowrap flex-shrink-0 text-xs">
-                                        {{ address.form.country_code }}
-                                    </span>
-                                    <i class="fa-solid fa-caret-down text-xs"></i>
-                                </button>
-                                <ul
-                                    class="p-1.5 w-24 rounded-lg shadow-xl absolute top-8 -left-4 z-10 border border-gray-200 bg-white scale-y-0 origin-top dropdown-list !h-52 !overflow-x-hidden !overflow-y-auto thin-scrolling">
-                                    <li v-for="countryCode in countryCodes" @click.prevent="changeCountry(countryCode)"
-                                        class="flex items-center gap-2 p-1.5 rounded-md cursor-pointer hover:bg-gray-100">
-                                        {{ countryCode.flag_emoji }}
-                                        <span class="whitespace-nowrap text-xs">{{ countryCode.calling_code }}</span>
-                                    </li>
-                                </ul>
+                            <div class="w-fit flex-shrink-0 px-2">
+                                <span class="flex items-center gap-1 text-xs whitespace-nowrap select-none">
+                                    🇧🇷 +55
+                                </span>
                             </div>
                             <input v-model="address.form.phone" v-on:keypress="phoneNumber($event)"
                                 :class="errors.phone ? 'invalid' : ''" type="text" id="phone"
@@ -104,12 +92,12 @@
                         <label class="text-sm font-medium capitalize mb-1 field-title required" for="country">
                             {{ $t('label.country') }}
                         </label>
-                        <vue-select
-                            class="w-full h-12 px-4 rounded-lg text-base capitalize border border-[#D9DBE9] hover:border-primary/30 focus-within:border-primary/30 transition-all duration-500 appearance-none"
-                            id="country" :class="errors.country ? 'invalid' : ''" v-model="address.form.country"
-                            @update:modelValue="callStates($event)" :options="countries" label-by="name" value-by="name"
-                            :closeOnSelect="true" :searchable="true" :clearOnClose="true" placeholder="--"
-                            search-placeholder="--" />
+                        <input
+                            type="text"
+                            id="country"
+                            value="Brasil"
+                            disabled
+                            class="w-full h-12 px-4 rounded-lg text-base border border-[#D9DBE9] bg-gray-50 text-gray-500 cursor-not-allowed" />
                         <small class="db-field-alert" v-if="errors.country">
                             {{ errors.country[0] }}
                         </small>
@@ -252,10 +240,12 @@ export default {
         }
     },
     mounted() {
+        this.address.form.country_code = '+55';
+        this.address.calling_code = '+55';
+        this.address.flag = '🇧🇷';
+        this.address.form.country = 'Brazil';
+
         this.loading.isActive = true;
-        setTimeout(() => {
-            this.callCountry();
-        }, 300);
         this.$store.dispatch("frontendAddress/lists", {
             search: {
                 paginate: 0,
@@ -269,19 +259,12 @@ export default {
         });
 
         this.loading.isActive = true;
-        this.$store.dispatch('frontendCountryCode/lists');
-        this.$store.dispatch('company/lists').then(companyRes => {
-            this.$store.dispatch('frontendCountryCode/show', companyRes.data.data.company_country_code).then(res => {
-                this.address.form.country_code = res.data.data.calling_code;
-                this.address.calling_code = res.data.data.calling_code;
-                this.address.flag = res.data.data.flag_emoji;
+        this.$store.dispatch('frontendCountryStateCity/countries').then(() => {
+            this.$store.dispatch('frontendCountryStateCity/statesByCountry', 'Brazil').then((res) => {
+                this.address.states = res.data.data;
                 this.loading.isActive = false;
-            }).catch((err) => {
-                this.loading.isActive = false;
-            });
-        }).catch((err) => {
-            this.loading.isActive = false;
-        });
+            }).catch(() => { this.loading.isActive = false; });
+        }).catch(() => { this.loading.isActive = false; });
     },
     methods: {
         phoneNumber(e) {
@@ -328,15 +311,14 @@ export default {
             this.address.form = {
                 full_name: "",
                 email: "",
-                country_code: this.address.calling_code,
+                country_code: '+55',
                 phone: "",
-                country: null,
+                country: 'Brazil',
                 state: null,
                 city: null,
                 zip_code: "",
                 address: "",
             };
-            this.address.states = [];
             this.address.cities = [];
         },
         save: function () {
@@ -350,15 +332,14 @@ export default {
                     this.address.form = {
                         full_name: "",
                         email: "",
-                        country_code: this.address.calling_code,
+                        country_code: '+55',
                         phone: "",
-                        country: null,
+                        country: 'Brazil',
                         state: null,
                         city: null,
                         zip_code: "",
                         address: "",
                     };
-                    this.address.states = [];
                     this.address.cities = [];
                     this.errors = {};
                     this.activeAddress(res.data.data);
@@ -403,29 +384,15 @@ export default {
                     this.address.form = {
                         full_name: address.full_name,
                         email: address.email,
-                        country_code: address.country_code,
+                        country_code: '+55',
                         phone: address.phone,
-                        country: address.country,
-                        state: address.state,
-                        city: address.city,
+                        country: 'Brazil',
+                        state: address.state || null,
+                        city: address.city || null,
                         zip_code: address.zip_code,
                         address: address.address,
                     };
-
-                    if (address.state === "") {
-                        this.address.form.state = null;
-                    }
-
-                    if (address.city === "") {
-                        this.address.form.city = null;
-                    }
-
-                    this.$store.dispatch('frontendCountryCode/callingCode', address.country_code).then(res => {
-                        this.address.flag = res.data.data.flag_emoji;
-                        this.loading.isActive = false;
-                    }).catch((err) => {
-                        this.loading.isActive = false;
-                    });
+                    this.loading.isActive = false;
                 }).catch((err) => {
                     alertService.error(err.response.data.message);
                 });
