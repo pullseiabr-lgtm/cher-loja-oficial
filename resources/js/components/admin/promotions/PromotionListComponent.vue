@@ -291,6 +291,7 @@ export default {
                         type: promotion.type,
                         link_type: promotion.link_type || null,
                         link_url: promotion.link_url || null,
+                        section_id: promotion.section_id || null,
                         status: promotion.status,
                     };
                 })

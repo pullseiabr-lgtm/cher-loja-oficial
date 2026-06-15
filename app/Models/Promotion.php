@@ -60,4 +60,9 @@ class Promotion extends Model implements HasMedia
     {
         return $this->hasMany(PromotionProduct::class, 'promotion_id', 'id');
     }
+
+    public function promotionSections(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(PromotionSection::class, 'promotion_section_promotions', 'promotion_id', 'promotion_section_id');
+    }
 }

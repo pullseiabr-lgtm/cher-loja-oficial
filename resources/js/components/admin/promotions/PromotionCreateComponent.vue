@@ -21,6 +21,15 @@
                             }}</small>
                     </div>
 
+                    <div class="form-col-12">
+                        <label class="db-field-title">Seção de Promoções</label>
+                        <vue-select class="db-field-control f-b-custom-select"
+                            v-model="props.form.section_id"
+                            :options="sections" label-by="name" value-by="id"
+                            :closeOnSelect="true" :searchable="true" :clearOnClose="true"
+                            placeholder="Nenhuma (adicionar depois)" search-placeholder="Buscar..." />
+                    </div>
+
                     <div class="form-col-12 sm:form-col-6">
                         <label class="db-field-title required">{{ $t("label.status") }}</label>
                         <div class="db-field-radio-group">
@@ -71,15 +80,6 @@
                                     }}</label>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-col-12">
-                        <label class="db-field-title">Seção de Promoções</label>
-                        <vue-select class="db-field-control f-b-custom-select"
-                            v-model="props.form.section_id"
-                            :options="sections" label-by="name" value-by="id"
-                            :closeOnSelect="true" :searchable="true" :clearOnClose="true"
-                            placeholder="Nenhuma (adicionar depois)" search-placeholder="Buscar..." />
                     </div>
 
                     <div class="form-col-12">
@@ -283,10 +283,11 @@ export default {
                             this.errors = {};
                             this.$refs.imageProperty.value = null;
                         };
-                        if (sectionId && savedId && tempId === null) {
+                        const promoId = tempId !== null ? tempId : savedId;
+                        if (sectionId && promoId) {
                             this.$store.dispatch('promotionSectionPromotion/save', {
                                 id: sectionId,
-                                form: { promotion_id: savedId },
+                                form: { promotion_id: promoId },
                             }).then(afterSave).catch(afterSave);
                         } else {
                             afterSave();
