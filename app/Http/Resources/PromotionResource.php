@@ -26,7 +26,8 @@ class PromotionResource extends JsonResource
             'status'     => $this->status,
             'cover'      => $this->cover,
             'preview'    => $this->preview,
-            'section_id' => $this->promotionSections()->first()?->id ?? null,
+            'section_id'   => $this->promotionSections()->first()?->id ?? null,
+            'section_name' => $this->promotionSections()->first()?->name ?? null,
         ];
     }
 }

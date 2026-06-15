@@ -75,6 +75,7 @@
                         <tr class="db-table-head-tr">
                             <th class="db-table-head-th hidden-print">{{ $t("label.image") }}</th>
                             <th class="db-table-head-th">{{ $t("label.name") }}</th>
+                            <th class="db-table-head-th">Seção</th>
                             <th class="db-table-head-th">{{ $t("label.type") }}</th>
                             <th class="db-table-head-th">{{ $t("label.status") }}</th>
                             <th class="db-table-head-th hidden-print"
@@ -93,6 +94,10 @@
                             <td class="db-table-body-td">
                                 <div v-if="promotion.name.length < 40">{{ promotion.name }}</div>
                                 <div v-else>{{ promotion.name.substring(0, 40) + ".." }}</div>
+                            </td>
+                            <td class="db-table-body-td">
+                                <span v-if="promotion.section_name" class="text-sm text-gray-700">{{ promotion.section_name }}</span>
+                                <span v-else class="text-gray-400">—</span>
                             </td>
                             <td class="db-table-body-td">{{ enums.promotionTypeEnumArray[promotion.type] }}</td>
                             <td class="db-table-body-td">
@@ -115,7 +120,7 @@
                     </tbody>
                     <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="5">
+                            <td class="db-table-body-td text-center" colspan="6">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL+'/images/default/not-found/not_found.png'" alt="Not Found">
