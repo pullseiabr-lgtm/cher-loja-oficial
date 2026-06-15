@@ -299,16 +299,35 @@
                                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ponto focal</span>
                                 <p class="text-xs text-gray-400 -mt-1">Área visível ao recortar em quadrado</p>
                                 <div class="inline-grid grid-cols-3 gap-1.5 mt-1">
-                                    <button v-for="pos in positionGrid" :key="pos.value" type="button"
-                                        @click.prevent="setCoverPosition(pos.value)"
-                                        :title="pos.label"
-                                        :class="[
-                                            'w-10 h-10 rounded-lg border text-sm transition-all duration-150 flex items-center justify-center',
-                                            coverPosition === pos.value
-                                                ? 'bg-primary border-primary text-white shadow-md'
-                                                : 'bg-white border-gray-200 text-gray-500 hover:border-primary hover:text-primary'
-                                        ]">
-                                        <i :class="pos.icon"></i>
+                                    <!-- Row 1 -->
+                                    <button type="button" @click.prevent="jumpPosition(0,0)" title="Superior esquerdo" :class="jumpBtnClass(0,0)">
+                                        <i class="fa-solid fa-arrow-up-left"></i>
+                                    </button>
+                                    <button type="button" @click.prevent="stepPosition('y',-10)" title="Subir 10%" :class="stepBtnClass('y',-1)">
+                                        <i class="fa-solid fa-arrow-up"></i>
+                                    </button>
+                                    <button type="button" @click.prevent="jumpPosition(100,0)" title="Superior direito" :class="jumpBtnClass(100,0)">
+                                        <i class="fa-solid fa-arrow-up-right"></i>
+                                    </button>
+                                    <!-- Row 2 -->
+                                    <button type="button" @click.prevent="stepPosition('x',-10)" title="Mover esquerda 10%" :class="stepBtnClass('x',-1)">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                    </button>
+                                    <button type="button" @click.prevent="jumpPosition(50,50)" title="Centro" :class="jumpBtnClass(50,50)">
+                                        <i class="fa-solid fa-circle-dot"></i>
+                                    </button>
+                                    <button type="button" @click.prevent="stepPosition('x',10)" title="Mover direita 10%" :class="stepBtnClass('x',1)">
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                    <!-- Row 3 -->
+                                    <button type="button" @click.prevent="jumpPosition(0,100)" title="Inferior esquerdo" :class="jumpBtnClass(0,100)">
+                                        <i class="fa-solid fa-arrow-down-left"></i>
+                                    </button>
+                                    <button type="button" @click.prevent="stepPosition('y',10)" title="Descer 10%" :class="stepBtnClass('y',1)">
+                                        <i class="fa-solid fa-arrow-down"></i>
+                                    </button>
+                                    <button type="button" @click.prevent="jumpPosition(100,100)" title="Inferior direito" :class="jumpBtnClass(100,100)">
+                                        <i class="fa-solid fa-arrow-down-right"></i>
                                     </button>
                                 </div>
                                 <span class="text-xs text-gray-400 mt-1">
@@ -631,19 +650,9 @@ export default {
             previewImage: null,
             barcodeImage: null,
             livePreview: null,
-            coverPosition: 'center',
+            coverX: 50,
+            coverY: 50,
             coverZoom: 1.0,
-            positionGrid: [
-                { value: 'left top',      icon: 'fa-solid fa-arrow-up-left',    label: 'Superior esquerdo' },
-                { value: 'center top',    icon: 'fa-solid fa-arrow-up',         label: 'Superior central' },
-                { value: 'right top',     icon: 'fa-solid fa-arrow-up-right',   label: 'Superior direito' },
-                { value: 'left center',   icon: 'fa-solid fa-arrow-left',       label: 'Meio esquerdo' },
-                { value: 'center',        icon: 'fa-solid fa-circle-dot',       label: 'Centro' },
-                { value: 'right center',  icon: 'fa-solid fa-arrow-right',      label: 'Meio direito' },
-                { value: 'left bottom',   icon: 'fa-solid fa-arrow-down-left',  label: 'Inferior esquerdo' },
-                { value: 'center bottom', icon: 'fa-solid fa-arrow-down',       label: 'Inferior central' },
-                { value: 'right bottom',  icon: 'fa-solid fa-arrow-down-right', label: 'Inferior direito' },
-            ],
             form: {
                 add_to_flash_sale: "",
                 discount: "",
@@ -664,9 +673,17 @@ export default {
         product: function () {
             return this.$store.getters["product/show"];
         },
+        coverPosition() {
+            return `${this.coverX}% ${this.coverY}%`;
+        },
         positionLabel() {
-            const found = this.positionGrid.find(p => p.value === this.coverPosition);
-            return found ? found.label : 'Centro';
+            const named = [
+                {x:0,  y:0,   label:'Superior esquerdo'}, {x:50, y:0,   label:'Superior central'}, {x:100,y:0,   label:'Superior direito'},
+                {x:0,  y:50,  label:'Meio esquerdo'},     {x:50, y:50,  label:'Centro'},            {x:100,y:50,  label:'Meio direito'},
+                {x:0,  y:100, label:'Inferior esquerdo'}, {x:50, y:100, label:'Inferior central'},  {x:100,y:100, label:'Inferior direito'},
+            ];
+            const found = named.find(p => p.x === this.coverX && p.y === this.coverY);
+            return found ? found.label : `X: ${this.coverX}%  Y: ${this.coverY}%`;
         },
     },
     mounted() {
@@ -691,8 +708,10 @@ export default {
                 this.barcodeImage = res.data.data.barcode_image;
                 this.livePreview = res.data.data.image;
                 this.imageCount = res.data.data.images.length;
-                this.coverPosition = res.data.data.cover_position || 'center';
-                this.coverZoom    = res.data.data.cover_zoom    || 1.0;
+                const pos = this.parsePositionString(res.data.data.cover_position);
+                this.coverX = pos.x;
+                this.coverY = pos.y;
+                this.coverZoom = res.data.data.cover_zoom || 1.0;
                 this.shippingAndReturnForm.shipping_and_return = res.data.data.shipping_and_return;
                 this.shippingAndReturnForm.shipping_type = res.data.data.shipping_type;
                 this.shippingAndReturnForm.shipping_cost = res.data.data.shipping_cost;
@@ -760,11 +779,51 @@ export default {
                 this.loading.isActive = false;
             });
         },
-        setCoverPosition: function (position) {
-            this.coverPosition = position;
+        parsePositionString(str) {
+            if (!str) return { x: 50, y: 50 };
+            const pct = str.match(/^(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%$/);
+            if (pct) return { x: Math.round(parseFloat(pct[1])), y: Math.round(parseFloat(pct[2])) };
+            const map = {
+                'left top': {x:0,y:0},    'center top': {x:50,y:0},    'right top': {x:100,y:0},
+                'left center': {x:0,y:50}, 'center': {x:50,y:50},      'right center': {x:100,y:50},
+                'left bottom': {x:0,y:100},'center bottom': {x:50,y:100},'right bottom': {x:100,y:100},
+            };
+            return map[str] || { x: 50, y: 50 };
+        },
+        jumpBtnClass(x, y) {
+            const active = this.coverX === x && this.coverY === y;
+            return [
+                'w-10 h-10 rounded-lg border text-sm transition-all duration-150 flex items-center justify-center',
+                active ? 'bg-primary border-primary text-white shadow-md' : 'bg-white border-gray-200 text-gray-500 hover:border-primary hover:text-primary',
+            ];
+        },
+        stepBtnClass(axis, dir) {
+            const atLimit = (axis === 'x' && dir < 0 && this.coverX === 0)
+                || (axis === 'x' && dir > 0 && this.coverX === 100)
+                || (axis === 'y' && dir < 0 && this.coverY === 0)
+                || (axis === 'y' && dir > 0 && this.coverY === 100);
+            return [
+                'w-10 h-10 rounded-lg border text-sm transition-all duration-150 flex items-center justify-center',
+                atLimit ? 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed' : 'bg-white border-gray-200 text-gray-500 hover:border-primary hover:text-primary',
+            ];
+        },
+        jumpPosition(x, y) {
+            this.coverX = x;
+            this.coverY = y;
+            this.saveCoverPositionNow();
+        },
+        stepPosition(axis, delta) {
+            if (axis === 'x') {
+                this.coverX = Math.min(100, Math.max(0, this.coverX + delta));
+            } else {
+                this.coverY = Math.min(100, Math.max(0, this.coverY + delta));
+            }
+            this.saveCoverPositionNow();
+        },
+        saveCoverPositionNow() {
             this.$store.dispatch('product/updateCoverPosition', {
                 id: this.$route.params.id,
-                position,
+                position: this.coverPosition,
             }).catch((err) => {
                 alertService.error(err?.response?.data?.message || 'Erro ao salvar posição');
             });
