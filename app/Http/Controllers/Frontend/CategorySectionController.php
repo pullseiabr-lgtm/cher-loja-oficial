@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use Exception;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Resources\CategorySectionWithCategoriesResource;
+use App\Http\Resources\CategorySectionWithContentResource;
 use App\Services\CategorySectionService;
 
 class CategorySectionController extends AdminController
@@ -25,6 +26,19 @@ class CategorySectionController extends AdminController
         try {
             $sections = $this->categorySectionService->activeSectionsWithCategories();
             return CategorySectionWithCategoriesResource::collection($sections);
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
+    /**
+     * Returns ALL active sections with type-appropriate content (unified endpoint).
+     */
+    public function sections(): \Illuminate\Foundation\Application|\Illuminate\Http\Response|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            $sections = $this->categorySectionService->activeSectionsWithContent();
+            return CategorySectionWithContentResource::collection($sections);
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }

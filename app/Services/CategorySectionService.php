@@ -131,4 +131,28 @@ class CategorySectionService
             throw new Exception(QueryExceptionLibrary::message($exception), 422);
         }
     }
+
+    /**
+     * Returns ALL active sections with type-appropriate content (unified frontend endpoint).
+     *
+     * @throws Exception
+     */
+    public function activeSectionsWithContent()
+    {
+        try {
+            return CategorySection::active()
+                ->with([
+                    'productCategories' => function ($q) {
+                        $q->active()->with('media');
+                    },
+                    'categorySectionProducts.product.variations',
+                    'categorySectionPromotions.promotion',
+                ])
+                ->orderBy('id', 'asc')
+                ->get();
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception(QueryExceptionLibrary::message($exception), 422);
+        }
+    }
 }

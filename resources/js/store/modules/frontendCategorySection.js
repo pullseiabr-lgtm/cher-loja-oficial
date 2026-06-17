@@ -13,7 +13,7 @@ export const frontendCategorySection = {
     actions: {
         sections: function (context) {
             return new Promise((resolve, reject) => {
-                axios.get('frontend/category-section/categories').then((res) => {
+                axios.get('frontend/category-section/sections').then((res) => {
                     context.commit('sections', res.data.data);
                     resolve(res);
                 }).catch((err) => {

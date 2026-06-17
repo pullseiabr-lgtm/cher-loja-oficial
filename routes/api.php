@@ -886,6 +886,7 @@ Route::prefix('frontend')->name('frontend.')->middleware(['installed', 'apiKey',
 
     Route::prefix('category-section')->name('category-section.')->group(function () {
         Route::get('/categories', [FrontendCategorySectionController::class, 'categories']);
+        Route::get('/sections', [FrontendCategorySectionController::class, 'sections']);
     });
 
     Route::prefix('promotion-section')->name('frontend.promotion-section.')->group(function () {

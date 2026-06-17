@@ -1,7 +1,10 @@
 <template>
     <LoadingComponent :props="loading" />
+
     <template v-for="section in categorySections" :key="section.id">
-        <section v-if="section.categories && section.categories.length > 0" class="sm:mb-10">
+
+        <!-- Tipo: Categorias -->
+        <section v-if="section.type === 'categories' && section.categories && section.categories.length > 0" class="sm:mb-10">
             <div class="container">
                 <h2 class="text-2xl sm:text-4xl font-bold -mb-10">{{ section.name }}</h2>
                 <Swiper
@@ -31,6 +34,47 @@
                 </Swiper>
             </div>
         </section>
+
+        <!-- Tipo: Produtos -->
+        <section v-else-if="section.type === 'products' && section.products && section.products.length > 0" class="mb-10 sm:mb-20">
+            <div class="container">
+                <div class="flex items-center justify-between gap-4 mb-5 sm:mb-7">
+                    <h2 class="text-2xl sm:text-4xl font-bold capitalize">{{ section.name }}</h2>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <ProductListComponent :products="section.products" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Tipo: Banner -->
+        <section v-else-if="section.type === 'banner' && section.promotions && section.promotions.length > 0" class="mb-10 sm:mb-20">
+            <div class="container">
+                <h2 v-if="section.name" class="text-2xl sm:text-3xl font-bold mb-6">{{ section.name }}</h2>
+                <div class="grid gap-4 sm:gap-6" :style="{ gridTemplateColumns: `repeat(${Math.min(section.promotions.length, 3)}, minmax(0, 1fr))` }">
+                    <template v-for="promo in section.promotions" :key="promo.id">
+                        <a v-if="promo.link_type === 'custom'" :href="promo.link_url" target="_blank" rel="noopener" class="block w-full">
+                            <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
+                        </a>
+                        <router-link
+                            v-else-if="promo.link_type === 'category'"
+                            :to="{ name: 'frontend.product', query: { category: promo.link_url } }"
+                            class="block w-full"
+                        >
+                            <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
+                        </router-link>
+                        <router-link
+                            v-else
+                            :to="{ name: 'frontend.promotion.products', params: { slug: promo.slug } }"
+                            class="block w-full"
+                        >
+                            <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
+                        </router-link>
+                    </template>
+                </div>
+            </div>
+        </section>
+
     </template>
 </template>
 
@@ -41,13 +85,15 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import LoadingComponent from "../components/LoadingComponent";
+import ProductListComponent from "../components/ProductListComponent";
 
 export default {
     name: "CategoryComponent",
     components: {
         Swiper,
         SwiperSlide,
-        LoadingComponent
+        LoadingComponent,
+        ProductListComponent,
     },
     setup() {
         return {
