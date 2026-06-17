@@ -1,7 +1,8 @@
 <template>
     <LoadingComponent :props="loading" />
 
-    <button type="button" @click="add" data-modal="#categorySectionPromotionModal" class="db-btn h-[37px] text-white bg-primary">
+    <button type="button" @click="add" data-modal="#categorySectionPromotionModal"
+        class="db-btn h-[37px] text-white bg-primary">
         <i class="lab lab-line-add-circle"></i>
         <span>Adicionar Banner</span>
     </button>
@@ -19,19 +20,123 @@
                 </div>
                 <form @submit.prevent="save" class="d-block w-full">
                     <div class="form-row">
+
+                        <!-- Nome -->
                         <div class="form-col-12">
-                            <label for="promotion_id" class="db-field-title required">Promoção / Banner</label>
-                            <vue-select class="db-field-control f-b-custom-select" id="promotion_id"
-                                v-bind:class="errors.promotion_id ? 'invalid' : ''"
-                                v-model="props.form.promotion_id"
-                                :options="promotions" label-by="name" value-by="id"
-                                :closeOnSelect="true" :searchable="true" :clearOnClose="true"
-                                placeholder="Selecione uma promoção" search-placeholder="Buscar..." />
-                            <small class="db-field-alert" v-if="errors.promotion_id">
-                                {{ errors.promotion_id[0] }}
-                            </small>
+                            <label for="promo_name" class="db-field-title required">{{ $t("label.name") }}</label>
+                            <input v-model="form.name" v-bind:class="errors.name ? 'invalid' : ''"
+                                type="text" id="promo_name" class="db-field-control" />
+                            <small class="db-field-alert" v-if="errors.name">{{ errors.name[0] }}</small>
                         </div>
 
+                        <!-- Status -->
+                        <div class="form-col-12 sm:form-col-6">
+                            <label class="db-field-title required">{{ $t("label.status") }}</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="form.status" id="promo_active"
+                                            :value="enums.statusEnum.ACTIVE" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="promo_active" class="db-field-label">{{ $t("label.active") }}</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="form.status" id="promo_inactive"
+                                            :value="enums.statusEnum.INACTIVE" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="promo_inactive" class="db-field-label">{{ $t("label.inactive") }}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tipo -->
+                        <div class="form-col-12 sm:form-col-6">
+                            <label class="db-field-title required">{{ $t("label.type") }}</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="form.type" id="promo_small"
+                                            :value="enums.promotionTypeEnum.SMALL" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="promo_small" class="db-field-label">{{ $t("label.small") }}</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="form.type" id="promo_big"
+                                            :value="enums.promotionTypeEnum.BIG" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="promo_big" class="db-field-label">{{ $t("label.big") }}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tipo de Link -->
+                        <div class="form-col-12">
+                            <label class="db-field-title">Tipo de Link da Imagem</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="form.link_type" id="promo_link_none"
+                                            :value="null" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="promo_link_none" class="db-field-label">Nenhum</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="form.link_type" id="promo_link_category"
+                                            value="category" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="promo_link_category" class="db-field-label">Categoria</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="form.link_type" id="promo_link_custom"
+                                            value="custom" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="promo_link_custom" class="db-field-label">Link personalizado</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Categoria (se link_type = category) -->
+                        <div class="form-col-12" v-if="form.link_type === 'category'">
+                            <label class="db-field-title">Categoria</label>
+                            <vue-select class="db-field-control f-b-custom-select"
+                                v-bind:class="errors.link_url ? 'invalid' : ''"
+                                v-model="form.link_url"
+                                :options="categories" label-by="name" value-by="slug"
+                                :closeOnSelect="true" :searchable="true" :clearOnClose="true"
+                                placeholder="Selecione a categoria..." search-placeholder="Buscar..." />
+                            <small class="db-field-alert" v-if="errors.link_url">{{ errors.link_url[0] }}</small>
+                        </div>
+
+                        <!-- URL personalizada -->
+                        <div class="form-col-12" v-if="form.link_type === 'custom'">
+                            <label for="promo_link_url" class="db-field-title">URL do Link</label>
+                            <input v-model="form.link_url" v-bind:class="errors.link_url ? 'invalid' : ''"
+                                type="text" id="promo_link_url" class="db-field-control"
+                                placeholder="https://..." />
+                            <small class="db-field-alert" v-if="errors.link_url">{{ errors.link_url[0] }}</small>
+                        </div>
+
+                        <!-- Imagem -->
+                        <div class="form-col-12">
+                            <label class="db-field-title required">{{ $t("label.image") }} (540px, 336px)</label>
+                            <input @change="changeImage" v-bind:class="errors.image ? 'invalid' : ''"
+                                id="promo_image" type="file" class="db-field-control"
+                                ref="imageInput" accept="image/png, image/jpeg, image/jpg" />
+                            <small class="db-field-alert" v-if="errors.image">{{ errors.image[0] }}</small>
+                        </div>
+
+                        <!-- Botões -->
                         <div class="form-col-12">
                             <div class="modal-btns">
                                 <button type="button" class="modal-btn-outline modal-close" @click="reset">
@@ -56,62 +161,125 @@ import LoadingComponent from "../../components/LoadingComponent";
 import alertService from "../../../../services/alertService";
 import appService from "../../../../services/appService";
 import statusEnum from "../../../../enums/modules/statusEnum";
+import promotionTypeEnum from "../../../../enums/modules/promotionTypeEnum";
 
 export default {
     name: "CategorySectionPromotionCreateComponent",
     components: { LoadingComponent },
-    props: ["props"],
+    props: {
+        props: { type: Object },
+    },
     data() {
         return {
             loading: { isActive: false },
+            enums: {
+                statusEnum,
+                promotionTypeEnum,
+            },
+            form: {
+                name: "",
+                status: statusEnum.ACTIVE,
+                type: promotionTypeEnum.SMALL,
+                link_type: null,
+                link_url: null,
+            },
+            image: null,
             errors: {},
             message: null,
         };
     },
     computed: {
-        promotions: function () {
-            return this.$store.getters['promotion/lists'];
+        categories: function () {
+            return this.$store.getters['productCategory/lists'];
         },
     },
     mounted() {
-        this.loading.isActive = true;
-        this.$store.dispatch('promotion/lists', {
+        this.$store.dispatch('productCategory/lists', {
             paginate: 0,
             order_column: 'name',
             order_type: 'asc',
             status: statusEnum.ACTIVE,
         });
-        this.loading.isActive = false;
     },
     methods: {
         add: function () {
             appService.modalShow();
         },
+        changeImage: function (e) {
+            this.image = e.target.files[0] || null;
+        },
+        resetForm: function () {
+            this.form = {
+                name: "",
+                status: statusEnum.ACTIVE,
+                type: promotionTypeEnum.SMALL,
+                link_type: null,
+                link_url: null,
+            };
+            this.image = null;
+            this.errors = {};
+            this.message = null;
+            if (this.$refs.imageInput) {
+                this.$refs.imageInput.value = null;
+            }
+        },
         reset: function () {
             appService.modalHide();
-            this.$store.dispatch("categorySectionPromotion/reset").then().catch();
-            this.errors = {};
-            this.$props.props.form = { promotion_id: null };
-            this.message = null;
+            this.$store.dispatch("promotion/reset").then().catch();
+            this.resetForm();
         },
         save: function () {
             try {
+                const fd = new FormData();
+                fd.append("name", this.form.name);
+                fd.append("type", this.form.type);
+                fd.append("status", this.form.status);
+                if (this.form.link_type) {
+                    fd.append("link_type", this.form.link_type);
+                    if (this.form.link_url) {
+                        fd.append("link_url", this.form.link_url);
+                    }
+                }
+                if (this.image) {
+                    fd.append("image", this.image);
+                }
+
                 this.loading.isActive = true;
-                this.$store.dispatch("categorySectionPromotion/save", this.props).then(() => {
-                    appService.modalHide();
-                    this.loading.isActive = false;
-                    alertService.successFlip(0, "Banner");
-                    this.props.form = { promotion_id: null };
-                    this.errors = {};
-                    this.message = null;
+                this.$store.dispatch("promotion/save", {
+                    form: fd,
+                    search: { paginate: 0 },
+                }).then((res) => {
+                    const savedId = res.data?.data?.id;
+                    if (savedId && this.props.id) {
+                        this.$store.dispatch("categorySectionPromotion/save", {
+                            id: this.props.id,
+                            form: { promotion_id: savedId },
+                            search: this.props.search,
+                        }).then(() => {
+                            this.loading.isActive = false;
+                            appService.modalHide();
+                            alertService.successFlip(0, "Banner");
+                            this.resetForm();
+                        }).catch(() => {
+                            this.loading.isActive = false;
+                            appService.modalHide();
+                            alertService.successFlip(0, "Banner");
+                            this.resetForm();
+                        });
+                    } else {
+                        this.loading.isActive = false;
+                        appService.modalHide();
+                        alertService.successFlip(0, "Banner");
+                        this.resetForm();
+                    }
                 }).catch((err) => {
                     this.loading.isActive = false;
-                    if (err.response.data.errors === undefined) {
-                        this.errors = {};
-                        this.message = err.response.data.message ?? null;
-                    } else {
-                        this.message = null;
+                    if (err.response?.data?.errors) {
                         this.errors = err.response.data.errors;
+                        this.message = null;
+                    } else {
+                        this.errors = {};
+                        this.message = err.response?.data?.message ?? null;
                     }
                 });
             } catch (err) {
@@ -119,6 +287,6 @@ export default {
                 alertService.error(err);
             }
         },
-    }
+    },
 };
 </script>
