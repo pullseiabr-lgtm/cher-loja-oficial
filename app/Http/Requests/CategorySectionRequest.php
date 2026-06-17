@@ -21,6 +21,7 @@ class CategorySectionRequest extends FormRequest
                 'max:190',
                 Rule::unique('category_sections', 'name')->ignore($this->route('categorySection.id'))
             ],
+            'type'   => ['required', 'string', 'in:categories,products,banner'],
             'status' => ['required', 'numeric', 'max:24'],
         ];
     }

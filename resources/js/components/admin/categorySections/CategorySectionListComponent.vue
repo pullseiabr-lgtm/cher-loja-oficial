@@ -50,6 +50,7 @@
                     <thead class="db-table-head">
                         <tr class="db-table-head-tr">
                             <th class="db-table-head-th">{{ $t("label.name") }}</th>
+                            <th class="db-table-head-th">Tipo</th>
                             <th class="db-table-head-th">{{ $t("label.status") }}</th>
                             <th class="db-table-head-th">{{ $t("label.action") }}</th>
                         </tr>
@@ -61,13 +62,18 @@
                                 <div v-else>{{ categorySection.name.substring(0, 40) + ".." }}</div>
                             </td>
                             <td class="db-table-body-td">
+                                <span :class="typeBadgeClass(categorySection.type)">
+                                    {{ typeLabel(categorySection.type) }}
+                                </span>
+                            </td>
+                            <td class="db-table-body-td">
                                 <span :class="statusClass(categorySection.status)">
                                     {{ enums.statusEnumArray[categorySection.status] }}
                                 </span>
                             </td>
                             <td class="db-table-body-td">
                                 <div class="flex justify-start items-center gap-1.5">
-                                    <SmIconViewComponent :link="'admin.category-sections.show'" :id="categorySection.id" />
+                                    <SmIconViewComponent :link="sectionRoute(categorySection.type)" :id="categorySection.id" />
                                     <SmIconSidebarModalEditComponent @click="edit(categorySection)" />
                                     <SmIconDeleteComponent @click="destroy(categorySection.id)" />
                                 </div>
@@ -76,7 +82,7 @@
                     </tbody>
                     <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="3">
+                            <td class="db-table-body-td text-center" colspan="4">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL + '/images/default/not-found/not_found.png'" alt="Not Found">
@@ -144,6 +150,7 @@ export default {
             props: {
                 form: {
                     name: "",
+                    type: "categories",
                     status: statusEnum.ACTIVE,
                 },
                 search: {
@@ -177,6 +184,25 @@ export default {
         statusClass: function (status) {
             return appService.statusClass(status);
         },
+        sectionRoute: function (type) {
+            const map = {
+                products: 'admin.product-sections.show',
+                banner:   'admin.promotion-sections.show',
+            };
+            return map[type] || 'admin.category-sections.show';
+        },
+        typeLabel: function (type) {
+            const map = { categories: 'Categorias', products: 'Produtos', banner: 'Banner' };
+            return map[type] || 'Categorias';
+        },
+        typeBadgeClass: function (type) {
+            const map = {
+                categories: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800',
+                products:   'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800',
+                banner:     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800',
+            };
+            return map[type] || map.categories;
+        },
         handleSlide: function (id) {
             return appService.handleSlide(id);
         },
@@ -207,6 +233,7 @@ export default {
                 this.props.errors = {};
                 this.props.form = {
                     name: categorySection.name,
+                    type: categorySection.type || 'categories',
                     status: categorySection.status,
                 };
             }).catch((err) => {

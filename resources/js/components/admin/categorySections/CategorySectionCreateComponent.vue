@@ -12,14 +12,45 @@
             <div class="drawer-body">
                 <form @submit.prevent="save">
                     <div class="form-row">
-                        <div class="form-col-12 sm:form-col-6">
+                        <div class="form-col-12">
                             <label for="name" class="db-field-title required">{{ $t("label.name") }}</label>
                             <input v-model="props.form.name" v-bind:class="errors.name ? 'invalid' : ''"
                                 type="text" id="name" class="db-field-control" />
                             <small class="db-field-alert" v-if="errors.name">{{ errors.name[0] }}</small>
                         </div>
 
-                        <div class="form-col-12 sm:form-col-6">
+                        <div class="form-col-12">
+                            <label class="db-field-title required">Tipo de Seção</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="props.form.type" id="typeCategories"
+                                            value="categories" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="typeCategories" class="db-field-label">Categorias</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="props.form.type" id="typeProducts"
+                                            value="products" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="typeProducts" class="db-field-label">Produtos</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="props.form.type" id="typeBanner"
+                                            value="banner" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="typeBanner" class="db-field-label">Banner</label>
+                                </div>
+                            </div>
+                            <small class="db-field-alert" v-if="errors.type">{{ errors.type[0] }}</small>
+                        </div>
+
+                        <div class="form-col-12">
                             <label class="db-field-title required">{{ $t("label.status") }}</label>
                             <div class="db-field-radio-group">
                                 <div class="db-field-radio">
@@ -93,6 +124,7 @@ export default {
             this.errors = {};
             this.$props.props.form = {
                 name: "",
+                type: "categories",
                 status: statusEnum.ACTIVE,
             };
         },
@@ -107,7 +139,7 @@ export default {
                     useCanvas().closeCanvas('sidebar');
                     this.loading.isActive = false;
                     alertService.successFlip(tempId === null ? 0 : 1, "Seção de Categorias");
-                    this.props.form = { name: "", status: statusEnum.ACTIVE };
+                    this.props.form = { name: "", type: "categories", status: statusEnum.ACTIVE };
                     this.errors = {};
                 }).catch((err) => {
                     this.loading.isActive = false;
