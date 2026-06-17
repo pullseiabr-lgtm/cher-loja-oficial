@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('category_section_id')->constrained()->cascadeOnDelete();
             $table->foreignId('promotion_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
-            $table->unique(['category_section_id', 'promotion_id']);
+            $table->unique(['category_section_id', 'promotion_id'], 'cs_promotions_unique');
         });
     }
 
