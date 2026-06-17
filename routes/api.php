@@ -45,6 +45,8 @@ use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategorySectionController;
 use App\Http\Controllers\Admin\CategorySectionCategoryController;
+use App\Http\Controllers\Admin\CategorySectionProductController;
+use App\Http\Controllers\Admin\CategorySectionPromotionController;
 use App\Http\Controllers\Admin\PromotionSectionController;
 use App\Http\Controllers\Admin\PromotionSectionPromotionController;
 use App\Http\Controllers\Admin\ProductSectionController;
@@ -636,6 +638,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
         Route::get('/category/{categorySection}', [CategorySectionCategoryController::class, 'index']);
         Route::post('/category/{categorySection}', [CategorySectionCategoryController::class, 'store']);
         Route::delete('/category/{categorySection}/{categorySectionCategory}', [CategorySectionCategoryController::class, 'destroy']);
+
+        Route::get('/product/{categorySection}', [CategorySectionProductController::class, 'index']);
+        Route::post('/product/{categorySection}', [CategorySectionProductController::class, 'store']);
+        Route::delete('/product/{categorySection}/{categorySectionProduct}', [CategorySectionProductController::class, 'destroy']);
+
+        Route::get('/promotion/{categorySection}', [CategorySectionPromotionController::class, 'index']);
+        Route::post('/promotion/{categorySection}', [CategorySectionPromotionController::class, 'store']);
+        Route::delete('/promotion/{categorySection}/{categorySectionPromotion}', [CategorySectionPromotionController::class, 'destroy']);
     });
 
     Route::prefix('promotion-section')->name('promotion-section.')->group(function () {

@@ -80,6 +80,8 @@ import { productBrand } from "./modules/productBrand";
 import { productCategory } from "./modules/productCategory";
 import { categorySection } from "./modules/categorySection";
 import { categorySectionCategory } from "./modules/categorySectionCategory";
+import { categorySectionProduct } from "./modules/categorySectionProduct";
+import { categorySectionPromotion } from "./modules/categorySectionPromotion";
 import { siteMenu } from "./modules/siteMenu";
 import { siteMenuItem } from "./modules/siteMenuItem";
 import { frontendSiteMenu } from "./modules/frontendSiteMenu";
@@ -179,6 +181,8 @@ export default new createStore({
         promotionSectionPromotion,
         categorySection,
         categorySectionCategory,
+        categorySectionProduct,
+        categorySectionPromotion,
         siteMenu,
         siteMenuItem,
         frontendSiteMenu,

@@ -25,6 +25,16 @@ class CategorySection extends Model
         return $this->hasMany(CategorySectionCategory::class);
     }
 
+    public function categorySectionProducts(): HasMany
+    {
+        return $this->hasMany(CategorySectionProduct::class);
+    }
+
+    public function categorySectionPromotions(): HasMany
+    {
+        return $this->hasMany(CategorySectionPromotion::class);
+    }
+
     public function productCategories(): BelongsToMany
     {
         return $this->belongsToMany(

@@ -18,11 +18,25 @@
                     {{ $t("label.information") }}
                 </button>
 
-                <button type="button"
+                <button v-if="categorySection.type === 'categories'" type="button"
                     @click.prevent="multiTargets($event, 'tab-action', 'tab-content', 'categorySectionCategories')"
                     class="tab-action w-full flex items-center gap-3 h-10 px-4 rounded-lg transition bg-white hover:text-primary hover:bg-primary/5">
                     <i class="lab lab-line-item-categories lab-font-size-16"></i>
                     Categorias
+                </button>
+
+                <button v-if="categorySection.type === 'products'" type="button"
+                    @click.prevent="multiTargets($event, 'tab-action', 'tab-content', 'categorySectionProducts')"
+                    class="tab-action w-full flex items-center gap-3 h-10 px-4 rounded-lg transition bg-white hover:text-primary hover:bg-primary/5">
+                    <i class="lab lab-line-shopping-bag lab-font-size-16"></i>
+                    Produtos
+                </button>
+
+                <button v-if="categorySection.type === 'banner'" type="button"
+                    @click.prevent="multiTargets($event, 'tab-action', 'tab-content', 'categorySectionBanners')"
+                    class="tab-action w-full flex items-center gap-3 h-10 px-4 rounded-lg transition bg-white hover:text-primary hover:bg-primary/5">
+                    <i class="lab lab-line-promotion lab-font-size-16"></i>
+                    Banners
                 </button>
             </div>
 
@@ -46,6 +60,17 @@
                         </div>
                         <div class="col-12 sm:col-6 !py-1.5">
                             <div class="db-list-item p-0">
+                                <span class="db-list-item-title w-full sm:w-1/2">Tipo</span>
+                                <span class="db-list-item-text w-full sm:w-1/2">
+                                    <span v-if="categorySection.type === 'categories'" class="db-badge" style="background:#dbeafe;color:#1d4ed8">Categorias</span>
+                                    <span v-else-if="categorySection.type === 'products'" class="db-badge" style="background:#dcfce7;color:#15803d">Produtos</span>
+                                    <span v-else-if="categorySection.type === 'banner'" class="db-badge" style="background:#f3e8ff;color:#7e22ce">Banner</span>
+                                    <span v-else class="text-gray-400">—</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-12 sm:col-6 !py-1.5">
+                            <div class="db-list-item p-0">
                                 <span class="db-list-item-title w-full sm:w-1/2">{{ $t('label.status') }}</span>
                                 <span class="db-list-item-text">
                                     <span :class="statusClass(categorySection.status)">
@@ -58,8 +83,16 @@
                 </div>
             </div>
 
-            <div class="db-card tab-content" id="categorySectionCategories">
+            <div v-if="categorySection.type === 'categories'" class="db-card tab-content" id="categorySectionCategories">
                 <CategorySectionCategoryListComponent :categorySection="parseInt($route.params.id)" />
+            </div>
+
+            <div v-if="categorySection.type === 'products'" class="db-card tab-content" id="categorySectionProducts">
+                <CategorySectionProductListComponent :categorySection="parseInt($route.params.id)" />
+            </div>
+
+            <div v-if="categorySection.type === 'banner'" class="db-card tab-content" id="categorySectionBanners">
+                <CategorySectionPromotionListComponent :categorySection="parseInt($route.params.id)" />
             </div>
         </div>
     </div>
@@ -71,12 +104,16 @@ import appService from "../../../services/appService";
 import targetService from "../../../services/targetService";
 import statusEnum from "../../../enums/modules/statusEnum";
 import CategorySectionCategoryListComponent from "./category/CategorySectionCategoryListComponent";
+import CategorySectionProductListComponent from "./product/CategorySectionProductListComponent";
+import CategorySectionPromotionListComponent from "./promotion/CategorySectionPromotionListComponent";
 
 export default {
     name: "CategorySectionShowComponent",
     components: {
         LoadingComponent,
-        CategorySectionCategoryListComponent
+        CategorySectionCategoryListComponent,
+        CategorySectionProductListComponent,
+        CategorySectionPromotionListComponent,
     },
     data() {
         return {

@@ -184,12 +184,8 @@ export default {
         statusClass: function (status) {
             return appService.statusClass(status);
         },
-        sectionRoute: function (type) {
-            const map = {
-                products: 'admin.product-sections.show',
-                banner:   'admin.promotion-sections.show',
-            };
-            return map[type] || 'admin.category-sections.show';
+        sectionRoute: function () {
+            return 'admin.category-sections.show';
         },
         typeLabel: function (type) {
             const map = { categories: 'Categorias', products: 'Produtos', banner: 'Banner' };
