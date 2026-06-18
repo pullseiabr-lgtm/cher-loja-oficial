@@ -17,10 +17,11 @@
                     :navigation="true"
                     :modules="modules"
                     class="navigate-swiper"
-                    :breakpoints="section.item_template === 'circle' ? breakpointsCircle : breakpoints"
+                    :breakpoints="swiperBreakpoints(section)"
+                    :centered-slides="isCenteredSwiper(section)"
                 >
                     <SwiperSlide v-for="category in section.categories" :key="category.id"
-                        :class="section.item_template === 'circle' ? '!w-28' : 'mobile:!w-24'">
+                        :class="slideClass(section)">
 
                         <!-- Template: Card -->
                         <router-link v-if="section.item_template !== 'circle'"
@@ -66,7 +67,7 @@
                         :class="['font-bold capitalize', titleSizeClass(section)]"
                     >{{ section.name }}</component>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div :class="productsContainerClass(section)">
                     <ProductListComponent :products="section.products" />
                 </div>
             </div>
@@ -80,27 +81,50 @@
                     :is="titleTag(section)"
                     :class="['font-bold mb-6', titleSizeClass(section), titleAlignClass(section)]"
                 >{{ section.name }}</component>
-                <div class="grid gap-4 sm:gap-6" :style="{ gridTemplateColumns: `repeat(${Math.min(section.promotions.length, 3)}, minmax(0, 1fr))` }">
+
+                <!-- Justificado: grid com colunas iguais -->
+                <div v-if="(section.row_layout || 'justified') === 'justified'"
+                    class="grid gap-4 sm:gap-6"
+                    :style="{ gridTemplateColumns: `repeat(${Math.min(section.promotions.length, 3)}, minmax(0, 1fr))` }">
                     <template v-for="promo in section.promotions" :key="promo.id">
                         <a v-if="promo.link_type === 'custom'" :href="promo.link_url" target="_blank" rel="noopener" class="block w-full">
                             <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
                         </a>
-                        <router-link
-                            v-else-if="promo.link_type === 'category'"
+                        <router-link v-else-if="promo.link_type === 'category'"
                             :to="{ name: 'frontend.product', query: { category: promo.link_url } }"
-                            class="block w-full"
-                        >
+                            class="block w-full">
                             <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
                         </router-link>
-                        <router-link
-                            v-else
+                        <router-link v-else
                             :to="{ name: 'frontend.promotion.products', params: { slug: promo.slug } }"
-                            class="block w-full"
-                        >
+                            class="block w-full">
                             <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
                         </router-link>
                     </template>
                 </div>
+
+                <!-- Esquerda / Centralizado: flex wrap -->
+                <div v-else
+                    class="flex flex-wrap gap-4 sm:gap-6"
+                    :class="(section.row_layout === 'center') ? 'justify-center' : 'justify-start'">
+                    <template v-for="promo in section.promotions" :key="promo.id">
+                        <a v-if="promo.link_type === 'custom'" :href="promo.link_url" target="_blank" rel="noopener"
+                            class="block w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]">
+                            <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
+                        </a>
+                        <router-link v-else-if="promo.link_type === 'category'"
+                            :to="{ name: 'frontend.product', query: { category: promo.link_url } }"
+                            class="block w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]">
+                            <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
+                        </router-link>
+                        <router-link v-else
+                            :to="{ name: 'frontend.promotion.products', params: { slug: promo.slug } }"
+                            class="block w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]">
+                            <img class="w-full block rounded-2xl object-cover aspect-[540/336]" :src="promo.cover" :alt="promo.name" />
+                        </router-link>
+                    </template>
+                </div>
+
             </div>
         </section>
 
@@ -134,17 +158,23 @@ export default {
             loading: {
                 isActive: false,
             },
-            breakpoints: {
+            breakpointsJustified: {
                 0:    { slidesPerView: 'auto', spaceBetween: 16 },
                 640:  { slidesPerView: 4,      spaceBetween: 24 },
                 768:  { slidesPerView: 5,      spaceBetween: 24 },
                 1024: { slidesPerView: 6,      spaceBetween: 24 },
             },
-            breakpointsCircle: {
+            breakpointsJustifiedCircle: {
                 0:    { slidesPerView: 'auto', spaceBetween: 12 },
                 640:  { slidesPerView: 5,      spaceBetween: 16 },
                 768:  { slidesPerView: 6,      spaceBetween: 16 },
                 1024: { slidesPerView: 8,      spaceBetween: 16 },
+            },
+            breakpointsAuto: {
+                0:    { slidesPerView: 'auto', spaceBetween: 16 },
+                640:  { slidesPerView: 'auto', spaceBetween: 24 },
+                768:  { slidesPerView: 'auto', spaceBetween: 24 },
+                1024: { slidesPerView: 'auto', spaceBetween: 24 },
             },
         }
     },
@@ -170,7 +200,7 @@ export default {
             const tag = section.title_tag || 'h2';
             if (tag === 'h1') return 'text-3xl sm:text-5xl';
             if (tag === 'custom') return 'text-lg sm:text-xl';
-            return 'text-2xl sm:text-4xl'; // h2 default
+            return 'text-2xl sm:text-4xl';
         },
         titleAlignClass(section) {
             const pos = section.title_position || 'left';
@@ -183,6 +213,34 @@ export default {
             if (pos === 'center') return 'justify-center';
             if (pos === 'right') return 'justify-end';
             return 'justify-between';
+        },
+
+        swiperBreakpoints(section) {
+            const layout = section.row_layout || 'justified';
+            if (layout !== 'justified') return this.breakpointsAuto;
+            return section.item_template === 'circle'
+                ? this.breakpointsJustifiedCircle
+                : this.breakpointsJustified;
+        },
+
+        isCenteredSwiper(section) {
+            return (section.row_layout || 'justified') === 'center';
+        },
+
+        slideClass(section) {
+            const layout = section.row_layout || 'justified';
+            if (layout === 'justified') {
+                return section.item_template === 'circle' ? '!w-28' : 'mobile:!w-24';
+            }
+            // left / center: auto width — card needs fixed width so slides don't collapse
+            return section.item_template === 'circle' ? '!w-28' : '!w-40 sm:!w-48';
+        },
+
+        productsContainerClass(section) {
+            const layout = section.row_layout || 'justified';
+            if (layout === 'center') return 'flex flex-wrap gap-4 sm:gap-6 justify-center';
+            if (layout === 'left')   return 'flex flex-wrap gap-4 sm:gap-6 justify-start';
+            return 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6';
         },
     },
 }

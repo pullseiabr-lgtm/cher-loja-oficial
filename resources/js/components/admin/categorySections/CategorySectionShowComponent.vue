@@ -101,6 +101,12 @@
                         </div>
                         <div class="col-12 sm:col-6 !py-1.5">
                             <div class="db-list-item p-0">
+                                <span class="db-list-item-title w-full sm:w-1/2">Layout da Linha</span>
+                                <span class="db-list-item-text w-full sm:w-1/2">{{ enums.rowLayoutLabels[categorySection.row_layout] || 'Justificado' }}</span>
+                            </div>
+                        </div>
+                        <div class="col-12 sm:col-6 !py-1.5">
+                            <div class="db-list-item p-0">
                                 <span class="db-list-item-title w-full sm:w-1/2">{{ $t('label.status') }}</span>
                                 <span class="db-list-item-text">
                                     <span :class="statusClass(categorySection.status)">
@@ -235,6 +241,66 @@
                             </div>
                         </div>
 
+                        <!-- Layout da Linha -->
+                        <div class="form-col-12">
+                            <label class="db-field-title">Layout da Linha</label>
+                            <div class="flex gap-4 mt-1">
+                                <!-- Esquerda -->
+                                <button type="button"
+                                    @click="editForm.row_layout = 'left'"
+                                    :class="[
+                                        'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition cursor-pointer',
+                                        editForm.row_layout === 'left'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ]"
+                                >
+                                    <svg width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="4" y="4" width="28" height="10" rx="4" fill="#9ca3af"/>
+                                        <rect x="4" y="19" width="22" height="10" rx="4" fill="#9ca3af"/>
+                                        <rect x="4" y="34" width="30" height="10" rx="4" fill="#9ca3af"/>
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-700">Esquerda</span>
+                                </button>
+
+                                <!-- Centralizado -->
+                                <button type="button"
+                                    @click="editForm.row_layout = 'center'"
+                                    :class="[
+                                        'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition cursor-pointer',
+                                        editForm.row_layout === 'center'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ]"
+                                >
+                                    <svg width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="26" y="4" width="28" height="10" rx="4" fill="#9ca3af"/>
+                                        <rect x="29" y="19" width="22" height="10" rx="4" fill="#9ca3af"/>
+                                        <rect x="25" y="34" width="30" height="10" rx="4" fill="#9ca3af"/>
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-700">Centralizado</span>
+                                </button>
+
+                                <!-- Justificado -->
+                                <button type="button"
+                                    @click="editForm.row_layout = 'justified'"
+                                    :class="[
+                                        'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition cursor-pointer',
+                                        editForm.row_layout === 'justified'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ]"
+                                >
+                                    <svg width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="4" y="4" width="72" height="10" rx="4" fill="#9ca3af"/>
+                                        <rect x="4" y="19" width="72" height="10" rx="4" fill="#9ca3af"/>
+                                        <rect x="4" y="34" width="72" height="10" rx="4" fill="#9ca3af"/>
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-700">Justificado</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Status -->
                         <div class="form-col-12 sm:form-col-6">
                             <label class="db-field-title required">{{ $t('label.status') }}</label>
@@ -320,6 +386,7 @@ export default {
                 title_tag: "h2",
                 title_position: "left",
                 item_template: "card",
+                row_layout: "justified",
                 status: statusEnum.ACTIVE,
             },
             editErrors: {},
@@ -333,6 +400,11 @@ export default {
                     left: 'Esquerda',
                     center: 'Centro',
                     right: 'Direita',
+                },
+                rowLayoutLabels: {
+                    left: 'Esquerda',
+                    center: 'Centralizado',
+                    justified: 'Justificado',
                 },
             },
         }
@@ -364,6 +436,7 @@ export default {
                 title_tag: this.categorySection.title_tag || 'h2',
                 title_position: this.categorySection.title_position || 'left',
                 item_template: this.categorySection.item_template || 'card',
+                row_layout: this.categorySection.row_layout || 'justified',
                 status: this.categorySection.status,
             };
             this.editErrors = {};

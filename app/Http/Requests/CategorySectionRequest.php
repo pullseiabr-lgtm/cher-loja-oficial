@@ -25,6 +25,7 @@ class CategorySectionRequest extends FormRequest
             'title_tag'      => ['nullable', 'string', 'in:h1,h2,custom'],
             'title_position' => ['nullable', 'string', 'in:left,center,right'],
             'item_template'  => ['nullable', 'string', 'in:card,circle'],
+            'row_layout'     => ['nullable', 'string', 'in:left,center,justified'],
             'status'         => ['required', 'numeric', 'max:24'],
         ];
     }
