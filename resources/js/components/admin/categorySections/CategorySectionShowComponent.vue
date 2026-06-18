@@ -81,6 +81,18 @@
                         </div>
                         <div class="col-12 sm:col-6 !py-1.5">
                             <div class="db-list-item p-0">
+                                <span class="db-list-item-title w-full sm:w-1/2">Tag do Título</span>
+                                <span class="db-list-item-text w-full sm:w-1/2 uppercase">{{ categorySection.title_tag || 'h2' }}</span>
+                            </div>
+                        </div>
+                        <div class="col-12 sm:col-6 !py-1.5">
+                            <div class="db-list-item p-0">
+                                <span class="db-list-item-title w-full sm:w-1/2">Posição do Título</span>
+                                <span class="db-list-item-text w-full sm:w-1/2">{{ enums.positionLabels[categorySection.title_position] || 'Esquerda' }}</span>
+                            </div>
+                        </div>
+                        <div class="col-12 sm:col-6 !py-1.5">
+                            <div class="db-list-item p-0">
                                 <span class="db-list-item-title w-full sm:w-1/2">{{ $t('label.status') }}</span>
                                 <span class="db-list-item-text">
                                     <span :class="statusClass(categorySection.status)">
@@ -130,6 +142,68 @@
                                         <span class="custom-radio-span"></span>
                                     </div>
                                     <label for="edit_type_banner" class="db-field-label">Banner</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tag do Título -->
+                        <div class="form-col-12 sm:form-col-6">
+                            <label class="db-field-title">Tag do Título</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.title_tag" id="edit_tag_h1"
+                                            value="h1" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_tag_h1" class="db-field-label">H1</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.title_tag" id="edit_tag_h2"
+                                            value="h2" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_tag_h2" class="db-field-label">H2</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.title_tag" id="edit_tag_custom"
+                                            value="custom" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_tag_custom" class="db-field-label">Custom</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Posição do Título -->
+                        <div class="form-col-12 sm:form-col-6">
+                            <label class="db-field-title">Posição do Título</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.title_position" id="edit_pos_left"
+                                            value="left" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_pos_left" class="db-field-label">Esquerda</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.title_position" id="edit_pos_center"
+                                            value="center" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_pos_center" class="db-field-label">Centro</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.title_position" id="edit_pos_right"
+                                            value="right" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_pos_right" class="db-field-label">Direita</label>
                                 </div>
                             </div>
                         </div>
@@ -216,6 +290,8 @@ export default {
             editForm: {
                 name: "",
                 type: "categories",
+                title_tag: "h2",
+                title_position: "left",
                 status: statusEnum.ACTIVE,
             },
             editErrors: {},
@@ -224,6 +300,11 @@ export default {
                 statusEnumArray: {
                     [statusEnum.ACTIVE]: this.$t("label.active"),
                     [statusEnum.INACTIVE]: this.$t("label.inactive"),
+                },
+                positionLabels: {
+                    left: 'Esquerda',
+                    center: 'Centro',
+                    right: 'Direita',
                 },
             },
         }
@@ -252,6 +333,8 @@ export default {
             this.editForm = {
                 name: this.categorySection.name,
                 type: this.categorySection.type || 'categories',
+                title_tag: this.categorySection.title_tag || 'h2',
+                title_position: this.categorySection.title_position || 'left',
                 status: this.categorySection.status,
             };
             this.editErrors = {};
