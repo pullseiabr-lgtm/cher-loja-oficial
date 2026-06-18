@@ -13,13 +13,15 @@ class CategorySectionWithContentResource extends JsonResource
         $type = $this->type ?? 'categories';
 
         return [
-            'id'         => $this->id,
-            'name'       => $this->name,
-            'slug'       => $this->slug,
-            'type'       => $type,
-            'categories' => $type === 'categories' ? ProductCategoryResource::collection($this->productCategories) : [],
-            'products'   => $type === 'products'   ? $this->serializeProducts() : [],
-            'promotions' => $type === 'banner'     ? $this->serializePromotions() : [],
+            'id'             => $this->id,
+            'name'           => $this->name,
+            'slug'           => $this->slug,
+            'type'           => $type,
+            'title_tag'      => $this->title_tag ?? 'h2',
+            'title_position' => $this->title_position ?? 'left',
+            'categories'     => $type === 'categories' ? ProductCategoryResource::collection($this->productCategories) : [],
+            'products'       => $type === 'products'   ? $this->serializeProducts() : [],
+            'promotions'     => $type === 'banner'     ? $this->serializePromotions() : [],
         ];
     }
 

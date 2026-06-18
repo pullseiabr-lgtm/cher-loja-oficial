@@ -6,7 +6,10 @@
         <!-- Tipo: Categorias -->
         <section v-if="section.type === 'categories' && section.categories && section.categories.length > 0" class="sm:mb-10">
             <div class="container">
-                <h2 class="text-2xl sm:text-4xl font-bold -mb-10">{{ section.name }}</h2>
+                <component
+                    :is="titleTag(section)"
+                    :class="['font-bold -mb-10', titleSizeClass(section), titleAlignClass(section)]"
+                >{{ section.name }}</component>
                 <Swiper
                     dir="ltr"
                     :speed="1000"
@@ -38,8 +41,11 @@
         <!-- Tipo: Produtos -->
         <section v-else-if="section.type === 'products' && section.products && section.products.length > 0" class="mb-10 sm:mb-20">
             <div class="container">
-                <div class="flex items-center justify-between gap-4 mb-5 sm:mb-7">
-                    <h2 class="text-2xl sm:text-4xl font-bold capitalize">{{ section.name }}</h2>
+                <div class="flex items-center gap-4 mb-5 sm:mb-7" :class="titleAlignFlex(section)">
+                    <component
+                        :is="titleTag(section)"
+                        :class="['font-bold capitalize', titleSizeClass(section)]"
+                    >{{ section.name }}</component>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     <ProductListComponent :products="section.products" />
@@ -50,7 +56,11 @@
         <!-- Tipo: Banner -->
         <section v-else-if="section.type === 'banner' && section.promotions && section.promotions.length > 0" class="mb-10 sm:mb-20">
             <div class="container">
-                <h2 v-if="section.name" class="text-2xl sm:text-3xl font-bold mb-6">{{ section.name }}</h2>
+                <component
+                    v-if="section.name"
+                    :is="titleTag(section)"
+                    :class="['font-bold mb-6', titleSizeClass(section), titleAlignClass(section)]"
+                >{{ section.name }}</component>
                 <div class="grid gap-4 sm:gap-6" :style="{ gridTemplateColumns: `repeat(${Math.min(section.promotions.length, 3)}, minmax(0, 1fr))` }">
                     <template v-for="promo in section.promotions" :key="promo.id">
                         <a v-if="promo.link_type === 'custom'" :href="promo.link_url" target="_blank" rel="noopener" class="block w-full">
@@ -125,6 +135,30 @@ export default {
         }).catch(() => {
             this.loading.isActive = false;
         });
+    },
+    methods: {
+        titleTag(section) {
+            const tag = section.title_tag || 'h2';
+            return tag === 'custom' ? 'p' : tag;
+        },
+        titleSizeClass(section) {
+            const tag = section.title_tag || 'h2';
+            if (tag === 'h1') return 'text-3xl sm:text-5xl';
+            if (tag === 'custom') return 'text-lg sm:text-xl';
+            return 'text-2xl sm:text-4xl'; // h2 default
+        },
+        titleAlignClass(section) {
+            const pos = section.title_position || 'left';
+            if (pos === 'center') return 'text-center';
+            if (pos === 'right') return 'text-right';
+            return 'text-left';
+        },
+        titleAlignFlex(section) {
+            const pos = section.title_position || 'left';
+            if (pos === 'center') return 'justify-center';
+            if (pos === 'right') return 'justify-end';
+            return 'justify-between';
+        },
     },
 }
 </script>

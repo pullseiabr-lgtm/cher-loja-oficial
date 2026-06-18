@@ -148,33 +148,12 @@
 
                         <!-- Tag do Título -->
                         <div class="form-col-12 sm:form-col-6">
-                            <label class="db-field-title">Tag do Título</label>
-                            <div class="db-field-radio-group">
-                                <div class="db-field-radio">
-                                    <div class="custom-radio">
-                                        <input type="radio" v-model="editForm.title_tag" id="edit_tag_h1"
-                                            value="h1" class="custom-radio-field" />
-                                        <span class="custom-radio-span"></span>
-                                    </div>
-                                    <label for="edit_tag_h1" class="db-field-label">H1</label>
-                                </div>
-                                <div class="db-field-radio">
-                                    <div class="custom-radio">
-                                        <input type="radio" v-model="editForm.title_tag" id="edit_tag_h2"
-                                            value="h2" class="custom-radio-field" />
-                                        <span class="custom-radio-span"></span>
-                                    </div>
-                                    <label for="edit_tag_h2" class="db-field-label">H2</label>
-                                </div>
-                                <div class="db-field-radio">
-                                    <div class="custom-radio">
-                                        <input type="radio" v-model="editForm.title_tag" id="edit_tag_custom"
-                                            value="custom" class="custom-radio-field" />
-                                        <span class="custom-radio-span"></span>
-                                    </div>
-                                    <label for="edit_tag_custom" class="db-field-label">Custom</label>
-                                </div>
-                            </div>
+                            <label for="edit_title_tag" class="db-field-title">Tag do Título</label>
+                            <select v-model="editForm.title_tag" id="edit_title_tag" class="db-field-control">
+                                <option value="h1">H1</option>
+                                <option value="h2">H2</option>
+                                <option value="custom">Custom (sem tag semântica)</option>
+                            </select>
                         </div>
 
                         <!-- Posição do Título -->
