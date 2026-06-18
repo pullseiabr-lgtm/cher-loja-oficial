@@ -24,6 +24,7 @@ class CategorySectionRequest extends FormRequest
             'type'           => ['required', 'string', 'in:categories,products,banner'],
             'title_tag'      => ['nullable', 'string', 'in:h1,h2,custom'],
             'title_position' => ['nullable', 'string', 'in:left,center,right'],
+            'item_template'  => ['nullable', 'string', 'in:card,circle'],
             'status'         => ['required', 'numeric', 'max:24'],
         ];
     }

@@ -91,6 +91,14 @@
                                 <span class="db-list-item-text w-full sm:w-1/2">{{ enums.positionLabels[categorySection.title_position] || 'Esquerda' }}</span>
                             </div>
                         </div>
+                        <div v-if="categorySection.type === 'categories'" class="col-12 sm:col-6 !py-1.5">
+                            <div class="db-list-item p-0">
+                                <span class="db-list-item-title w-full sm:w-1/2">Template do Item</span>
+                                <span class="db-list-item-text w-full sm:w-1/2">
+                                    {{ categorySection.item_template === 'circle' ? 'Círculo' : 'Card' }}
+                                </span>
+                            </div>
+                        </div>
                         <div class="col-12 sm:col-6 !py-1.5">
                             <div class="db-list-item p-0">
                                 <span class="db-list-item-title w-full sm:w-1/2">{{ $t('label.status') }}</span>
@@ -187,6 +195,46 @@
                             </div>
                         </div>
 
+                        <!-- Template do Item (só para tipo Categorias) -->
+                        <div class="form-col-12" v-if="editForm.type === 'categories'">
+                            <label class="db-field-title">Template do Item</label>
+                            <div class="flex gap-4 mt-1">
+                                <!-- Card -->
+                                <button type="button"
+                                    @click="editForm.item_template = 'card'"
+                                    :class="[
+                                        'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition cursor-pointer',
+                                        editForm.item_template === 'card'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ]"
+                                >
+                                    <svg width="80" height="72" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="2" y="2" width="76" height="52" rx="8" fill="#e5e7eb"/>
+                                        <rect x="12" y="60" width="56" height="8" rx="4" fill="#d1d5db"/>
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-700">Card</span>
+                                </button>
+
+                                <!-- Círculo -->
+                                <button type="button"
+                                    @click="editForm.item_template = 'circle'"
+                                    :class="[
+                                        'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition cursor-pointer',
+                                        editForm.item_template === 'circle'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ]"
+                                >
+                                    <svg width="80" height="72" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="40" cy="30" r="26" fill="#e5e7eb"/>
+                                        <rect x="12" y="62" width="56" height="8" rx="4" fill="#d1d5db"/>
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-700">Círculo</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Status -->
                         <div class="form-col-12 sm:form-col-6">
                             <label class="db-field-title required">{{ $t('label.status') }}</label>
@@ -271,6 +319,7 @@ export default {
                 type: "categories",
                 title_tag: "h2",
                 title_position: "left",
+                item_template: "card",
                 status: statusEnum.ACTIVE,
             },
             editErrors: {},
@@ -314,6 +363,7 @@ export default {
                 type: this.categorySection.type || 'categories',
                 title_tag: this.categorySection.title_tag || 'h2',
                 title_position: this.categorySection.title_position || 'left',
+                item_template: this.categorySection.item_template || 'card',
                 status: this.categorySection.status,
             };
             this.editErrors = {};

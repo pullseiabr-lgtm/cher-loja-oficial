@@ -17,10 +17,13 @@
                     :navigation="true"
                     :modules="modules"
                     class="navigate-swiper"
-                    :breakpoints="breakpoints"
+                    :breakpoints="section.item_template === 'circle' ? breakpointsCircle : breakpoints"
                 >
-                    <SwiperSlide v-for="category in section.categories" :key="category.id" class="mobile:!w-24">
-                        <router-link
+                    <SwiperSlide v-for="category in section.categories" :key="category.id"
+                        :class="section.item_template === 'circle' ? '!w-28' : 'mobile:!w-24'">
+
+                        <!-- Template: Card -->
+                        <router-link v-if="section.item_template !== 'circle'"
                             :to="{ name: 'frontend.product', query: { category: category.slug } }"
                             class="w-full rounded-2xl shadow-xs group"
                         >
@@ -33,6 +36,22 @@
                                 {{ category.name }}
                             </span>
                         </router-link>
+
+                        <!-- Template: Círculo -->
+                        <router-link v-else
+                            :to="{ name: 'frontend.product', query: { category: category.slug } }"
+                            class="flex flex-col items-center gap-2 group"
+                        >
+                            <img
+                                class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
+                                :src="category.thumb"
+                                alt="category"
+                            />
+                            <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
+                                {{ category.name }}
+                            </span>
+                        </router-link>
+
                     </SwiperSlide>
                 </Swiper>
             </div>
@@ -120,6 +139,12 @@ export default {
                 640:  { slidesPerView: 4,      spaceBetween: 24 },
                 768:  { slidesPerView: 5,      spaceBetween: 24 },
                 1024: { slidesPerView: 6,      spaceBetween: 24 },
+            },
+            breakpointsCircle: {
+                0:    { slidesPerView: 'auto', spaceBetween: 12 },
+                640:  { slidesPerView: 5,      spaceBetween: 16 },
+                768:  { slidesPerView: 6,      spaceBetween: 16 },
+                1024: { slidesPerView: 8,      spaceBetween: 16 },
             },
         }
     },

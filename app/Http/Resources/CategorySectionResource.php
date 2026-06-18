@@ -15,6 +15,7 @@ class CategorySectionResource extends JsonResource
             'type'           => $this->type ?? 'categories',
             'title_tag'      => $this->title_tag ?? 'h2',
             'title_position' => $this->title_position ?? 'left',
+            'item_template'  => $this->item_template ?? 'card',
             'status'         => $this->status,
         ];
     }
