@@ -73,8 +73,7 @@
                             </td>
                             <td class="db-table-body-td">
                                 <div class="flex justify-start items-center gap-1.5">
-                                    <SmIconViewComponent :link="sectionRoute(categorySection.type)" :id="categorySection.id" />
-                                    <SmIconSidebarModalEditComponent @click="edit(categorySection)" />
+                                    <SmIconEditComponent link="admin.category-sections.show" :id="categorySection.id" />
                                     <SmIconDeleteComponent @click="destroy(categorySection.id)" />
                                 </div>
                             </td>
@@ -118,8 +117,7 @@ import appService from "../../../services/appService";
 import statusEnum from "../../../enums/modules/statusEnum";
 import TableLimitComponent from "../components/TableLimitComponent";
 import SmIconDeleteComponent from "../components/buttons/SmIconDeleteComponent";
-import SmIconSidebarModalEditComponent from "../components/buttons/SmIconSidebarModalEditComponent";
-import SmIconViewComponent from "../components/buttons/SmIconViewComponent";
+import SmIconEditComponent from "../components/buttons/SmIconEditComponent";
 import FilterComponent from "../components/buttons/collapse/FilterComponent";
 import ENV from "../../../config/env";
 
@@ -133,8 +131,7 @@ export default {
         CategorySectionCreateComponent,
         LoadingComponent,
         SmIconDeleteComponent,
-        SmIconSidebarModalEditComponent,
-        SmIconViewComponent,
+        SmIconEditComponent,
         FilterComponent,
     },
     data() {
@@ -184,9 +181,6 @@ export default {
         statusClass: function (status) {
             return appService.statusClass(status);
         },
-        sectionRoute: function () {
-            return 'admin.category-sections.show';
-        },
         typeLabel: function (type) {
             const map = { categories: 'Categorias', products: 'Produtos', banner: 'Banner' };
             return map[type] || 'Categorias';
@@ -219,21 +213,6 @@ export default {
                 this.loading.isActive = false;
             }).catch(() => {
                 this.loading.isActive = false;
-            });
-        },
-        edit: function (categorySection) {
-            appService.sideDrawerShow();
-            this.loading.isActive = true;
-            this.$store.dispatch("categorySection/edit", categorySection.id).then(() => {
-                this.loading.isActive = false;
-                this.props.errors = {};
-                this.props.form = {
-                    name: categorySection.name,
-                    type: categorySection.type || 'categories',
-                    status: categorySection.status,
-                };
-            }).catch((err) => {
-                alertService.error(err.response.data.message);
             });
         },
         destroy: function (id) {

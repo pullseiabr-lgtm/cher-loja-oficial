@@ -40,11 +40,21 @@
                 </button>
             </div>
 
+            <!-- Aba Informações -->
             <div class="db-card tab-content active" id="categorySectionInformation">
                 <div class="db-card-header">
                     <h3 class="db-card-title">{{ $t('label.information') }}</h3>
+                    <div class="db-card-filter">
+                        <button v-if="!editing" @click="startEdit" type="button"
+                            class="db-btn h-[37px] text-white bg-primary">
+                            <i class="lab lab-line-edit lab-font-size-16"></i>
+                            <span>{{ $t('button.edit') }}</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="db-card-body">
+
+                <!-- Visualização -->
+                <div v-if="!editing" class="db-card-body">
                     <div class="row py-2">
                         <div class="col-12 sm:col-6 !py-1.5">
                             <div class="db-list-item p-0">
@@ -81,6 +91,89 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Formulário de Edição -->
+                <div v-else class="db-card-body">
+                    <div class="form-row">
+                        <!-- Nome -->
+                        <div class="form-col-12 sm:form-col-6">
+                            <label for="editName" class="db-field-title required">{{ $t('label.name') }}</label>
+                            <input v-model="editForm.name" id="editName" type="text"
+                                class="db-field-control" :class="editErrors.name ? 'invalid' : ''" />
+                            <small class="db-field-alert" v-if="editErrors.name">{{ editErrors.name[0] }}</small>
+                        </div>
+
+                        <!-- Tipo -->
+                        <div class="form-col-12 sm:form-col-6">
+                            <label class="db-field-title required">Tipo</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.type" id="edit_type_categories"
+                                            value="categories" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_type_categories" class="db-field-label">Categorias</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.type" id="edit_type_products"
+                                            value="products" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_type_products" class="db-field-label">Produtos</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.type" id="edit_type_banner"
+                                            value="banner" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_type_banner" class="db-field-label">Banner</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="form-col-12 sm:form-col-6">
+                            <label class="db-field-title required">{{ $t('label.status') }}</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.status" id="edit_active"
+                                            :value="enums.statusEnum.ACTIVE" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_active" class="db-field-label">{{ $t('label.active') }}</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input type="radio" v-model="editForm.status" id="edit_inactive"
+                                            :value="enums.statusEnum.INACTIVE" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="edit_inactive" class="db-field-label">{{ $t('label.inactive') }}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões -->
+                        <div class="form-col-12">
+                            <div class="flex gap-3 mt-2">
+                                <button type="button" @click="cancelEdit"
+                                    class="db-btn py-2 text-white bg-gray-500">
+                                    <i class="lab lab-fill-close-circle"></i>
+                                    <span>{{ $t('button.cancel') }}</span>
+                                </button>
+                                <button type="button" @click="saveEdit"
+                                    class="db-btn py-2 text-white bg-primary">
+                                    <i class="lab lab-fill-save"></i>
+                                    <span>{{ $t('button.save') }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div v-if="categorySection.type === 'categories'" class="db-card tab-content" id="categorySectionCategories">
@@ -102,6 +195,7 @@
 import LoadingComponent from "../components/LoadingComponent";
 import appService from "../../../services/appService";
 import targetService from "../../../services/targetService";
+import alertService from "../../../services/alertService";
 import statusEnum from "../../../enums/modules/statusEnum";
 import CategorySectionCategoryListComponent from "./category/CategorySectionCategoryListComponent";
 import CategorySectionProductListComponent from "./product/CategorySectionProductListComponent";
@@ -118,6 +212,13 @@ export default {
     data() {
         return {
             loading: { isActive: false },
+            editing: false,
+            editForm: {
+                name: "",
+                type: "categories",
+                status: statusEnum.ACTIVE,
+            },
+            editErrors: {},
             enums: {
                 statusEnum: statusEnum,
                 statusEnumArray: {
@@ -146,6 +247,49 @@ export default {
         },
         statusClass: function (status) {
             return appService.statusClass(status);
+        },
+        startEdit: function () {
+            this.editForm = {
+                name: this.categorySection.name,
+                type: this.categorySection.type || 'categories',
+                status: this.categorySection.status,
+            };
+            this.editErrors = {};
+            this.editing = true;
+        },
+        cancelEdit: function () {
+            this.editing = false;
+            this.editErrors = {};
+        },
+        saveEdit: function () {
+            try {
+                this.loading.isActive = true;
+                this.$store.dispatch('categorySection/edit', this.$route.params.id).then(() => {
+                    this.$store.dispatch('categorySection/save', {
+                        form: this.editForm,
+                        search: { paginate: 0 },
+                    }).then(() => {
+                        this.$store.dispatch('categorySection/show', this.$route.params.id).then(() => {
+                            this.loading.isActive = false;
+                            this.editing = false;
+                            this.editErrors = {};
+                            alertService.successFlip(1, "Seção");
+                        }).catch(() => {
+                            this.loading.isActive = false;
+                        });
+                    }).catch((err) => {
+                        this.loading.isActive = false;
+                        if (err.response?.data?.errors) {
+                            this.editErrors = err.response.data.errors;
+                        } else {
+                            alertService.error(err.response?.data?.message ?? "Erro ao salvar.");
+                        }
+                    });
+                });
+            } catch (err) {
+                this.loading.isActive = false;
+                alertService.error(err);
+            }
         },
     }
 }
