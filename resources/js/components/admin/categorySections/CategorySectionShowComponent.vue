@@ -102,7 +102,7 @@
                         <div class="col-12 sm:col-6 !py-1.5">
                             <div class="db-list-item p-0">
                                 <span class="db-list-item-title w-full sm:w-1/2">Layout da Linha</span>
-                                <span class="db-list-item-text w-full sm:w-1/2">{{ enums.rowLayoutLabels[categorySection.row_layout] || 'Justificado' }}</span>
+                                <span class="db-list-item-text w-full sm:w-1/2">{{ enums.rowLayoutLabels[categorySection.row_layout] || 'Carrossel' }}</span>
                             </div>
                         </div>
                         <div class="col-12 sm:col-6 !py-1.5">
@@ -244,7 +244,28 @@
                         <!-- Layout da Linha -->
                         <div class="form-col-12">
                             <label class="db-field-title">Layout da Linha</label>
-                            <div class="flex gap-4 mt-1">
+                            <div class="flex flex-wrap gap-4 mt-1">
+                                <!-- Carrossel -->
+                                <button type="button"
+                                    @click="editForm.row_layout = 'carousel'"
+                                    :class="[
+                                        'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition cursor-pointer',
+                                        editForm.row_layout === 'carousel'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ]"
+                                >
+                                    <svg width="80" height="56" viewBox="0 0 80 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="2" y="12" width="18" height="28" rx="4" fill="#d1d5db"/>
+                                        <rect x="16" y="6" width="48" height="38" rx="6" fill="#9ca3af"/>
+                                        <rect x="60" y="12" width="18" height="28" rx="4" fill="#d1d5db"/>
+                                        <circle cx="32" cy="51" r="3" fill="#d1d5db"/>
+                                        <circle cx="40" cy="51" r="3" fill="#9ca3af"/>
+                                        <circle cx="48" cy="51" r="3" fill="#d1d5db"/>
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-700">Carrossel</span>
+                                </button>
+
                                 <!-- Esquerda -->
                                 <button type="button"
                                     @click="editForm.row_layout = 'left'"
@@ -386,7 +407,7 @@ export default {
                 title_tag: "h2",
                 title_position: "left",
                 item_template: "card",
-                row_layout: "justified",
+                row_layout: "carousel",
                 status: statusEnum.ACTIVE,
             },
             editErrors: {},
@@ -402,6 +423,7 @@ export default {
                     right: 'Direita',
                 },
                 rowLayoutLabels: {
+                    carousel: 'Carrossel',
                     left: 'Esquerda',
                     center: 'Centralizado',
                     justified: 'Justificado',
@@ -436,7 +458,7 @@ export default {
                 title_tag: this.categorySection.title_tag || 'h2',
                 title_position: this.categorySection.title_position || 'left',
                 item_template: this.categorySection.item_template || 'card',
-                row_layout: this.categorySection.row_layout || 'justified',
+                row_layout: this.categorySection.row_layout || 'carousel',
                 status: this.categorySection.status,
             };
             this.editErrors = {};
