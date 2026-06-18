@@ -33,7 +33,14 @@
                         </span>
                     </td>
                     <td class="db-table-body-td">
-                        <SmIconDeleteComponent @click="destroy(item.id)" />
+                        <div class="flex justify-start items-center gap-1.5">
+                            <button type="button" @click="edit(item)"
+                                class="db-table-action edit">
+                                <i class="lab lab-line-edit"></i>
+                                <span class="db-tooltip">{{ $t('button.edit') }}</span>
+                            </button>
+                            <SmIconDeleteComponent @click="destroy(item.id)" />
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -54,6 +61,12 @@
             <PaginationBox :pagination="pagination" :method="list" />
         </div>
     </div>
+
+    <CategorySectionPromotionEditComponent
+        ref="editModal"
+        :sectionId="categorySection"
+        :sectionSearch="sectionProps.search"
+    />
 </template>
 
 <script>
@@ -62,6 +75,7 @@ import statusEnum from "../../../../enums/modules/statusEnum";
 import appService from "../../../../services/appService";
 import SmIconDeleteComponent from "../../components/buttons/SmIconDeleteComponent";
 import CategorySectionPromotionCreateComponent from "./CategorySectionPromotionCreateComponent";
+import CategorySectionPromotionEditComponent from "./CategorySectionPromotionEditComponent";
 import TableLimitComponent from "../../components/TableLimitComponent";
 import PaginationTextComponent from "../../components/pagination/PaginationTextComponent";
 import PaginationBox from "../../components/pagination/PaginationBox";
@@ -71,6 +85,7 @@ export default {
     name: "CategorySectionPromotionListComponent",
     components: {
         CategorySectionPromotionCreateComponent,
+        CategorySectionPromotionEditComponent,
         SmIconDeleteComponent,
         TableLimitComponent,
         PaginationTextComponent,
@@ -123,6 +138,9 @@ export default {
     methods: {
         statusClass: function (status) {
             return appService.statusClass(status);
+        },
+        edit: function (item) {
+            this.$refs.editModal.open(item);
         },
         list: function (page = 1) {
             this.loading.isActive = true;
