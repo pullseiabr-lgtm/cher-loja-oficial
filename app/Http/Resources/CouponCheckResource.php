@@ -17,12 +17,14 @@ class CouponCheckResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id'                => $this->id,
-            'code'              => $this->code,
-            'discount'          => $this->amount($request),
-            "flat_discount"     => AppLibrary::flatAmountFormat($this->amount($request)),
-            "convert_discount"  => AppLibrary::convertAmountFormat($this->amount($request)),
-            "currency_discount" => AppLibrary::currencyAmountFormat($this->amount($request)),
+            'id'                  => $this->id,
+            'code'                => $this->code,
+            'discount'            => $this->amount($request),
+            "flat_discount"       => AppLibrary::flatAmountFormat($this->amount($request)),
+            "convert_discount"    => AppLibrary::convertAmountFormat($this->amount($request)),
+            "currency_discount"   => AppLibrary::currencyAmountFormat($this->amount($request)),
+            "discount_type"       => $this->discount_type,
+            "discount_percentage" => $this->discount_type == DiscountType::PERCENTAGE ? $this->discount : null,
         ];
     }
 

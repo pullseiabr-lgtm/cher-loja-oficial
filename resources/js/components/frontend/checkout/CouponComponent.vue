@@ -10,7 +10,11 @@
         <div class="flex-auto overflow-hidden">
             <h4
                 class="font-semibold leading-5 mb-1 whitespace-nowrap overflow-hidden text-ellipsis capitalize text-success">
-                {{ $t('message.coupon_applied') }}</h4>
+                {{ $t('message.coupon_applied') }}
+                <span v-if="cartCoupon.discount_percentage" class="text-xs font-normal">
+                    ({{ cartCoupon.discount_percentage }}% OFF)
+                </span>
+            </h4>
             <h5 class="text-xs font-normal whitespace-nowrap overflow-hidden text-ellipsis">
                 {{ $t('message.you_saved', { amount: cartCoupon.currency_discount }) }}
             </h5>
