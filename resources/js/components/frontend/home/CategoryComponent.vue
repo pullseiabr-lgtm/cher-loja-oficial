@@ -6,8 +6,8 @@
         <!-- ===== CATEGORIAS ===== -->
         <section v-if="section.type === 'categories' && section.categories && section.categories.length > 0" class="sm:mb-10">
             <div class="container">
-                <component :is="titleTag(section)"
-                    :class="['font-bold mb-4 sm:mb-6 text-xl sm:text-2xl', titleAlignClass(section)]"
+                <component v-if="showTitle(section)" :is="titleTag(section)"
+                    :class="['font-bold mb-4 sm:mb-6', titleSizeClass(section), titleAlignClass(section)]"
                 >{{ section.name }}</component>
 
                 <!-- Carrossel -->
@@ -77,7 +77,7 @@
         <!-- ===== PRODUTOS ===== -->
         <section v-else-if="section.type === 'products' && section.products && section.products.length > 0" class="mb-10 sm:mb-20">
             <div class="container">
-                <div class="flex items-center gap-4 mb-5 sm:mb-7" :class="titleAlignFlex(section)">
+                <div v-if="showTitle(section)" class="flex items-center gap-4 mb-5 sm:mb-7" :class="titleAlignFlex(section)">
                     <component :is="titleTag(section)" :class="['font-bold capitalize', titleSizeClass(section)]">
                         {{ section.name }}
                     </component>
@@ -114,7 +114,7 @@
         <!-- ===== BANNERS ===== -->
         <section v-else-if="section.type === 'banner' && section.promotions && section.promotions.length > 0" class="mb-10 sm:mb-20">
             <div class="container">
-                <component v-if="section.name" :is="titleTag(section)"
+                <component v-if="section.name && showTitle(section)" :is="titleTag(section)"
                     :class="['font-bold mb-6', titleSizeClass(section), titleAlignClass(section)]">
                     {{ section.name }}
                 </component>
@@ -276,6 +276,10 @@ export default {
             if (layout === 'center') return 'flex flex-wrap gap-4 sm:gap-6 justify-center';
             if (layout === 'left')   return 'flex flex-wrap gap-4 sm:gap-6 justify-start';
             return 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6';
+        },
+
+        showTitle(section) {
+            return (section.title_position || 'left') !== 'none';
         },
 
         titleTag(section) {

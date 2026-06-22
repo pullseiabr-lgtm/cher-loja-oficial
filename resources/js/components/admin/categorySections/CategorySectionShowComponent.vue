@@ -178,33 +178,13 @@
 
                         <!-- Posição do Título -->
                         <div class="form-col-12 sm:form-col-6">
-                            <label class="db-field-title">Posição do Título</label>
-                            <div class="db-field-radio-group">
-                                <div class="db-field-radio">
-                                    <div class="custom-radio">
-                                        <input type="radio" v-model="editForm.title_position" id="edit_pos_left"
-                                            value="left" class="custom-radio-field" />
-                                        <span class="custom-radio-span"></span>
-                                    </div>
-                                    <label for="edit_pos_left" class="db-field-label">Esquerda</label>
-                                </div>
-                                <div class="db-field-radio">
-                                    <div class="custom-radio">
-                                        <input type="radio" v-model="editForm.title_position" id="edit_pos_center"
-                                            value="center" class="custom-radio-field" />
-                                        <span class="custom-radio-span"></span>
-                                    </div>
-                                    <label for="edit_pos_center" class="db-field-label">Centro</label>
-                                </div>
-                                <div class="db-field-radio">
-                                    <div class="custom-radio">
-                                        <input type="radio" v-model="editForm.title_position" id="edit_pos_right"
-                                            value="right" class="custom-radio-field" />
-                                        <span class="custom-radio-span"></span>
-                                    </div>
-                                    <label for="edit_pos_right" class="db-field-label">Direita</label>
-                                </div>
-                            </div>
+                            <label for="edit_title_position" class="db-field-title">Posição do Título</label>
+                            <select v-model="editForm.title_position" id="edit_title_position" class="db-field-control">
+                                <option value="none">Nenhum (ocultar título)</option>
+                                <option value="left">Esquerda</option>
+                                <option value="center">Centro</option>
+                                <option value="right">Direita</option>
+                            </select>
                         </div>
 
                         <!-- Template do Item (só para tipo Categorias) -->
@@ -442,6 +422,7 @@ export default {
                     [statusEnum.INACTIVE]: this.$t("label.inactive"),
                 },
                 positionLabels: {
+                    none: 'Nenhum (oculto)',
                     left: 'Esquerda',
                     center: 'Centro',
                     right: 'Direita',
