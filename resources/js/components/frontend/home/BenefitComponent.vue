@@ -1,6 +1,6 @@
 <template>
     <LoadingComponent :props="loading" />
-    <section v-if="benefits.length > 0" class="pt-8 pb-24 sm:py-12 border-t border-slate-100">
+    <section v-if="benefits.length > 0" class="sm:py-12 border-t border-slate-100" style="margin-top: -50px; position: relative; z-index: 10;">
         <div class="container">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div v-for="benefit in benefits" class="w-full max-w-[236px] relative ltr:lg:pl-9 rtl:lg:pr-9">
