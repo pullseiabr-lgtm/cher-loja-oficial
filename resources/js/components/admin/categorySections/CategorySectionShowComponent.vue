@@ -99,6 +99,12 @@
                                 </span>
                             </div>
                         </div>
+                        <div v-if="categorySection.type === 'categories'" class="col-12 sm:col-6 !py-1.5">
+                            <div class="db-list-item p-0">
+                                <span class="db-list-item-title w-full sm:w-1/2">Tamanho da Imagem</span>
+                                <span class="db-list-item-text w-full sm:w-1/2">{{ categorySection.item_image_size || 'Padrão' }}</span>
+                            </div>
+                        </div>
                         <div class="col-12 sm:col-6 !py-1.5">
                             <div class="db-list-item p-0">
                                 <span class="db-list-item-title w-full sm:w-1/2">Layout da Linha</span>
@@ -239,6 +245,21 @@
                                     <span class="text-xs font-medium text-gray-700">Círculo</span>
                                 </button>
                             </div>
+                        </div>
+
+                        <!-- Tamanho da Imagem (só para tipo Categorias) -->
+                        <div class="form-col-12 sm:form-col-6" v-if="editForm.type === 'categories'">
+                            <label class="db-field-title">Tamanho da Imagem do Item</label>
+                            <div class="flex gap-2 mt-1">
+                                <input v-model="editImageValue" type="number" min="1" max="999" step="1"
+                                    class="db-field-control" style="max-width:120px" placeholder="80" />
+                                <select v-model="editImageUnit" class="db-field-control" style="max-width:90px">
+                                    <option value="px">px</option>
+                                    <option value="em">em</option>
+                                    <option value="%">%</option>
+                                </select>
+                            </div>
+                            <small class="text-xs text-gray-400 mt-1 block">Deixe vazio para usar o tamanho padrão</small>
                         </div>
 
                         <!-- Layout da Linha -->
@@ -407,9 +428,12 @@ export default {
                 title_tag: "h2",
                 title_position: "left",
                 item_template: "card",
+                item_image_size: "",
                 row_layout: "carousel",
                 status: statusEnum.ACTIVE,
             },
+            editImageValue: "",
+            editImageUnit: "px",
             editErrors: {},
             enums: {
                 statusEnum: statusEnum,
@@ -452,12 +476,17 @@ export default {
             return appService.statusClass(status);
         },
         startEdit: function () {
+            const sizeStr = this.categorySection.item_image_size || '';
+            const match = sizeStr.match(/^(\d+(?:\.\d+)?)(px|em|%)$/);
+            this.editImageValue = match ? match[1] : '';
+            this.editImageUnit = match ? match[2] : 'px';
             this.editForm = {
                 name: this.categorySection.name,
                 type: this.categorySection.type || 'categories',
                 title_tag: this.categorySection.title_tag || 'h2',
                 title_position: this.categorySection.title_position || 'left',
                 item_template: this.categorySection.item_template || 'card',
+                item_image_size: sizeStr || '',
                 row_layout: this.categorySection.row_layout || 'carousel',
                 status: this.categorySection.status,
             };
@@ -470,6 +499,11 @@ export default {
         },
         saveEdit: function () {
             try {
+                if (this.editImageValue && this.editForm.type === 'categories') {
+                    this.editForm.item_image_size = this.editImageValue + this.editImageUnit;
+                } else {
+                    this.editForm.item_image_size = '';
+                }
                 this.loading.isActive = true;
                 this.$store.dispatch('categorySection/edit', this.$route.params.id).then(() => {
                     this.$store.dispatch('categorySection/save', {

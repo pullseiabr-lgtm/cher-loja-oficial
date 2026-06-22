@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CategorySection extends Model
 {
-    protected $fillable = ['name', 'slug', 'type', 'title_tag', 'title_position', 'item_template', 'row_layout', 'status'];
+    protected $fillable = ['name', 'slug', 'type', 'title_tag', 'title_position', 'item_template', 'item_image_size', 'row_layout', 'status'];
 
     protected $casts = [
         'status' => 'integer',

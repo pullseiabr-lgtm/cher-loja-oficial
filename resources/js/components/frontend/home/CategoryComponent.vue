@@ -21,7 +21,8 @@
                             <router-link v-if="section.item_template !== 'circle'"
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="w-full rounded-2xl shadow-xs group">
-                                <img class="w-full h-[120px] object-cover block rounded-tl-2xl rounded-tr-2xl"
+                                <img class="w-full object-cover block rounded-tl-2xl rounded-tr-2xl"
+                                    :style="cardImageStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-sm sm:text-xl font-medium capitalize text-center py-2 px-3 overflow-hidden whitespace-nowrap text-ellipsis block rounded-bl-2xl rounded-br-2xl group-hover:text-primary">
                                     {{ category.name }}
@@ -30,7 +31,8 @@
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="flex flex-col items-center gap-2 group">
-                                <img class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
+                                <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
+                                    :style="circleImageStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
                                     {{ category.name }}
@@ -47,7 +49,8 @@
                             <router-link v-if="section.item_template !== 'circle'"
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="rounded-2xl shadow-xs group w-36 sm:w-44 flex-none">
-                                <img class="w-full h-[100px] object-cover block rounded-tl-2xl rounded-tr-2xl"
+                                <img class="w-full object-cover block rounded-tl-2xl rounded-tr-2xl"
+                                    :style="cardImageStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-sm font-medium capitalize text-center py-2 px-2 overflow-hidden whitespace-nowrap text-ellipsis block rounded-bl-2xl rounded-br-2xl group-hover:text-primary">
                                     {{ category.name }}
@@ -56,7 +59,8 @@
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="flex flex-col items-center gap-2 group flex-none w-24 sm:w-28">
-                                <img class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
+                                <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
+                                    :style="circleImageStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
                                     {{ category.name }}
@@ -293,6 +297,22 @@ export default {
             if (pos === 'center') return 'justify-center';
             if (pos === 'right')  return 'justify-end';
             return 'justify-between';
+        },
+
+        circleImageStyle(section) {
+            const size = section.item_image_size;
+            if (size) {
+                return { width: size, height: size };
+            }
+            return { width: '5rem', height: '5rem' };
+        },
+
+        cardImageStyle(section) {
+            const size = section.item_image_size;
+            if (size) {
+                return { height: size };
+            }
+            return { height: '120px' };
         },
     },
 }
