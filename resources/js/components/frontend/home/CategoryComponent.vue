@@ -7,7 +7,7 @@
         <section v-if="section.type === 'categories' && section.categories && section.categories.length > 0" class="sm:mb-10">
             <div class="container">
                 <component :is="titleTag(section)"
-                    :class="['font-bold -mb-10', titleSizeClass(section), titleAlignClass(section)]"
+                    :class="['font-bold mb-4 sm:mb-6 text-xl sm:text-2xl', titleAlignClass(section)]"
                 >{{ section.name }}</component>
 
                 <!-- Carrossel -->
@@ -30,7 +30,7 @@
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="flex flex-col items-center gap-2 group">
-                                <img class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
+                                <img class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
                                     {{ category.name }}
@@ -42,7 +42,7 @@
 
                 <!-- Linha (esquerda / centralizado / justificado) -->
                 <template v-else>
-                    <div class="mt-10" :class="rowFlexClass(section)">
+                    <div :class="rowFlexClass(section)">
                         <template v-for="category in section.categories" :key="category.id">
                             <router-link v-if="section.item_template !== 'circle'"
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
@@ -56,7 +56,7 @@
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="flex flex-col items-center gap-2 group flex-none w-24 sm:w-28">
-                                <img class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
+                                <img class="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
                                     {{ category.name }}
