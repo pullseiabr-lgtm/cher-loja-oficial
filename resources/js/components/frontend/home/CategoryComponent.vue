@@ -30,7 +30,8 @@
                             </router-link>
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
-                                class="flex flex-col items-center gap-2 group">
+                                class="flex flex-col items-center gap-2 group"
+                                :style="circleLinkStyle(section)">
                                 <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :style="circleImageCustomStyle(section)"
                                     :src="category.thumb" alt="category" />
@@ -58,7 +59,8 @@
                             </router-link>
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
-                                class="flex flex-col items-center gap-2 group flex-none w-24 sm:w-28">
+                                class="flex flex-col items-center gap-2 group flex-none"
+                                :style="circleLinkStyle(section)">
                                 <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :style="circleImageCustomStyle(section)"
                                     :src="category.thumb" alt="category" />
@@ -299,9 +301,14 @@ export default {
             return 'justify-between';
         },
 
+        circleLinkStyle(section) {
+            const size = section.item_image_size || '6em';
+            return { width: size, flexShrink: '0' };
+        },
+
         circleImageCustomStyle(section) {
             const size = section.item_image_size || '6em';
-            return { width: size, height: size };
+            return { width: '100%', aspectRatio: '1 / 1' };
         },
 
         cardImageCustomStyle(section) {
