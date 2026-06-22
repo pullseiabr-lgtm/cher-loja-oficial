@@ -21,7 +21,7 @@
                             <router-link v-if="section.item_template !== 'circle'"
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="w-full rounded-2xl shadow-xs group">
-                                <img :class="cardImageClass(section)"
+                                <img class="w-full object-cover block rounded-tl-2xl rounded-tr-2xl"
                                     :style="cardImageCustomStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-sm sm:text-xl font-medium capitalize text-center py-2 px-3 overflow-hidden whitespace-nowrap text-ellipsis block rounded-bl-2xl rounded-br-2xl group-hover:text-primary">
@@ -31,7 +31,7 @@
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="flex flex-col items-center gap-2 group">
-                                <img :class="circleImageClass(section)"
+                                <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :style="circleImageCustomStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
@@ -49,7 +49,7 @@
                             <router-link v-if="section.item_template !== 'circle'"
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="rounded-2xl shadow-xs group w-36 sm:w-44 flex-none">
-                                <img :class="cardImageClass(section)"
+                                <img class="w-full object-cover block rounded-tl-2xl rounded-tr-2xl"
                                     :style="cardImageCustomStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-sm font-medium capitalize text-center py-2 px-2 overflow-hidden whitespace-nowrap text-ellipsis block rounded-bl-2xl rounded-br-2xl group-hover:text-primary">
@@ -59,7 +59,7 @@
                             <router-link v-else
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="flex flex-col items-center gap-2 group flex-none w-24 sm:w-28">
-                                <img :class="circleImageClass(section)"
+                                <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :style="circleImageCustomStyle(section)"
                                     :src="category.thumb" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
@@ -299,28 +299,14 @@ export default {
             return 'justify-between';
         },
 
-        circleImageClass(section) {
-            const base = 'object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition';
-            if (section.item_image_size) return base;
-            return base + ' w-16 h-16 sm:w-20 sm:h-20';
-        },
-
         circleImageCustomStyle(section) {
-            const size = section.item_image_size;
-            if (size) return { width: size, height: size };
-            return {};
-        },
-
-        cardImageClass(section) {
-            const base = 'w-full object-cover block rounded-tl-2xl rounded-tr-2xl';
-            if (section.item_image_size) return base;
-            return base + ' h-[120px]';
+            const size = section.item_image_size || '80px';
+            return { width: size, height: size };
         },
 
         cardImageCustomStyle(section) {
-            const size = section.item_image_size;
-            if (size) return { height: size };
-            return {};
+            const size = section.item_image_size || '120px';
+            return { height: size };
         },
     },
 }
