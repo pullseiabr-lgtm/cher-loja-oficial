@@ -1,4 +1,6 @@
 <template>
+    <CategorySectionCategoryEditComponent ref="editModal" :sectionId="categorySection" :sectionSearch="sectionProps.search" />
+
     <div class="db-card-header border-none">
         <h3 class="db-card-title">Categorias</h3>
         <div class="db-card-filter">
@@ -36,7 +38,10 @@
                     </td>
                     <td class="db-table-body-td">
                         <div class="flex justify-start items-center gap-1.5">
-                            <SmIconEditComponent link="admin.settings.productCategory.show" :id="item.product_category_id" />
+                            <button type="button" @click="edit(item)" class="db-table-action edit">
+                                <i class="lab lab-line-edit"></i>
+                                <span class="db-tooltip">{{ $t('button.edit') }}</span>
+                            </button>
                             <SmIconDeleteComponent @click="destroy(item.id)" />
                         </div>
                     </td>
@@ -66,8 +71,8 @@ import alertService from "../../../../services/alertService";
 import statusEnum from "../../../../enums/modules/statusEnum";
 import appService from "../../../../services/appService";
 import SmIconDeleteComponent from "../../components/buttons/SmIconDeleteComponent";
-import SmIconEditComponent from "../../components/buttons/SmIconEditComponent";
 import CategorySectionCategoryCreateComponent from "./CategorySectionCategoryCreateComponent";
+import CategorySectionCategoryEditComponent from "./CategorySectionCategoryEditComponent";
 import TableLimitComponent from "../../components/TableLimitComponent";
 import PaginationTextComponent from "../../components/pagination/PaginationTextComponent";
 import PaginationBox from "../../components/pagination/PaginationBox";
@@ -77,7 +82,7 @@ export default {
     name: "CategorySectionCategoryListComponent",
     components: {
         CategorySectionCategoryCreateComponent,
-        SmIconEditComponent,
+        CategorySectionCategoryEditComponent,
         SmIconDeleteComponent,
         TableLimitComponent,
         PaginationTextComponent,
@@ -139,6 +144,9 @@ export default {
             }).catch(() => {
                 this.loading.isActive = false;
             });
+        },
+        edit: function (item) {
+            this.$refs.editModal.open(item);
         },
         destroy: function (id) {
             appService.destroyConfirmation().then(() => {

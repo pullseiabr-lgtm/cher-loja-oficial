@@ -57,6 +57,18 @@ export const categorySectionCategory = {
                 });
             });
         },
+        update: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                const url = `/admin/category-section/category/${payload.categorySection}/${payload.id}`;
+                axios.put(url, payload.form).then(res => {
+                    context.dispatch('lists', payload.search).then().catch();
+                    context.commit('reset');
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
         destroy: function (context, payload) {
             return new Promise((resolve, reject) => {
                 axios.delete(`admin/category-section/category/${payload.categorySection}/${payload.id}`).then((res) => {

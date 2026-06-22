@@ -63,6 +63,20 @@ class CategorySectionCategoryService
     /**
      * @throws Exception
      */
+    public function update(CategorySectionCategoryRequest $request, CategorySection $categorySection, CategorySectionCategory $categorySectionCategory): CategorySectionCategory
+    {
+        try {
+            if ($categorySection->id != $categorySectionCategory->category_section_id) {
+                throw new Exception(trans('all.category_section_mismatch'), 422);
+            }
+            $categorySectionCategory->update($request->validated());
+            return $categorySectionCategory;
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception(QueryExceptionLibrary::message($exception), 422);
+        }
+    }
+
     public function destroy(CategorySection $categorySection, CategorySectionCategory $categorySectionCategory): void
     {
         try {

@@ -25,7 +25,7 @@ class CategorySectionCategoryController extends AdminController implements HasMi
     public static function middleware(): array
     {
         return [
-            new Middleware('permission:settings', only: ['index', 'store', 'destroy']),
+            new Middleware('permission:settings', only: ['index', 'store', 'update', 'destroy']),
         ];
     }
 
@@ -45,6 +45,17 @@ class CategorySectionCategoryController extends AdminController implements HasMi
         try {
             return new CategorySectionCategoryResource(
                 $this->categorySectionCategoryService->store($request, $categorySection)
+            );
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
+    public function update(CategorySectionCategoryRequest $request, CategorySection $categorySection, CategorySectionCategory $categorySectionCategory): \Illuminate\Http\Response|CategorySectionCategoryResource|\Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            return new CategorySectionCategoryResource(
+                $this->categorySectionCategoryService->update($request, $categorySection, $categorySectionCategory)
             );
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);

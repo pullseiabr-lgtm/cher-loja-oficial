@@ -637,6 +637,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum'])->group(func
 
         Route::get('/category/{categorySection}', [CategorySectionCategoryController::class, 'index']);
         Route::post('/category/{categorySection}', [CategorySectionCategoryController::class, 'store']);
+        Route::match(['put', 'patch'], '/category/{categorySection}/{categorySectionCategory}', [CategorySectionCategoryController::class, 'update']);
         Route::delete('/category/{categorySection}/{categorySectionCategory}', [CategorySectionCategoryController::class, 'destroy']);
 
         Route::get('/product/{categorySection}', [CategorySectionProductController::class, 'index']);
