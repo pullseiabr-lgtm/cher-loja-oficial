@@ -70,6 +70,12 @@
                     </button>
                 </div>
             </div>
+            <div v-else class="px-4 pt-2 pb-6 text-center">
+                <div class="flex justify-center mb-3 opacity-30">
+                    <i class="lab-line-percent" style="font-size: 3rem;"></i>
+                </div>
+                <p class="text-sm text-gray-400">Digite seu código de cupom acima e clique em Aplicar</p>
+            </div>
         </div>
     </div>
 </template>
