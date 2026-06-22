@@ -24,7 +24,7 @@
                             <vue-select class="db-field-control f-b-custom-select" id="product_category_id"
                                 v-bind:class="errors.product_category_id ? 'invalid' : ''"
                                 v-model="props.form.product_category_id"
-                                :options="categories" label-by="name" value-by="id"
+                                :options="categories" label-by="option" value-by="id"
                                 :closeOnSelect="true" :searchable="true" :clearOnClose="true"
                                 placeholder="Selecione uma categoria" search-placeholder="Buscar..." />
                             <small class="db-field-alert" v-if="errors.product_category_id">
@@ -55,7 +55,6 @@
 import LoadingComponent from "../../components/LoadingComponent";
 import alertService from "../../../../services/alertService";
 import appService from "../../../../services/appService";
-import statusEnum from "../../../../enums/modules/statusEnum";
 
 export default {
     name: "CategorySectionCategoryCreateComponent",
@@ -70,18 +69,12 @@ export default {
     },
     computed: {
         categories: function () {
-            return this.$store.getters['productCategory/lists'];
+            return this.$store.getters['productCategory/depthTrees'];
         },
     },
     mounted() {
         this.loading.isActive = true;
-        this.$store.dispatch('productCategory/lists', {
-            paginate: 0,
-            order_column: 'name',
-            order_type: 'asc',
-            parent_id: null,
-            status: statusEnum.ACTIVE,
-        });
+        this.$store.dispatch('productCategory/depthTrees');
         this.loading.isActive = false;
     },
     methods: {
