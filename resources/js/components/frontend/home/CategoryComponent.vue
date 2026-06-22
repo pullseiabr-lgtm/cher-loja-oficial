@@ -300,7 +300,7 @@ export default {
         },
 
         circleImageCustomStyle(section) {
-            const size = section.item_image_size || '80px';
+            const size = section.item_image_size || '6em';
             return { width: size, height: size };
         },
 
