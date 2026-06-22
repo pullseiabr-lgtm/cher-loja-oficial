@@ -1,12 +1,16 @@
 <template>
     <LoadingComponent :props="loading" />
-    <section v-if="benefits.length > 0" class="sm:py-12 border-t border-b border-slate-100" style="margin-top: -30px; margin-bottom: 20px; position: relative; z-index: 10;">
+    <section v-if="benefits.length > 0" style="margin-top: -30px; margin-bottom: 20px; position: relative; z-index: 10; background: #f5f5f0; border-top: 2px solid #c5c5b8; border-bottom: 2px solid #c5c5b8;">
         <div class="container">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div v-for="benefit in benefits" class="w-full max-w-[236px] relative ltr:lg:pl-9 rtl:lg:pr-9">
-                    <img :src="benefit.thumb" alt="benefit" class="w-6 mb-4 lg:mb-0 lg:absolute lg:top-0 ltr:lg:left-0 rtl:lg:right-0">
-                    <h4 class="text-base font-semibold capitalize mb-2">{{ benefit.title }}</h4>
-                    <p class="text-sm">{{ benefit.description }}</p>
+            <div class="flex items-stretch justify-center">
+                <div v-for="(benefit, index) in benefits" :key="benefit.id"
+                    class="flex items-center gap-3 px-6 py-3"
+                    :style="index > 0 ? 'border-left: 1px solid #c5c5b8' : ''">
+                    <img :src="benefit.thumb" alt="benefit" class="w-8 h-8 object-contain flex-shrink-0" style="opacity: 0.7;">
+                    <div>
+                        <h4 class="text-sm font-bold uppercase tracking-wide text-gray-700 leading-tight">{{ benefit.title }}</h4>
+                        <p class="text-xs text-gray-500 leading-tight mt-0.5">{{ benefit.description }}</p>
+                    </div>
                 </div>
             </div>
         </div>
