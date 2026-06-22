@@ -1,6 +1,8 @@
 <template>
     <SliderComponent />
 
+    <BenefitComponent />
+
     <CategoryComponent />
 
     <PromotionSectionComponent />
@@ -14,8 +16,6 @@
     <ProductBrandComponent />
 
     <TestimonialComponent />
-
-    <BenefitComponent />
 </template>
 
 <script>
