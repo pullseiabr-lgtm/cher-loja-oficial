@@ -102,6 +102,7 @@ class CouponService
                 'minimum_order'    => $request->minimum_order,
                 'maximum_discount' => $request->maximum_discount,
                 'limit_per_user'   => $request->limit_per_user,
+                'show_in_modal'    => $request->show_in_modal,
             ]);
             if ($request->image) {
                 $this->coupon->addMedia($request->image)->toMediaCollection('coupon');
@@ -137,6 +138,7 @@ class CouponService
                 $coupon->minimum_order    = $request->minimum_order;
                 $coupon->maximum_discount = $request->maximum_discount;
                 $coupon->limit_per_user   = $request->limit_per_user;
+                $coupon->show_in_modal    = $request->show_in_modal;
                 $coupon->save();
                 if ($request->image) {
                     $coupon->media()->delete();
