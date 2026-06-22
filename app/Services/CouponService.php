@@ -182,7 +182,7 @@ class CouponService
     public function couponDateWise(): \Illuminate\Database\Eloquent\Collection
     {
         try {
-            return Coupon::all()->filter(function ($item) {
+            return Coupon::where('show_in_modal', true)->get()->filter(function ($item) {
                 if (Carbon::now()->isBetween($item->start_date, $item->end_date)) {
                     return $item;
                 }

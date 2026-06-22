@@ -240,6 +240,7 @@ export default {
                     minimum_order: "",
                     maximum_discount: "",
                     limit_per_user: "",
+                    show_in_modal: 1,
                 },
                 search: {
                     paginate: 1,
@@ -350,6 +351,7 @@ export default {
                     minimum_order: coupon.minimum_order_flat_amount,
                     maximum_discount: coupon.maximum_flat_discount,
                     limit_per_user: coupon.limit_per_user,
+                    show_in_modal: coupon.show_in_modal ? 1 : 0,
                 };
             }).catch((err) => {
                 alertService.error(err.response.data.message);
