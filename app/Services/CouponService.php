@@ -201,6 +201,30 @@ class CouponService
     /**
      * @throws Exception
      */
+    public function firstPurchaseCoupons(): \Illuminate\Database\Eloquent\Collection
+    {
+        try {
+            $userId = auth()->user()->id;
+            $previousOrders = Order::where('user_id', $userId)->count();
+
+            if ($previousOrders > 0) {
+                return new \Illuminate\Database\Eloquent\Collection();
+            }
+
+            return Coupon::where('first_purchase_only', true)->get()->filter(function ($item) {
+                if (Carbon::now()->isBetween($item->start_date, $item->end_date)) {
+                    return $item;
+                }
+            });
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception(QueryExceptionLibrary::message($exception), 422);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
     public function couponChecking(CouponCheckRequest $request)
     {
         try {

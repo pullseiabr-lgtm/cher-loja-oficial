@@ -6,6 +6,7 @@ export const frontendCoupon = {
     state: {
         lists: [],
         show: {},
+        firstPurchase: [],
     },
     getters: {
         lists: function (state) {
@@ -13,6 +14,9 @@ export const frontendCoupon = {
         },
         show: function (state) {
             return state.show;
+        },
+        firstPurchase: function (state) {
+            return state.firstPurchase;
         },
     },
     actions: {
@@ -44,6 +48,16 @@ export const frontendCoupon = {
                 });
             }
         },
+        firstPurchase: function (context) {
+            return new Promise((resolve, reject) => {
+                axios.get("frontend/coupon/first-purchase").then((res) => {
+                    context.commit("firstPurchase", res.data.data);
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
         checking: function(context, payload) {
             if(payload) {
                 return new Promise((resolve, reject) => {
@@ -62,6 +76,9 @@ export const frontendCoupon = {
         },
         show: function (state, payload) {
             state.show = payload;
-        }
+        },
+        firstPurchase: function (state, payload) {
+            state.firstPurchase = payload;
+        },
     },
 };

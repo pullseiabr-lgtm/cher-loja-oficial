@@ -33,6 +33,15 @@ class CouponController extends Controller
         }
     }
 
+    public function firstPurchase() : \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    {
+        try {
+            return CouponResource::collection($this->couponService->firstPurchaseCoupons());
+        } catch (Exception $exception) {
+            return response(['status' => false, 'message' => $exception->getMessage()], 422);
+        }
+    }
+
     public function couponChecking(CouponCheckRequest $request) : \Illuminate\Http\Response | CouponCheckResource | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {

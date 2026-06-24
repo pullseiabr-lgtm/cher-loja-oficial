@@ -919,6 +919,7 @@ Route::prefix('frontend')->name('frontend.')->middleware(['installed', 'apiKey',
     Route::prefix('coupon')->name('coupon.')->group(function () {
         Route::get('/', [FrontendCouponController::class, 'index']);
         Route::post('/coupon-checking', [FrontendCouponController::class, 'couponChecking']);
+        Route::get('/first-purchase', [FrontendCouponController::class, 'firstPurchase'])->middleware('auth:sanctum');
     });
 
     Route::prefix('payment-gateway')->name('payment-gateway.')->group(function () {

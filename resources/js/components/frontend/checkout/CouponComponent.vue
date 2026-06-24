@@ -1,5 +1,37 @@
 <template>
     <LoadingComponent :props="loading" />
+
+    <!-- First Purchase Gift Card -->
+    <div v-if="firstPurchaseCoupon && Object.keys(cartCoupon).length === 0"
+        style="margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #fff8f0 0%, #fff1e6 50%, #ffe8d6 100%); border: 1px solid #f0d4b8; position: relative;">
+        <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: radial-gradient(circle, rgba(255,183,77,0.15) 0%, transparent 70%); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -15px; left: -15px; width: 60px; height: 60px; background: radial-gradient(circle, rgba(255,138,101,0.1) 0%, transparent 70%); border-radius: 50%;"></div>
+        <div style="display: flex; align-items: stretch;">
+            <div v-if="firstPurchaseCoupon.image" style="width: 110px; flex-shrink: 0; padding: 16px 0 16px 16px; display: flex; align-items: center;">
+                <img :src="firstPurchaseCoupon.image" alt="presente"
+                    style="width: 100%; height: auto; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
+            </div>
+            <div style="flex: 1; padding: 16px 16px 14px 16px; display: flex; flex-direction: column; justify-content: center;">
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                    <span style="font-size: 1.2rem;">🎁</span>
+                    <span style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: #c77d3a;">Exclusivo para você</span>
+                </div>
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: #5a3e28; line-height: 1.3; margin-bottom: 8px;">
+                    {{ firstPurchaseCoupon.description || 'Tem presente pra Você' }}
+                </h4>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span style="display: inline-block; background: linear-gradient(135deg, #ff8a65, #ff7043); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px;">
+                        {{ firstPurchaseCoupon.code }}
+                    </span>
+                    <button @click.prevent="applyFirstPurchaseCoupon"
+                        style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(76,175,80,0.3);">
+                        Usar cupom ✨
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div v-if="Object.keys(cartCoupon).length !== 0"
         class="mb-6 rounded-2xl border border-success flex items-center gap-3 p-4 cursor-pointer">
         <div class="relative flex-shrink-0">
@@ -106,6 +138,10 @@ export default {
         },
         cartCoupon: function () {
             return this.$store.getters['frontendCart/coupon'];
+        },
+        firstPurchaseCoupon: function () {
+            const list = this.$store.getters['frontendCoupon/firstPurchase'];
+            return list && list.length > 0 ? list[0] : null;
         }
     },
     mounted() {
@@ -115,6 +151,11 @@ export default {
         }).catch((err) => {
             this.loading.isActive = false;
         });
+
+        const authToken = this.$store.getters['auth/authToken'];
+        if (authToken) {
+            this.$store.dispatch("frontendCoupon/firstPurchase").catch(() => {});
+        }
     },
     methods: {
         showTarget: function (id, cClass) {
@@ -127,6 +168,12 @@ export default {
         },
         appCouponButton(coupon) {
             this.code = coupon.code;
+        },
+        applyFirstPurchaseCoupon() {
+            if (this.firstPurchaseCoupon) {
+                this.code = this.firstPurchaseCoupon.code;
+                this.couponChecking();
+            }
         },
         couponChecking() {
             this.loading.isActive = true;
