@@ -170,7 +170,10 @@
                         <label for="description" class="db-field-title">{{
                             $t("label.description")
                         }}</label>
-                        <quill-editor v-model:content="props.form.description" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; max-height: 250px; overflow-y: auto;" />
+                        <button type="button" @click="showDescriptionModal = true" class="db-btn py-2 text-white bg-blue-500 w-full">
+                            <i class="lab lab-fill-edit"></i>
+                            <span>Editar Descrição</span>
+                        </button>
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
                     <div class="form-col-12">
@@ -188,6 +191,30 @@
                 </div>
             </form>
         </div>
+        </div>
+    </div>
+
+    <!-- Description Modal -->
+    <div v-if="showDescriptionModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4">
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+                <h3 class="text-lg font-bold">{{ $t("label.description") }}</h3>
+                <button @click="showDescriptionModal = false" class="text-gray-500 hover:text-gray-700">
+                    <i class="lab lab-fill-close-circle text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <quill-editor v-model:content="props.form.description" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 400px;" />
+            </div>
+            <div class="sticky bottom-0 bg-white border-t border-gray-200 p-4 flex justify-end gap-3">
+                <button @click="showDescriptionModal = false" class="modal-btn-outline">
+                    <span>{{ $t("button.close") }}</span>
+                </button>
+                <button @click="showDescriptionModal = false" class="db-btn py-2 text-white bg-primary">
+                    <i class="lab lab-fill-check"></i>
+                    <span>{{ $t("button.save") }}</span>
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -223,6 +250,7 @@ export default {
             image: "",
             imagePreview: "",
             errors: {},
+            showDescriptionModal: false,
             quillModules: {
                 toolbar: [
                     ['bold', 'italic', 'underline', 'strike'],
