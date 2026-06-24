@@ -148,16 +148,21 @@ export default {
         this.loading.isActive = true;
         this.$store.dispatch("frontendCoupon/lists", {}).then(res => {
             this.loading.isActive = false;
+            this.loadFirstPurchase();
         }).catch((err) => {
             this.loading.isActive = false;
+            this.loadFirstPurchase();
         });
-
-        const authToken = this.$store.getters['authToken'];
-        if (authToken) {
-            this.$store.dispatch("frontendCoupon/firstPurchase").catch(() => {});
-        }
     },
     methods: {
+        loadFirstPurchase() {
+            try {
+                const vuex = JSON.parse(localStorage.getItem('vuex'));
+                if (vuex && vuex.auth && vuex.auth.authToken) {
+                    this.$store.dispatch("frontendCoupon/firstPurchase").catch(() => {});
+                }
+            } catch (e) {}
+        },
         showTarget: function (id, cClass) {
             targetService.showTarget(id, cClass);
         },
