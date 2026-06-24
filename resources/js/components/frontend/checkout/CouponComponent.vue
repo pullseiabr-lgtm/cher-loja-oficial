@@ -11,20 +11,14 @@
                 <img :src="firstPurchaseCoupon.image" alt="presente"
                     style="width: 100%; height: auto; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
             </div>
-            <div style="flex: 1; padding: 16px 16px 14px 16px; display: flex; flex-direction: column; justify-content: center;">
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                    <span style="font-size: 1.2rem;">🎁</span>
-                    <span style="font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: #c77d3a;">Exclusivo para você</span>
-                </div>
-                <h4 style="font-size: 0.95rem; font-weight: 700; color: #5a3e28; line-height: 1.3; margin-bottom: 8px;">
+            <div style="flex: 1; padding: 16px 16px 14px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;">
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: #5a3e28; line-height: 1.3; text-align: center;">
                     {{ firstPurchaseCoupon.description || 'Tem presente pra Você' }}
                 </h4>
-                <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                    <button @click.prevent="applyFirstPurchaseCoupon"
-                        style="width: 70%; padding: 8px 16px; background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; font-size: 0.75rem; font-weight: 600; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(76,175,80,0.3); text-align: center;">
-                        Resgatar
-                    </button>
-                </div>
+                <button @click.prevent="applyFirstPurchaseCoupon"
+                    style="width: 70%; padding: 8px 16px; background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; font-size: 0.75rem; font-weight: 600; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(76,175,80,0.3); text-align: center;">
+                    Resgatar
+                </button>
             </div>
         </div>
     </div>
