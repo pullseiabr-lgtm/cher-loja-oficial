@@ -4,12 +4,12 @@
 
     <div id="sidebar" @click.self="reset"
         class="fixed inset-0 z-50 bg-black/50 duration-500 transition-all invisible opacity-0 flex items-center justify-center p-4">
-        <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto thin-scrolling bg-white rounded-lg">
-        <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+        <div class="w-full max-w-2xl max-h-[90vh] bg-white rounded-lg flex flex-col">
+        <div class="bg-white border-b border-gray-200 p-4 flex justify-between items-center flex-shrink-0">
             <h3 class="text-lg font-bold">{{ $t("menu.coupons") }}</h3>
             <button class="fa-solid fa-xmark close-btn text-xl text-gray-500 hover:text-gray-700" @click="reset"></button>
         </div>
-        <div class="p-6">
+        <div class="p-6 overflow-y-auto thin-scrolling flex-grow">
             <form @submit.prevent="save">
                 <div class="form-row">
                     <div class="form-col-12 sm:form-col-6">
@@ -173,20 +173,18 @@
                         <quill-editor v-model:content="props.form.description" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 250px;" />
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
-                    <div class="form-col-12">
-                        <div class="flex flex-wrap gap-3 mt-4">
-                            <button type="submit" class="db-btn py-2 text-white bg-primary">
-                                <i class="lab lab-fill-save"></i>
-                                <span>{{ $t("label.save") }}</span>
-                            </button>
-                            <button type="button" class="modal-btn-outline modal-close" @click="reset">
-                                <i class="lab lab-fill-close-circle"></i>
-                                <span>{{ $t("button.close") }}</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </form>
+        </div>
+        <div class="bg-white border-t border-gray-200 p-4 flex justify-end gap-3 flex-shrink-0">
+            <button type="button" class="modal-btn-outline modal-close" @click="reset">
+                <i class="lab lab-fill-close-circle"></i>
+                <span>{{ $t("button.close") }}</span>
+            </button>
+            <button @click="save" class="db-btn py-2 text-white bg-primary">
+                <i class="lab lab-fill-save"></i>
+                <span>{{ $t("label.save") }}</span>
+            </button>
         </div>
         </div>
     </div>
