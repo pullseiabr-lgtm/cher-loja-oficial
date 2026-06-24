@@ -12,6 +12,7 @@ use App\Models\Stock;
 use App\Models\Product;
 use App\Enums\OrderType;
 use App\Models\StockTax;
+use App\Models\OrderCoupon;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Events\SendOrderSms;
@@ -380,6 +381,11 @@ class OrderService
                     }
                     $order?->orderProducts()->delete();
                 }
+                $order->transaction()->delete();
+                $order->address()->delete();
+                $order->outletAddress()->delete();
+                $order->returnAndRefund()->delete();
+                OrderCoupon::where('order_id', $order->id)->delete();
                 $order->delete();
             });
         } catch (Exception $exception) {
