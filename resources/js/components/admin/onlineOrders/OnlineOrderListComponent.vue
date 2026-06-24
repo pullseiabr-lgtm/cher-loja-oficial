@@ -120,6 +120,8 @@
                                 <div class="flex justify-start items-center sm:items-start sm:justify-start gap-1.5">
                                     <SmIconViewComponent :link="'admin.order.show'" :id="order.id"
                                         v-if="permissionChecker('online-orders')" />
+                                    <SmIconDeleteComponent @click="destroy(order.id)"
+                                        v-if="permissionChecker('online-orders')" />
                                 </div>
                             </td>
                         </tr>
@@ -300,6 +302,31 @@ export default {
             this.props.search.page = page;
             this.$store.dispatch('onlineOrder/lists', this.props.search).then(res => {
                 this.loading.isActive = false;
+            }).catch((err) => {
+                this.loading.isActive = false;
+            });
+        },
+        destroy: function (id) {
+            appService.destroyConfirmation().then((res) => {
+                try {
+                    this.loading.isActive = true;
+                    this.$store.dispatch("onlineOrder/destroy", {
+                        id: id,
+                        search: this.props.search,
+                    }).then((res) => {
+                        this.loading.isActive = false;
+                        alertService.successFlip(
+                            null,
+                            this.$t("menu.online_orders")
+                        );
+                    }).catch((err) => {
+                        this.loading.isActive = false;
+                        alertService.error(err.response.data.message);
+                    });
+                } catch (err) {
+                    this.loading.isActive = false;
+                    alertService.error(err.response.data.message);
+                }
             }).catch((err) => {
                 this.loading.isActive = false;
             });

@@ -110,6 +110,16 @@ export const onlineOrder = {
                 });
             });
         },
+        destroy: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios.delete(`admin/online-order/${payload.id}`).then((res) => {
+                    context.dispatch('lists', payload.search).then().catch();
+                    resolve(res);
+                }).catch((err) => {
+                    reject(err);
+                });
+            });
+        },
         reset: function (context) {
             context.commit('reset');
         },
