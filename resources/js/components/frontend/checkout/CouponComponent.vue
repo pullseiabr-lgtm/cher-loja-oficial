@@ -19,9 +19,9 @@
                 <h4 style="font-size: 0.95rem; font-weight: 700; color: #5a3e28; line-height: 1.3; margin-bottom: 8px;">
                     {{ firstPurchaseCoupon.description || 'Tem presente pra Você' }}
                 </h4>
-                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
                     <button @click.prevent="applyFirstPurchaseCoupon"
-                        style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(76,175,80,0.3);">
+                        style="width: 70%; padding: 8px 16px; background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; font-size: 0.75rem; font-weight: 600; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(76,175,80,0.3); text-align: center;">
                         Resgatar
                     </button>
                 </div>
