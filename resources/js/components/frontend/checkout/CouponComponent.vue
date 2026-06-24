@@ -20,12 +20,9 @@
                     {{ firstPurchaseCoupon.description || 'Tem presente pra Você' }}
                 </h4>
                 <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    <span style="display: inline-block; background: linear-gradient(135deg, #ff8a65, #ff7043); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px;">
-                        {{ firstPurchaseCoupon.code }}
-                    </span>
                     <button @click.prevent="applyFirstPurchaseCoupon"
                         style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(76,175,80,0.3);">
-                        Usar cupom ✨
+                        Resgatar
                     </button>
                 </div>
             </div>
@@ -51,7 +48,7 @@
         <button @click.prevent="destroyCoupon" class="lab-line-trash lab-font-size-xl text-danger"></button>
     </div>
 
-    <div v-else @click.prevent="showTarget('coupon-modal', 'modal-active')"
+    <div v-if="!firstPurchaseCoupon && Object.keys(cartCoupon).length === 0" @click.prevent="showTarget('coupon-modal', 'modal-active')"
         class="mb-6 rounded-2xl border border-focus flex items-center gap-3 p-4 cursor-pointer">
         <div class="relative flex-shrink-0">
             <i class="lab lab-fill-shape lab-font-size-2xl opacity-[0.3] text-focus"></i>
