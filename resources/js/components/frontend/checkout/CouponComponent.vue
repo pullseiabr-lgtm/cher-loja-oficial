@@ -152,7 +152,7 @@ export default {
             this.loading.isActive = false;
         });
 
-        const authToken = this.$store.getters['auth/authToken'];
+        const authToken = this.$store.getters['authToken'];
         if (authToken) {
             this.$store.dispatch("frontendCoupon/firstPurchase").catch(() => {});
         }
