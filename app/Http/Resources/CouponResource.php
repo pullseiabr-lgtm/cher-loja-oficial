@@ -44,7 +44,8 @@ class CouponResource extends JsonResource
             "maximum_currency_discount" => AppLibrary::currencyAmountFormat($this->maximum_discount),
 
             'limit_per_user' => $this->limit_per_user === null ? 0 : $this->limit_per_user,
-            'show_in_modal'  => (bool) ($this->show_in_modal ?? true),
+            'show_in_modal'       => (bool) ($this->show_in_modal ?? true),
+            'first_purchase_only' => (bool) ($this->first_purchase_only ?? false),
             "image"          => $this->image,
         ];
     }

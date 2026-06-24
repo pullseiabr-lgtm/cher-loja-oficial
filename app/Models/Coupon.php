@@ -24,7 +24,8 @@ class Coupon extends Model implements HasMedia
         'minimum_order',
         'maximum_discount',
         'limit_per_user',
-        'show_in_modal'
+        'show_in_modal',
+        'first_purchase_only'
     ];
     protected $casts = [
         'id'               => 'integer',
@@ -38,7 +39,8 @@ class Coupon extends Model implements HasMedia
         'minimum_order'    => 'decimal:6',
         'maximum_discount' => 'decimal:6',
         'limit_per_user'   => 'integer',
-        'show_in_modal'    => 'boolean',
+        'show_in_modal'        => 'boolean',
+        'first_purchase_only'  => 'boolean',
     ];
 
     public function getImageAttribute(): string

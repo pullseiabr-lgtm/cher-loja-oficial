@@ -136,6 +136,28 @@
                         </div>
                     </div>
                     <div class="form-col-12 sm:form-col-6">
+                        <label class="db-field-title">Apenas Primeira Compra</label>
+                        <div class="db-field-radio-group">
+                            <div class="db-field-radio">
+                                <div class="custom-radio">
+                                    <input :value="1" v-model="props.form.first_purchase_only"
+                                        id="first_purchase_yes" type="radio" class="custom-radio-field" />
+                                    <span class="custom-radio-span"></span>
+                                </div>
+                                <label for="first_purchase_yes" class="db-field-label">Sim</label>
+                            </div>
+                            <div class="db-field-radio">
+                                <div class="custom-radio">
+                                    <input :value="0" v-model="props.form.first_purchase_only"
+                                        type="radio" id="first_purchase_no" class="custom-radio-field" />
+                                    <span class="custom-radio-span"></span>
+                                </div>
+                                <label for="first_purchase_no" class="db-field-label">Não</label>
+                            </div>
+                        </div>
+                        <small class="text-xs text-gray-400 mt-1 block">Cupom válido apenas para clientes que nunca compraram</small>
+                    </div>
+                    <div class="form-col-12 sm:form-col-6">
                         <label class="db-field-title required">{{ $t("label.image") }}</label>
                         <input @change="changeImage" v-bind:class="errors.image ? 'invalid' : ''" id="image" type="file"
                             class="db-field-control" ref="imageProperty" accept="image/png, image/jpeg, image/jpg" />
@@ -225,6 +247,7 @@ export default {
                 maximum_discount: "",
                 limit_per_user: "",
                 show_in_modal: 1,
+                first_purchase_only: 0,
             };
             if (this.image) {
                 this.image = "";
@@ -246,6 +269,7 @@ export default {
                 fd.append("maximum_discount", this.props.form.maximum_discount);
                 fd.append("limit_per_user", this.props.form.limit_per_user);
                 fd.append("show_in_modal", this.props.form.show_in_modal);
+                fd.append("first_purchase_only", this.props.form.first_purchase_only);
                 if (this.image) {
                     fd.append("image", this.image);
                 }
@@ -275,6 +299,7 @@ export default {
                             maximum_discount: "",
                             limit_per_user: "",
                             show_in_modal: 1,
+                            first_purchase_only: 0,
                         };
                         this.image = "";
                         this.errors = {};

@@ -7,6 +7,7 @@ namespace App\Services;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Coupon;
+use App\Models\Order;
 use App\Models\OrderCoupon;
 use App\Libraries\AppLibrary;
 use Illuminate\Support\Facades\DB;
@@ -102,7 +103,8 @@ class CouponService
                 'minimum_order'    => $request->minimum_order,
                 'maximum_discount' => $request->maximum_discount,
                 'limit_per_user'   => $request->limit_per_user,
-                'show_in_modal'    => $request->show_in_modal,
+                'show_in_modal'        => $request->show_in_modal,
+                'first_purchase_only'  => $request->first_purchase_only,
             ]);
             if ($request->image) {
                 $this->coupon->addMedia($request->image)->toMediaCollection('coupon');
@@ -138,7 +140,8 @@ class CouponService
                 $coupon->minimum_order    = $request->minimum_order;
                 $coupon->maximum_discount = $request->maximum_discount;
                 $coupon->limit_per_user   = $request->limit_per_user;
-                $coupon->show_in_modal    = $request->show_in_modal;
+                $coupon->show_in_modal        = $request->show_in_modal;
+                $coupon->first_purchase_only  = $request->first_purchase_only;
                 $coupon->save();
                 if ($request->image) {
                     $coupon->media()->delete();
@@ -210,6 +213,12 @@ class CouponService
                         $ordered_coupon_count = OrderCoupon::where(['user_id' => auth()->user()->id, 'coupon_id' => $coupon->id])->count();
                         if ($coupon->limit_per_user <= $ordered_coupon_count) {
                             throw new Exception(trans('all.message.coupon_limit_exceeded'), 422);
+                        }
+                        if ($coupon->first_purchase_only) {
+                            $previousOrders = Order::where('user_id', auth()->user()->id)->count();
+                            if ($previousOrders > 0) {
+                                throw new Exception('Este cupom é válido apenas para a primeira compra.', 422);
+                            }
                         }
                         return $coupon;
                     } else {
