@@ -160,8 +160,11 @@
                     <div class="form-col-12 sm:form-col-6">
                         <label class="db-field-title required">{{ $t("label.image") }}</label>
                         <input @change="changeImage" v-bind:class="errors.image ? 'invalid' : ''" id="image" type="file"
-                            class="db-field-control" ref="imageProperty" accept="image/png, image/jpeg, image/jpg" />
+                            class="db-field-control" ref="imageProperty" accept="image/png, image/jpeg, image/jpg, image/gif" />
                         <small class="db-field-alert" v-if="errors.image">{{ errors.image[0] }}</small>
+                        <div v-if="imagePreview" style="margin-top: 12px; border-radius: 8px; overflow: hidden; max-width: 150px;">
+                            <img :src="imagePreview" alt="preview" style="width: 100%; height: auto; display: block; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
+                        </div>
                     </div>
                     <div class="form-col-12 sm:form-col-12">
                         <label for="description" class="db-field-title">{{
@@ -216,6 +219,7 @@ export default {
                 },
             },
             image: "",
+            imagePreview: "",
             errors: {},
         };
     },
@@ -230,6 +234,15 @@ export default {
         },
         changeImage: function (e) {
             this.image = e.target.files[0];
+            if (this.image) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    this.imagePreview = event.target.result;
+                };
+                reader.readAsDataURL(this.image);
+            } else {
+                this.imagePreview = "";
+            }
         },
         reset: function () {
             useCanvas().closeCanvas('sidebar');
@@ -251,6 +264,7 @@ export default {
             };
             if (this.image) {
                 this.image = "";
+                this.imagePreview = "";
                 this.$refs.imageProperty.value = null;
             }
         },
@@ -302,6 +316,7 @@ export default {
                             first_purchase_only: 0,
                         };
                         this.image = "";
+                        this.imagePreview = "";
                         this.errors = {};
                         this.$refs.imageProperty.value = null;
                     })
