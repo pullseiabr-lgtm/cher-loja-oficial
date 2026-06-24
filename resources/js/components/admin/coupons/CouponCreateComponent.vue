@@ -170,8 +170,7 @@
                         <label for="description" class="db-field-title">{{
                             $t("label.description")
                         }}</label>
-                        <textarea v-model="props.form.description" v-bind:class="errors.description ? 'invalid' : ''"
-                            id="description" class="db-field-control"></textarea>
+                        <quill-editor v-model:content="props.form.description" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; overflow: hidden; min-height: 200px;" />
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
                     <div class="form-col-12">
@@ -201,10 +200,13 @@ import taxTypeEnum from "../../../enums/modules/taxTypeEnum";
 import alertService from "../../../services/alertService";
 import appService from "../../../services/appService";
 import { useCanvas } from "../../../composables/canvas";
+import { quillEditor } from 'vue3-quill';
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
 
 export default {
     name: "CouponCreateComponent",
-    components: { SmSidebarModalCreateComponent, LoadingComponent, Datepicker },
+    components: { SmSidebarModalCreateComponent, LoadingComponent, Datepicker, quillEditor },
     props: ["props"],
     data() {
         return {
@@ -221,6 +223,21 @@ export default {
             image: "",
             imagePreview: "",
             errors: {},
+            quillModules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['clean']
+                ]
+            }
         };
     },
     computed: {
