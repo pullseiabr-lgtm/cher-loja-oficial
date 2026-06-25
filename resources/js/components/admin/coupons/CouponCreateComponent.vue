@@ -10,7 +10,7 @@
             <button class="fa-solid fa-xmark close-btn text-xl text-gray-500 hover:text-gray-700" @click="reset"></button>
         </div>
         <div class="p-6 overflow-y-auto thin-scrolling flex-grow">
-            <form @submit.prevent="save">
+            <form ref="couponForm" @submit.prevent="save">
                 <div class="form-row">
                     <div class="form-col-12 sm:form-col-6">
                         <label for="name" class="db-field-title required">{{ $t("label.name") }}</label>
@@ -173,18 +173,18 @@
                         <quill-editor v-model:content="props.form.description" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 125px;" />
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
-                    <div class="col-12 flex justify-end gap-3 mt-6 pt-4 border-t">
-                        <button type="button" class="modal-btn-outline modal-close" @click="reset">
-                            <i class="lab lab-fill-close-circle"></i>
-                            <span>{{ $t("button.close") }}</span>
-                        </button>
-                        <button type="submit" class="db-btn py-2 text-white bg-primary">
-                            <i class="lab lab-fill-save"></i>
-                            <span>{{ $t("label.save") }}</span>
-                        </button>
-                    </div>
                 </div>
             </form>
+        </div>
+        <div class="bg-white border-t border-gray-200 p-4 flex justify-end gap-3">
+            <button type="button" class="modal-btn-outline modal-close" @click="reset">
+                <i class="lab lab-fill-close-circle"></i>
+                <span>{{ $t("button.close") }}</span>
+            </button>
+            <button type="button" @click="submitForm" class="db-btn py-2 text-white bg-primary">
+                <i class="lab lab-fill-save"></i>
+                <span>{{ $t("label.save") }}</span>
+            </button>
         </div>
         </div>
     </div>
@@ -344,6 +344,9 @@ export default {
                 alertService.error(err);
             }
         },
+        submitForm: function () {
+            this.$refs.couponForm.dispatchEvent(new Event('submit'));
+        }
     },
 };
 </script>
