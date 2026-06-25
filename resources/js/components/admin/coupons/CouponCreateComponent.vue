@@ -170,7 +170,7 @@
                         <label for="description" class="db-field-title">{{
                             $t("label.description")
                         }}</label>
-                        <quill-editor v-model:content="props.form.description" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 125px;" />
+                        <quill-editor ref="quillEditor" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 125px;" />
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
                 </div>
@@ -282,14 +282,17 @@ export default {
                 this.imagePreview = "";
                 this.$refs.imageProperty.value = null;
             }
+            if (this.$refs.quillEditor) {
+                this.$refs.quillEditor.setHTML('');
+            }
         },
 
         save: function () {
             try {
                 const fd = new FormData();
                 fd.append("name", this.props.form.name);
-                console.log('Description before send:', this.props.form.description);
-                fd.append("description", this.props.form.description);
+                const description = this.$refs.quillEditor?.getHTML() || '';
+                fd.append("description", description);
                 fd.append("code", this.props.form.code);
                 fd.append("discount", this.props.form.discount);
                 fd.append("discount_type", this.props.form.discount_type);
