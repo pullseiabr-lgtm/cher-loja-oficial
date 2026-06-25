@@ -12,9 +12,8 @@
                     style="width: 100%; height: auto; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.08);" />
             </div>
             <div style="flex: 1; padding: 16px 16px 14px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px;">
-                <h4 style="font-size: 0.95rem; font-weight: 700; color: #5a3e28; line-height: 1.3; text-align: center;">
-                    {{ firstPurchaseCoupon.description || 'Tem presente pra Você' }}
-                </h4>
+                <div v-html="firstPurchaseCoupon.description || 'Tem presente pra Você'"
+                    style="font-size: 0.95rem; font-weight: 700; color: #5a3e28; line-height: 1.3; text-align: center;"></div>
                 <button @click.prevent="applyFirstPurchaseCoupon"
                     style="width: 70%; padding: 8px 16px; background: linear-gradient(135deg, #4caf50, #43a047); color: #fff; font-size: 0.75rem; font-weight: 600; border-radius: 20px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(76,175,80,0.3); text-align: center;">
                     Resgatar
