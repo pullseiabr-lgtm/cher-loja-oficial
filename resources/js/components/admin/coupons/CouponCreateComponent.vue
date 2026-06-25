@@ -337,9 +337,10 @@ export default {
                     })
                     .catch((err) => {
                         this.loading.isActive = false;
-                        this.errors = err.response.data.errors;
+                        console.error('Coupon save error:', err.response.data);
+                        this.errors = err.response.data.errors || {};
                         const errorMessages = Object.values(this.errors).flat().join(', ');
-                        alertService.error(errorMessages || err.response.data.message);
+                        alertService.error(errorMessages || err.response.data.message || 'Erro ao salvar cupom');
                     });
             } catch (err) {
                 this.loading.isActive = false;
