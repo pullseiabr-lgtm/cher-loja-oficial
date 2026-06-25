@@ -288,6 +288,7 @@ export default {
             try {
                 const fd = new FormData();
                 fd.append("name", this.props.form.name);
+                console.log('Description before send:', this.props.form.description);
                 fd.append("description", this.props.form.description);
                 fd.append("code", this.props.form.code);
                 fd.append("discount", this.props.form.discount);
@@ -337,10 +338,14 @@ export default {
                     })
                     .catch((err) => {
                         this.loading.isActive = false;
-                        console.error('Coupon save error:', err.response.data);
-                        this.errors = err.response.data.errors || {};
-                        const errorMessages = Object.values(this.errors).flat().join(', ');
-                        alertService.error(errorMessages || err.response.data.message || 'Erro ao salvar cupom');
+                        const errorData = err.response.data;
+                        console.error('Coupon save error - Full response:', errorData);
+                        console.error('Coupon save error - Fields:', Object.keys(errorData.errors || {}));
+                        this.errors = errorData.errors || {};
+                        const errorMessages = Object.entries(this.errors)
+                            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages[0] : messages}`)
+                            .join(' | ');
+                        alertService.error(errorMessages || errorData.message || 'Erro ao salvar cupom');
                     });
             } catch (err) {
                 this.loading.isActive = false;
