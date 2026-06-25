@@ -181,7 +181,7 @@
                 <i class="lab lab-fill-close-circle"></i>
                 <span>{{ $t("button.close") }}</span>
             </button>
-            <button type="button" @click="submitForm" class="db-btn py-2 text-white bg-primary">
+            <button type="button" @click="save" class="db-btn py-2 text-white bg-primary">
                 <i class="lab lab-fill-save"></i>
                 <span>{{ $t("label.save") }}</span>
             </button>
@@ -344,9 +344,6 @@ export default {
                 alertService.error(err);
             }
         },
-        submitForm: function () {
-            this.$refs.couponForm.dispatchEvent(new Event('submit'));
-        }
     },
 };
 </script>
