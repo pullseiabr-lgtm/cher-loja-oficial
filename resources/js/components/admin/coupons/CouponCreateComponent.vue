@@ -170,7 +170,7 @@
                         <label for="description" class="db-field-title">{{
                             $t("label.description")
                         }}</label>
-                        <textarea v-model="descriptionContent" id="description" class="db-field-control" style="min-height: 125px; resize: vertical;"></textarea>
+                        <editor v-model="descriptionContent" :init="editorConfig" />
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
                 </div>
@@ -198,13 +198,11 @@ import taxTypeEnum from "../../../enums/modules/taxTypeEnum";
 import alertService from "../../../services/alertService";
 import appService from "../../../services/appService";
 import { useCanvas } from "../../../composables/canvas";
-import { quillEditor } from 'vue3-quill';
-import 'quill/dist/quill.core.css';
-import 'quill/dist/quill.snow.css';
+import Editor from '@tinymce/tinymce-vue';
 
 export default {
     name: "CouponCreateComponent",
-    components: { SmSidebarModalCreateComponent, LoadingComponent, Datepicker, quillEditor },
+    components: { SmSidebarModalCreateComponent, LoadingComponent, Datepicker, Editor },
     props: ["props"],
     data() {
         return {
@@ -222,20 +220,10 @@ export default {
             imagePreview: "",
             errors: {},
             descriptionContent: "",
-            quillModules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'],
-                    ['blockquote', 'code-block'],
-                    [{ 'header': 1 }, { 'header': 2 }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'script': 'sub'}, { 'script': 'super' }],
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                    [{ 'size': ['small', false, 'large', 'huge'] }],
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'align': [] }],
-                    ['clean']
-                ]
+            editorConfig: {
+                apiKey: 'no-key',
+                plugins: 'lists link image table code help wordcount',
+                toolbar: 'undo redo | formatselect | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright | bullist numlist | link image | code'
             }
         };
     },
