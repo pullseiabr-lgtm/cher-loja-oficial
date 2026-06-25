@@ -170,7 +170,7 @@
                         <label for="description" class="db-field-title">{{
                             $t("label.description")
                         }}</label>
-                        <quill-editor v-model:content="descriptionContent" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 125px;" />
+                        <textarea v-model="descriptionContent" id="description" class="db-field-control" style="min-height: 125px; resize: vertical;"></textarea>
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
                 </div>
@@ -293,11 +293,9 @@ export default {
 
         save: function () {
             try {
-                const quillContent = this.$refs.quillEditor?.quill?.root?.innerHTML || this.descriptionContent || '';
-                console.log('quillContent:', quillContent);
                 const fd = new FormData();
                 fd.append("name", this.props.form.name);
-                fd.append("description", quillContent);
+                fd.append("description", this.descriptionContent);
                 fd.append("code", this.props.form.code);
                 fd.append("discount", this.props.form.discount);
                 fd.append("discount_type", this.props.form.discount_type);
