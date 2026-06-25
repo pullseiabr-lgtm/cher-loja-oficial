@@ -293,10 +293,11 @@ export default {
 
         save: function () {
             try {
-                console.log('descriptionContent:', this.descriptionContent);
+                const quillContent = this.$refs.quillEditor?.quill?.root?.innerHTML || this.descriptionContent || '';
+                console.log('quillContent:', quillContent);
                 const fd = new FormData();
                 fd.append("name", this.props.form.name);
-                fd.append("description", this.descriptionContent || '');
+                fd.append("description", quillContent);
                 fd.append("code", this.props.form.code);
                 fd.append("discount", this.props.form.discount);
                 fd.append("discount_type", this.props.form.discount_type);
