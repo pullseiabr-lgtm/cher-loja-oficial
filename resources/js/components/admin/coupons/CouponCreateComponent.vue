@@ -170,7 +170,7 @@
                         <label for="description" class="db-field-title">{{
                             $t("label.description")
                         }}</label>
-                        <editor v-model="descriptionContent" :init="editorConfig" />
+                        <textarea v-model="descriptionContent" id="description" class="db-field-control" style="min-height: 125px; font-family: monospace;" placeholder="Use &lt;br&gt; para quebra | &lt;strong&gt;texto&lt;/strong&gt; negrito | &lt;em&gt;texto&lt;/em&gt; itálico | &lt;h2&gt;Título&lt;/h2&gt;"></textarea>
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
                 </div>
@@ -198,11 +198,10 @@ import taxTypeEnum from "../../../enums/modules/taxTypeEnum";
 import alertService from "../../../services/alertService";
 import appService from "../../../services/appService";
 import { useCanvas } from "../../../composables/canvas";
-import Editor from '@tinymce/tinymce-vue';
 
 export default {
     name: "CouponCreateComponent",
-    components: { SmSidebarModalCreateComponent, LoadingComponent, Datepicker, Editor },
+    components: { SmSidebarModalCreateComponent, LoadingComponent, Datepicker },
     props: ["props"],
     data() {
         return {
@@ -219,12 +218,7 @@ export default {
             image: "",
             imagePreview: "",
             errors: {},
-            descriptionContent: "",
-            editorConfig: {
-                apiKey: 'no-key',
-                plugins: 'lists link image table code help wordcount',
-                toolbar: 'undo redo | formatselect | bold italic underline strikethrough | forecolor backcolor | alignleft aligncenter alignright | bullist numlist | link image | code'
-            }
+            descriptionContent: ""
         };
     },
     computed: {
