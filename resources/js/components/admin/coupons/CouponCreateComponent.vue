@@ -170,7 +170,7 @@
                         <label for="description" class="db-field-title">{{
                             $t("label.description")
                         }}</label>
-                        <quill-editor ref="quillEditor" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 125px;" />
+                        <quill-editor v-model:content="descriptionContent" contentType="html" :modules="quillModules" class="bg-white" style="border-radius: 8px; min-height: 125px;" />
                         <small class="db-field-alert" v-if="errors.description">{{ errors.description[0] }}</small>
                     </div>
                 </div>
@@ -221,6 +221,7 @@ export default {
             image: "",
             imagePreview: "",
             errors: {},
+            descriptionContent: "",
             quillModules: {
                 toolbar: [
                     ['bold', 'italic', 'underline', 'strike'],
@@ -241,6 +242,11 @@ export default {
     computed: {
         addButton: function () {
               return {title: this.$t("button.add_coupon")}
+        }
+    },
+    watch: {
+        'props.form.description': function(newVal) {
+            this.descriptionContent = newVal || '';
         }
     },
     methods: {
@@ -282,17 +288,14 @@ export default {
                 this.imagePreview = "";
                 this.$refs.imageProperty.value = null;
             }
-            if (this.$refs.quillEditor) {
-                this.$refs.quillEditor.setHTML('');
-            }
+            this.descriptionContent = "";
         },
 
         save: function () {
             try {
                 const fd = new FormData();
                 fd.append("name", this.props.form.name);
-                const description = this.$refs.quillEditor?.getHTML() || '';
-                fd.append("description", description);
+                fd.append("description", this.descriptionContent);
                 fd.append("code", this.props.form.code);
                 fd.append("discount", this.props.form.discount);
                 fd.append("discount_type", this.props.form.discount_type);
