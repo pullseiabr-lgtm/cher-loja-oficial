@@ -34,6 +34,20 @@
                 <h3 class="db-card-title">{{ paymentGateway.name }}</h3>
             </div>
             <div class="db-card-body">
+                <div v-if="paymentGateway.slug === 'mercadopago'"
+                    class="mb-5 p-3 rounded-lg bg-blue-50 border border-blue-200 text-sm">
+                    <p class="font-medium text-blue-900 mb-2">
+                        Configure esta URL de Webhook no painel do Mercado Pago (Suas integrações &gt; sua aplicação &gt; Webhooks), evento "Pagamentos":
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <input type="text" readonly :value="webhookUrl('mercadopago')" ref="webhookUrlInput"
+                            class="db-field-control bg-white flex-1 text-blue-800" @click="$event.target.select()" />
+                        <button type="button" @click="copyWebhookUrl('mercadopago')"
+                            class="db-btn text-white bg-primary whitespace-nowrap">
+                            {{ copied ? 'Copiado!' : 'Copiar' }}
+                        </button>
+                    </div>
+                </div>
                 <form @submit.prevent="save(index)" :id="'formElem' + index" class="w-full d-block">
                     <div class="form-row">
                         <input type="hidden" :value="paymentGateway.slug" name="payment_type">
@@ -100,6 +114,7 @@ export default {
                 inputTypeEnum: inputTypeEnum
             },
             errors: {},
+            copied: false,
 
         };
     },
@@ -146,6 +161,15 @@ export default {
         },
         selectActive: function (index) {
             this.selectIndex = index;
+        },
+        webhookUrl: function (slug) {
+            return window.location.origin + '/payment/webhook/' + slug;
+        },
+        copyWebhookUrl: function (slug) {
+            navigator.clipboard.writeText(this.webhookUrl(slug)).then(() => {
+                this.copied = true;
+                setTimeout(() => { this.copied = false; }, 2000);
+            });
         }
     }
 };
