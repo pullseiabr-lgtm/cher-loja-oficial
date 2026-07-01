@@ -38,6 +38,7 @@ Route::prefix('payment')->name('payment.')->middleware(['installed'])->group(fun
     Route::match(['get', 'post'], '/{paymentGateway:slug}/{order}/fail', [PaymentController::class, 'fail'])->name('fail');
     Route::match(['get', 'post'], '/{paymentGateway:slug}/{order}/cancel', [PaymentController::class, 'cancel'])->name('cancel');
     Route::get('/successful/{order}', [PaymentController::class, 'successful'])->name('successful');
+    Route::match(['get', 'post'], '/webhook/{paymentGateway:slug}', [PaymentController::class, 'webhook'])->name('webhook');
 });
 
 Route::get('/{any}', [RootController::class, 'index'])->middleware(['installed'])->where(['any' => '.*']);

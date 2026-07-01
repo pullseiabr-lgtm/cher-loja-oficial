@@ -97,6 +97,11 @@ class PaymentController extends Controller
         return $this->paymentManagerService->gateway($paymentGateway->slug)->cancel($order, $request);
     }
 
+    public function webhook(PaymentGateway $paymentGateway, Request $request)
+    {
+        return $this->paymentManagerService->gateway($paymentGateway->slug)->webhook($request);
+    }
+
     public function successful(Order $order): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         try {

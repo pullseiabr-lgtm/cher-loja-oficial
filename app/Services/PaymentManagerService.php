@@ -49,4 +49,9 @@ class PaymentManagerService
         return $this->gateway->cancel($order, $request);
     }
 
+    public function webhook($request)
+    {
+        return $this->gateway->webhook($request);
+    }
+
 }

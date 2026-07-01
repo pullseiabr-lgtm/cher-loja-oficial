@@ -24,4 +24,9 @@ abstract class PaymentAbstract
     abstract public function fail($order, $request);
 
     abstract public function cancel($order, $request);
+
+    public function webhook($request)
+    {
+        return response('OK', 200);
+    }
 }

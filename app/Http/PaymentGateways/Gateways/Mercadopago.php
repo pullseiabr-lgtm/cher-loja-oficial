@@ -6,7 +6,9 @@ namespace App\Http\PaymentGateways\Gateways;
 use Exception;
 use App\Enums\Activity;
 use App\Enums\GatewayMode;
+use App\Enums\PaymentStatus;
 use App\Models\Currency;
+use App\Models\Order;
 use App\Models\PaymentGateway;
 use App\Services\PaymentService;
 use App\Services\PaymentAbstract;
@@ -73,6 +75,8 @@ class Mercadopago extends PaymentAbstract
                         'unit_price' => floatval($order->total),
                     ]
                 ],
+                'external_reference' => (string) $order->id,
+                'notification_url' => route('payment.webhook', ['paymentGateway' => 'mercadopago']),
                 'auto_return' => 'approved',
                 'back_urls' => (object)[
                     'success' => route('payment.success', ['order' => $order, 'paymentGateway' => 'mercadopago']),
@@ -149,5 +153,42 @@ class Mercadopago extends PaymentAbstract
     public function cancel($order, $request): \Illuminate\Http\RedirectResponse
     {
         return redirect('/checkout/payment');
+    }
+
+    public function webhook($request)
+    {
+        try {
+            $type      = $request->input('type') ?? $request->input('topic');
+            $paymentId = $request->input('data.id') ?? $request->input('id');
+
+            if ($type !== 'payment' || blank($paymentId)) {
+                return response('OK', 200);
+            }
+
+            $response = $this->gateway->get(['uri' => "/v1/payments/{$paymentId}"]);
+
+            if (($response['status'] ?? null) != 200) {
+                Log::info('Mercadopago webhook: could not fetch payment ' . $paymentId);
+                return response('OK', 200);
+            }
+
+            $payment = $response['response'];
+            $orderId = $payment['external_reference'] ?? null;
+            $order   = blank($orderId) ? null : Order::find($orderId);
+
+            if (!$order) {
+                Log::info('Mercadopago webhook: order not found for payment ' . $paymentId);
+                return response('OK', 200);
+            }
+
+            if ($payment['status'] === 'approved' && $order->payment_status !== PaymentStatus::PAID) {
+                $this->paymentService->payment($order, 'mercadopago', $paymentId);
+            }
+
+            return response('OK', 200);
+        } catch (Exception $e) {
+            Log::info('Mercadopago webhook error: ' . $e->getMessage());
+            return response('OK', 200);
+        }
     }
 }
