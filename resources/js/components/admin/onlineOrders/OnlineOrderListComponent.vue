@@ -86,7 +86,7 @@
                             <th class="db-table-head-th">{{ $t('label.customer') }}</th>
                             <th class="db-table-head-th">{{ $t('label.amount') }}</th>
                             <th class="db-table-head-th">{{ $t('label.date') }}</th>
-                            <th class="db-table-head-th">{{ $t('label.status') }}</th>
+                            <th class="db-table-head-th">Pagamento</th>
                             <th class="db-table-head-th hidden-print" v-if="permissionChecker('online-orders')">
                                 {{ $t('label.action') }}
                             </th>
