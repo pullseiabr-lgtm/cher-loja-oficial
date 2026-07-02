@@ -112,8 +112,9 @@
                                 {{ order.order_datetime }}
                             </td>
                             <td class="db-table-body-td">
-                                <span class="db-table-badge" :class="orderStatusClass(order.status)">
-                                    {{ enums.orderStatusEnumArray[order.status] }}
+                                <span class="db-table-badge"
+                                    :class="order.payment_status === enums.paymentStatusEnum.PAID ? 'text-[#2AC769] bg-[#2AC769]/10' : 'text-[#FB4E4E] bg-[#FB4E4E]/10'">
+                                    {{ enums.paymentStatusEnumArray[order.payment_status] }}
                                 </span>
                             </td>
                             <td class="db-table-body-td hidden-print" v-if="permissionChecker('online-orders')">
@@ -160,6 +161,7 @@ import PaginationSMBox from "../components/pagination/PaginationSMBox";
 import appService from "../../../services/appService";
 import orderStatusEnum from "../../../enums/modules/orderStatusEnum";
 import orderTypeEnum from "../../../enums/modules/orderTypeEnum";
+import paymentStatusEnum from "../../../enums/modules/paymentStatusEnum";
 import TableLimitComponent from "../components/TableLimitComponent";
 import SmIconDeleteComponent from "../components/buttons/SmIconDeleteComponent";
 import SmIconViewComponent from "../components/buttons/SmIconViewComponent";
@@ -196,6 +198,7 @@ export default {
             enums: {
                 orderStatusEnum: orderStatusEnum,
                 orderTypeEnum: orderTypeEnum,
+                paymentStatusEnum: paymentStatusEnum,
                 orderStatusEnumArray: {
                     [orderStatusEnum.PENDING]: this.$t("label.pending"),
                     [orderStatusEnum.CONFIRMED]: this.$t("label.confirmed"),
@@ -203,6 +206,10 @@ export default {
                     [orderStatusEnum.DELIVERED]: this.$t("label.delivered"),
                     [orderStatusEnum.CANCELED]: this.$t("label.canceled"),
                     [orderStatusEnum.REJECTED]: this.$t("label.rejected"),
+                },
+                paymentStatusEnumArray: {
+                    [paymentStatusEnum.PAID]: this.$t("label.paid"),
+                    [paymentStatusEnum.UNPAID]: this.$t("label.unpaid")
                 },
                 orderTypeEnumArray: {
                     [orderTypeEnum.DELIVERY]: this.$t("label.delivery"),
