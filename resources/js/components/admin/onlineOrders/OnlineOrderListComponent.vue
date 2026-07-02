@@ -195,27 +195,6 @@ export default {
             loading: {
                 isActive: false
             },
-            enums: {
-                orderStatusEnum: orderStatusEnum,
-                orderTypeEnum: orderTypeEnum,
-                paymentStatusEnum: paymentStatusEnum,
-                orderStatusEnumArray: {
-                    [orderStatusEnum.PENDING]: this.$t("label.pending"),
-                    [orderStatusEnum.CONFIRMED]: this.$t("label.confirmed"),
-                    [orderStatusEnum.ON_THE_WAY]: this.$t("label.on_the_way"),
-                    [orderStatusEnum.DELIVERED]: this.$t("label.delivered"),
-                    [orderStatusEnum.CANCELED]: this.$t("label.canceled"),
-                    [orderStatusEnum.REJECTED]: this.$t("label.rejected"),
-                },
-                paymentStatusEnumArray: {
-                    [paymentStatusEnum.PAID]: this.$t("label.paid"),
-                    [paymentStatusEnum.UNPAID]: this.$t("label.unpaid")
-                },
-                orderTypeEnumArray: {
-                    [orderTypeEnum.DELIVERY]: this.$t("label.delivery"),
-                    [orderTypeEnum.PICK_UP]: this.$t("label.pick_up")
-                }
-            },
             printLoading: true,
             printObj: {
                 id: "print",
@@ -250,6 +229,29 @@ export default {
         });
     },
     computed: {
+        enums: function () {
+            return {
+                orderStatusEnum: orderStatusEnum,
+                orderTypeEnum: orderTypeEnum,
+                paymentStatusEnum: paymentStatusEnum,
+                orderStatusEnumArray: {
+                    [orderStatusEnum.PENDING]: this.$t("label.pending"),
+                    [orderStatusEnum.CONFIRMED]: this.$t("label.confirmed"),
+                    [orderStatusEnum.ON_THE_WAY]: this.$t("label.on_the_way"),
+                    [orderStatusEnum.DELIVERED]: this.$t("label.delivered"),
+                    [orderStatusEnum.CANCELED]: this.$t("label.canceled"),
+                    [orderStatusEnum.REJECTED]: this.$t("label.rejected"),
+                },
+                paymentStatusEnumArray: {
+                    [paymentStatusEnum.PAID]: this.$t("label.paid"),
+                    [paymentStatusEnum.UNPAID]: this.$t("label.unpaid")
+                },
+                orderTypeEnumArray: {
+                    [orderTypeEnum.DELIVERY]: this.$t("label.delivery"),
+                    [orderTypeEnum.PICK_UP]: this.$t("label.pick_up")
+                }
+            };
+        },
         orders: function () {
             return this.$store.getters['onlineOrder/lists'];
         },
