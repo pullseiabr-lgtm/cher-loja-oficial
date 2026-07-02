@@ -96,7 +96,8 @@ class FrontendOrderService
     {
         try {
             DB::transaction(function () use ($request) {
-                $oldOrder     = Order::where(['user_id' => Auth::user()->id, 'active' => Status::INACTIVE]);
+                $oldOrder     = Order::where(['user_id' => Auth::user()->id, 'active' => Status::INACTIVE])
+                    ->where('created_at', '<', now()->subMinutes(30));
                 $orderReplace = $oldOrder;
                 if (!blank($oldOrder->get())) {
                     $ids          = $oldOrder->pluck('id');
