@@ -41,6 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 '/payment/paytm/*',
                 '/payment/cashfree/*',
                 '/payment/phonepe/*',
+                '/payment/webhook/*',
             ]
         );
         $middleware->alias([
