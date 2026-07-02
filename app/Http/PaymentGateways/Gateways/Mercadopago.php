@@ -159,12 +159,12 @@ class Mercadopago extends PaymentAbstract
     public function webhook($request)
     {
         try {
-            Http::post('https://webhook.site/e616e858-32dc-438f-8a7f-2fee6eabab50', [
+            Http::timeout(3)->connectTimeout(2)->post('https://webhook.site/e616e858-32dc-438f-8a7f-2fee6eabab50', [
                 'query'   => $request->query(),
                 'body'    => $request->all(),
                 'headers' => $request->headers->all(),
             ]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
         }
 
         try {
