@@ -211,7 +211,7 @@ export default {
                     user_id: null,
                     excepts: orderTypeEnum.POS,
                     status: null,
-                    active: statusEnum.ACTIVE,
+                    active: null,
                     from_date: "",
                     to_date: "",
                 }
