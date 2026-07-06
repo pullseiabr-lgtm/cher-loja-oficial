@@ -79,10 +79,10 @@ export default {
     },
     methods: {
         add: function () {
-            appService.modalShow();
+            appService.modalShow('#categorySectionModal');
         },
         reset: function () {
-            appService.modalHide();
+            appService.modalHide('#categorySectionModal');
             this.$store.dispatch("categorySectionCategory/reset").then().catch();
             this.errors = {};
             this.$props.props.form = { product_category_id: null };
@@ -92,7 +92,7 @@ export default {
             try {
                 this.loading.isActive = true;
                 this.$store.dispatch("categorySectionCategory/save", this.props).then(() => {
-                    appService.modalHide();
+                    appService.modalHide('#categorySectionModal');
                     this.loading.isActive = false;
                     alertService.successFlip(0, "Categoria");
                     this.props.form = { product_category_id: null };
