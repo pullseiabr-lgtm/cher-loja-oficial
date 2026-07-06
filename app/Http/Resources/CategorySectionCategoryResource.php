@@ -12,10 +12,13 @@ class CategorySectionCategoryResource extends JsonResource
             'id'                  => $this->id,
             'category_section_id' => $this->category_section_id,
             'product_category_id' => $this->product_category_id,
-            'category_name'       => optional($this->productCategory)->name,
+            'name'                => $this->name,
+            'category_name'       => $this->name ?: optional($this->productCategory)->name,
             'category_slug'       => optional($this->productCategory)->slug,
             'category_status'     => optional($this->productCategory)->status,
-            'category_thumb'      => optional($this->productCategory)->thumb,
+            'category_thumb'      => $this->thumb,
+            'default_name'        => optional($this->productCategory)->name,
+            'default_thumb'       => optional($this->productCategory)->thumb,
         ];
     }
 }

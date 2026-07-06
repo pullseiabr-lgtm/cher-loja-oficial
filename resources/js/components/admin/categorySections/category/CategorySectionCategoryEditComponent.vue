@@ -28,6 +28,31 @@
                         </div>
 
                         <div class="form-col-12">
+                            <label for="edit_csc_name" class="db-field-title">Nome (exibido no site)</label>
+                            <input v-model="name" v-bind:class="errors.name ? 'invalid' : ''"
+                                type="text" id="edit_csc_name" class="db-field-control" />
+                            <small class="db-field-alert" v-if="errors.name">{{ errors.name[0] }}</small>
+                        </div>
+
+                        <div class="form-col-12" v-if="currentThumb && !imagePreview">
+                            <label class="db-field-title">Imagem Atual</label>
+                            <img :src="currentThumb" class="h-20 rounded-lg object-cover" alt="thumb" />
+                        </div>
+
+                        <div class="form-col-12" v-if="imagePreview">
+                            <label class="db-field-title">Preview</label>
+                            <img :src="imagePreview" class="h-20 rounded-lg object-cover" alt="preview" />
+                        </div>
+
+                        <div class="form-col-12">
+                            <label for="edit_csc_image" class="db-field-title">Nova Imagem (exibida no site, opcional)</label>
+                            <input @change="changeImage" v-bind:class="errors.image ? 'invalid' : ''"
+                                id="edit_csc_image" type="file" class="db-field-control"
+                                ref="imageInput" accept="image/png, image/jpeg, image/jpg" />
+                            <small class="db-field-alert" v-if="errors.image">{{ errors.image[0] }}</small>
+                        </div>
+
+                        <div class="form-col-12">
                             <div class="modal-btns">
                                 <button type="button" class="modal-btn-outline modal-close" @click="close">
                                     <i class="lab lab-fill-close-circle"></i>
@@ -62,6 +87,10 @@ export default {
         return {
             loading: { isActive: false },
             editingId: null,
+            name: "",
+            currentThumb: null,
+            image: null,
+            imagePreview: null,
             form: {
                 product_category_id: null,
             },
@@ -81,6 +110,11 @@ export default {
         open(item) {
             this.editingId = item.id;
             this.form.product_category_id = item.product_category_id;
+            this.name = item.name || item.default_name || "";
+            this.currentThumb = item.category_thumb || null;
+            this.image = null;
+            this.imagePreview = null;
+            if (this.$refs.imageInput) this.$refs.imageInput.value = null;
             this.errors = {};
             this.message = null;
             appService.modalShow('#categorySectionCategoryEditModal');
@@ -91,13 +125,26 @@ export default {
             this.message = null;
             this.editingId = null;
         },
+        changeImage(e) {
+            this.image = e.target.files[0] || null;
+            this.imagePreview = this.image ? URL.createObjectURL(this.image) : null;
+        },
         save() {
             try {
+                const fd = new FormData();
+                fd.append("product_category_id", this.form.product_category_id);
+                if (this.name) {
+                    fd.append("name", this.name);
+                }
+                if (this.image) {
+                    fd.append("image", this.image);
+                }
+
                 this.loading.isActive = true;
                 this.$store.dispatch("categorySectionCategory/update", {
                     categorySection: this.sectionId,
                     id: this.editingId,
-                    form: this.form,
+                    form: fd,
                     search: this.sectionSearch,
                 }).then(() => {
                     this.loading.isActive = false;

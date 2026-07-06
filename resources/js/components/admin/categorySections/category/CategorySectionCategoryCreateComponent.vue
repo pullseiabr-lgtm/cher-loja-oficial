@@ -23,13 +23,38 @@
                             <label for="product_category_id" class="db-field-title required">Categoria</label>
                             <vue-select class="db-field-control f-b-custom-select" id="product_category_id"
                                 v-bind:class="errors.product_category_id ? 'invalid' : ''"
-                                v-model="props.form.product_category_id"
+                                v-model="props.form.product_category_id" @selected="onCategorySelected"
                                 :options="categories" label-by="option" value-by="id"
                                 :closeOnSelect="true" :searchable="true" :clearOnClose="true"
                                 placeholder="Selecione uma categoria" search-placeholder="Buscar..." />
                             <small class="db-field-alert" v-if="errors.product_category_id">
                                 {{ errors.product_category_id[0] }}
                             </small>
+                        </div>
+
+                        <div class="form-col-12">
+                            <label for="csc_name" class="db-field-title">Nome (exibido no site)</label>
+                            <input v-model="name" v-bind:class="errors.name ? 'invalid' : ''"
+                                type="text" id="csc_name" class="db-field-control" />
+                            <small class="db-field-alert" v-if="errors.name">{{ errors.name[0] }}</small>
+                        </div>
+
+                        <div class="form-col-12" v-if="defaultThumb && !imagePreview">
+                            <label class="db-field-title">Imagem Padrão</label>
+                            <img :src="defaultThumb" class="h-20 rounded-lg object-cover" alt="thumb" />
+                        </div>
+
+                        <div class="form-col-12" v-if="imagePreview">
+                            <label class="db-field-title">Preview</label>
+                            <img :src="imagePreview" class="h-20 rounded-lg object-cover" alt="preview" />
+                        </div>
+
+                        <div class="form-col-12">
+                            <label for="csc_image" class="db-field-title">Imagem (exibida no site, opcional)</label>
+                            <input @change="changeImage" v-bind:class="errors.image ? 'invalid' : ''"
+                                id="csc_image" type="file" class="db-field-control"
+                                ref="imageInput" accept="image/png, image/jpeg, image/jpg" />
+                            <small class="db-field-alert" v-if="errors.image">{{ errors.image[0] }}</small>
                         </div>
 
                         <div class="form-col-12">
@@ -63,6 +88,10 @@ export default {
     data() {
         return {
             loading: { isActive: false },
+            name: "",
+            defaultThumb: null,
+            image: null,
+            imagePreview: null,
             errors: {},
             message: null,
         };
@@ -81,21 +110,55 @@ export default {
         add: function () {
             appService.modalShow('#categorySectionModal');
         },
+        onCategorySelected: function (option) {
+            if (!this.name) {
+                this.name = option?.name || "";
+            }
+            this.defaultThumb = option?.thumb || null;
+        },
+        changeImage: function (e) {
+            this.image = e.target.files[0] || null;
+            this.imagePreview = this.image ? URL.createObjectURL(this.image) : null;
+        },
+        resetForm: function () {
+            this.name = "";
+            this.defaultThumb = null;
+            this.image = null;
+            this.imagePreview = null;
+            if (this.$refs.imageInput) {
+                this.$refs.imageInput.value = null;
+            }
+        },
         reset: function () {
             appService.modalHide('#categorySectionModal');
             this.$store.dispatch("categorySectionCategory/reset").then().catch();
             this.errors = {};
             this.$props.props.form = { product_category_id: null };
+            this.resetForm();
             this.message = null;
         },
         save: function () {
             try {
+                const fd = new FormData();
+                fd.append("product_category_id", this.props.form.product_category_id);
+                if (this.name) {
+                    fd.append("name", this.name);
+                }
+                if (this.image) {
+                    fd.append("image", this.image);
+                }
+
                 this.loading.isActive = true;
-                this.$store.dispatch("categorySectionCategory/save", this.props).then(() => {
+                this.$store.dispatch("categorySectionCategory/save", {
+                    id: this.props.id,
+                    form: fd,
+                    search: this.props.search,
+                }).then(() => {
                     appService.modalHide('#categorySectionModal');
                     this.loading.isActive = false;
                     alertService.successFlip(0, "Categoria");
                     this.props.form = { product_category_id: null };
+                    this.resetForm();
                     this.errors = {};
                     this.message = null;
                 }).catch((err) => {

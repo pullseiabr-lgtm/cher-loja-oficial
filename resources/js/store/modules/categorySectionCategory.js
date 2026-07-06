@@ -60,7 +60,7 @@ export const categorySectionCategory = {
         update: function (context, payload) {
             return new Promise((resolve, reject) => {
                 const url = `/admin/category-section/category/${payload.categorySection}/${payload.id}`;
-                axios.put(url, payload.form).then(res => {
+                axios.post(url, payload.form).then(res => {
                     context.dispatch('lists', payload.search).then().catch();
                     context.commit('reset');
                     resolve(res);

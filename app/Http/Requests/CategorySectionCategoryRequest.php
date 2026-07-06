@@ -15,6 +15,8 @@ class CategorySectionCategoryRequest extends FormRequest
     {
         return [
             'product_category_id' => ['required', 'integer', 'exists:product_categories,id'],
+            'name'                 => ['nullable', 'string', 'max:190'],
+            'image'                => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:10240'],
         ];
     }
 }

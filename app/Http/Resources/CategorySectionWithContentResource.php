@@ -22,10 +22,35 @@ class CategorySectionWithContentResource extends JsonResource
             'item_template'  => $this->item_template ?? 'card',
             'item_image_size' => $this->item_image_size,
             'row_layout'     => $this->row_layout ?? 'carousel',
-            'categories'     => $type === 'categories' ? ProductCategoryResource::collection($this->productCategories) : [],
+            'categories'     => $type === 'categories' ? $this->serializeCategories() : [],
             'products'       => $type === 'products'   ? $this->serializeProducts() : [],
             'promotions'     => $type === 'banner'     ? $this->serializePromotions() : [],
         ];
+    }
+
+    private function serializeCategories(): array
+    {
+        return $this->categorySectionCategories()
+            ->with('productCategory')
+            ->get()
+            ->filter(fn($categorySectionCategory) => $categorySectionCategory->productCategory)
+            ->map(function ($categorySectionCategory) {
+                $category = $categorySectionCategory->productCategory;
+                return [
+                    'id'              => $category->id,
+                    'name'            => $categorySectionCategory->name ?: $category->name,
+                    'slug'            => $category->slug,
+                    'description'     => $category->description === null ? '' : $category->description,
+                    'parent_category' => optional($category->parent_category)->name,
+                    'status'          => $category->status,
+                    'parent_id'       => $category->parent_id,
+                    'menu_order'      => (int) ($category->menu_order ?? 0),
+                    'thumb'           => $categorySectionCategory->thumb,
+                    'cover'           => $category->cover,
+                ];
+            })
+            ->values()
+            ->toArray();
     }
 
     private function serializeProducts(): array

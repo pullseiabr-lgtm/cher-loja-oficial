@@ -51,9 +51,13 @@ class CategorySectionCategoryService
     public function store(CategorySectionCategoryRequest $request, CategorySection $categorySection): CategorySectionCategory
     {
         try {
-            return CategorySectionCategory::create(
+            $categorySectionCategory = CategorySectionCategory::create(
                 $request->validated() + ['category_section_id' => $categorySection->id]
             );
+            if ($request->image) {
+                $categorySectionCategory->addMediaFromRequest('image')->toMediaCollection('category-section-category');
+            }
+            return $categorySectionCategory;
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception(QueryExceptionLibrary::message($exception), 422);
@@ -70,6 +74,10 @@ class CategorySectionCategoryService
                 throw new Exception(trans('all.category_section_mismatch'), 422);
             }
             $categorySectionCategory->update($request->validated());
+            if ($request->image) {
+                $categorySectionCategory->clearMediaCollection('category-section-category');
+                $categorySectionCategory->addMediaFromRequest('image')->toMediaCollection('category-section-category');
+            }
             return $categorySectionCategory;
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
