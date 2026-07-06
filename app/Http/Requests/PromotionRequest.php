@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Rules\IniAmount;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class PromotionRequest extends FormRequest
 {
@@ -26,12 +25,7 @@ class PromotionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'        => [
-                'required',
-                'string',
-                'max:190',
-                Rule::unique("promotions", "name")->ignore($this->route('promotion.id'))
-            ],
+            'name'        => ['required', 'string', 'max:190'],
             'type'      => ['required', 'numeric', 'max:24'],
             'link_type' => ['nullable', 'string', 'in:category,custom'],
             'link_url'  => ['nullable', 'string', 'max:500'],

@@ -122,7 +122,7 @@
                         </div>
 
                         <!-- Imagem atual -->
-                        <div class="form-col-12" v-if="currentCover">
+                        <div class="form-col-12" v-if="currentCover && !imagePreview">
                             <label class="db-field-title">Imagem Atual</label>
                             <img :src="currentCover" class="h-20 rounded-lg object-cover" alt="banner" />
                         </div>
@@ -134,6 +134,12 @@
                                 id="ep_image" type="file" class="db-field-control"
                                 ref="imageInput" accept="image/png, image/jpeg, image/jpg" />
                             <small class="db-field-alert" v-if="errors.image">{{ errors.image[0] }}</small>
+                        </div>
+
+                        <!-- Preview da nova imagem -->
+                        <div class="form-col-12" v-if="imagePreview">
+                            <label class="db-field-title">Preview</label>
+                            <img :src="imagePreview" class="h-20 rounded-lg object-cover" alt="preview" />
                         </div>
 
                         <!-- Botões -->
@@ -182,6 +188,7 @@ export default {
                 link_url: null,
             },
             image: null,
+            imagePreview: null,
             currentCover: null,
             errors: {},
             message: null,
@@ -211,6 +218,7 @@ export default {
             };
             this.currentCover = item.promotion_cover || null;
             this.image = null;
+            this.imagePreview = null;
             this.errors = {};
             this.message = null;
             if (this.$refs.imageInput) this.$refs.imageInput.value = null;
@@ -226,6 +234,7 @@ export default {
         },
         changeImage(e) {
             this.image = e.target.files[0] || null;
+            this.imagePreview = this.image ? URL.createObjectURL(this.image) : null;
         },
         save() {
             try {
