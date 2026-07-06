@@ -19,7 +19,7 @@ class TestimonialRequest extends FormRequest
             'rating'     => ['required', 'integer', 'min:1', 'max:5'],
             'status'     => ['required', 'numeric'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'image'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image'      => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ];
     }
 }
