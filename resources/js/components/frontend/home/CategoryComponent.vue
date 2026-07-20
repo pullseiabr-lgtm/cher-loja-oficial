@@ -46,7 +46,7 @@
                                 :style="circleLinkStyle(section)">
                                 <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :style="circleImageCustomStyle(section)"
-                                    :src="category.thumb" alt="category" />
+                                    :src="category.cover" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
                                     {{ category.name }}
                                 </span>
@@ -87,7 +87,7 @@
                                 :style="circleLinkStyle(section)">
                                 <img class="object-cover rounded-full block ring-2 ring-gray-100 group-hover:ring-primary transition"
                                     :style="circleImageCustomStyle(section)"
-                                    :src="category.thumb" alt="category" />
+                                    :src="category.cover" alt="category" />
                                 <span class="text-xs sm:text-sm font-medium capitalize text-center px-1 overflow-hidden whitespace-nowrap text-ellipsis w-full group-hover:text-primary">
                                     {{ category.name }}
                                 </span>
