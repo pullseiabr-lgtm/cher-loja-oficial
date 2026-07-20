@@ -23,7 +23,7 @@
                                 class="w-full rounded-2xl overflow-hidden shadow-xs group block relative">
                                 <img class="w-full object-cover block"
                                     :style="overlayImageCustomStyle(section)"
-                                    :src="category.thumb" alt="category" />
+                                    :src="category.cover" alt="category" />
                                 <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5 pt-5 sm:p-3 sm:pt-6">
                                     <span class="text-white text-xs sm:text-base font-semibold capitalize block truncate group-hover:brightness-110 transition">
                                         {{ category.name }}
@@ -64,7 +64,7 @@
                                 class="rounded-2xl overflow-hidden shadow-xs group block relative w-36 sm:w-52 flex-none">
                                 <img class="w-full object-cover block"
                                     :style="overlayImageCustomStyle(section)"
-                                    :src="category.thumb" alt="category" />
+                                    :src="category.cover" alt="category" />
                                 <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 pt-4 sm:p-3 sm:pt-6">
                                     <span class="text-white text-xs sm:text-base font-semibold capitalize block truncate group-hover:brightness-110 transition">
                                         {{ category.name }}

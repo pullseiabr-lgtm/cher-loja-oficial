@@ -51,6 +51,7 @@ class ProductCategory extends Model implements HasMedia
     {
         $this->addMediaConversion('thumb')->width(252)->height(183)->keepOriginalImageFormat()->sharpen(10);
         $this->addMediaConversion('cover')->width(960)->height(1440)->keepOriginalImageFormat()->sharpen(10);
+        $this->addMediaConversion('medium')->width(640)->height(480)->keepOriginalImageFormat()->sharpen(10);
     }
 
     public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
