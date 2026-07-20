@@ -95,7 +95,7 @@
                             <div class="db-list-item p-0">
                                 <span class="db-list-item-title w-full sm:w-1/2">Template do Item</span>
                                 <span class="db-list-item-text w-full sm:w-1/2">
-                                    {{ categorySection.item_template === 'circle' ? 'Círculo' : 'Card' }}
+                                    {{ categorySection.item_template === 'circle' ? 'Círculo' : categorySection.item_template === 'overlay' ? 'Overlay' : 'Card' }}
                                 </span>
                             </div>
                         </div>
@@ -208,6 +208,24 @@
                                     <span class="text-xs font-medium text-gray-700">Card</span>
                                 </button>
 
+                                <!-- Overlay -->
+                                <button type="button"
+                                    @click="editForm.item_template = 'overlay'"
+                                    :class="[
+                                        'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition cursor-pointer',
+                                        editForm.item_template === 'overlay'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-gray-200 bg-white hover:border-gray-300'
+                                    ]"
+                                >
+                                    <svg width="80" height="72" viewBox="0 0 80 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="2" y="2" width="76" height="68" rx="8" fill="#e5e7eb"/>
+                                        <rect x="2" y="40" width="76" height="30" rx="8" fill="#9ca3af" fill-opacity="0.7"/>
+                                        <text x="40" y="60" text-anchor="middle" font-size="10" fill="white" font-weight="600">Nome</text>
+                                    </svg>
+                                    <span class="text-xs font-medium text-gray-700">Overlay</span>
+                                </button>
+
                                 <!-- Círculo -->
                                 <button type="button"
                                     @click="editForm.item_template = 'circle'"
@@ -230,16 +248,25 @@
                         <!-- Tamanho da Imagem (só para tipo Categorias) -->
                         <div class="form-col-12 sm:form-col-6" v-if="editForm.type === 'categories'">
                             <label class="db-field-title">Tamanho da Imagem do Item</label>
-                            <div class="flex gap-2 mt-1">
-                                <input v-model="editImageValue" type="number" min="1" max="999" step="1"
-                                    class="db-field-control" style="max-width:120px" placeholder="80" />
-                                <select v-model="editImageUnit" class="db-field-control" style="max-width:90px">
-                                    <option value="px">px</option>
-                                    <option value="em">em</option>
-                                    <option value="%">%</option>
-                                </select>
-                            </div>
-                            <small class="text-xs text-gray-400 mt-1 block">Deixe vazio para usar o tamanho padrão</small>
+                            <template v-if="editForm.item_template === 'overlay'">
+                                <input v-model="editForm.item_image_size" type="text"
+                                    class="db-field-control" style="max-width:120px" placeholder="4/3" />
+                                <small class="text-xs text-gray-400 mt-1 block">
+                                    Proporção (ex: 4/3, 16/9, 1/1) ou valor com unidade (ex: 200px, 10em). Deixe vazio para usar o padrão 4:3
+                                </small>
+                            </template>
+                            <template v-else>
+                                <div class="flex gap-2 mt-1">
+                                    <input v-model="editImageValue" type="number" min="1" max="999" step="1"
+                                        class="db-field-control" style="max-width:120px" placeholder="80" />
+                                    <select v-model="editImageUnit" class="db-field-control" style="max-width:90px">
+                                        <option value="px">px</option>
+                                        <option value="em">em</option>
+                                        <option value="%">%</option>
+                                    </select>
+                                </div>
+                                <small class="text-xs text-gray-400 mt-1 block">Deixe vazio para usar o tamanho padrão</small>
+                            </template>
                         </div>
 
                         <!-- Layout da Linha -->
@@ -480,10 +507,16 @@ export default {
         },
         saveEdit: function () {
             try {
-                if (this.editImageValue && this.editForm.type === 'categories') {
-                    this.editForm.item_image_size = this.editImageValue + this.editImageUnit;
-                } else {
-                    this.editForm.item_image_size = '';
+                if (this.editForm.type === 'categories') {
+                    if (this.editForm.item_template === 'overlay') {
+                        if (!this.editForm.item_image_size) {
+                            this.editForm.item_image_size = '';
+                        }
+                    } else if (this.editImageValue) {
+                        this.editForm.item_image_size = this.editImageValue + this.editImageUnit;
+                    } else {
+                        this.editForm.item_image_size = '';
+                    }
                 }
                 this.loading.isActive = true;
                 this.$store.dispatch('categorySection/edit', this.$route.params.id).then(() => {

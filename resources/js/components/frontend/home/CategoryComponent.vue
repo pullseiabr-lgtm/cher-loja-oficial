@@ -18,7 +18,19 @@
                         :centered-slides="isCenteredSwiper(section)">
                         <SwiperSlide v-for="category in section.categories" :key="category.id"
                             :class="categorySlideClass(section)">
-                            <router-link v-if="section.item_template !== 'circle'"
+                            <router-link v-if="section.item_template === 'overlay'"
+                                :to="{ name: 'frontend.product', query: { category: category.slug } }"
+                                class="w-full rounded-2xl overflow-hidden shadow-xs group block relative">
+                                <img class="w-full object-cover block"
+                                    :style="overlayImageCustomStyle(section)"
+                                    :src="category.thumb" alt="category" />
+                                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5 pt-5 sm:p-3 sm:pt-6">
+                                    <span class="text-white text-xs sm:text-base font-semibold capitalize block truncate group-hover:brightness-110 transition">
+                                        {{ category.name }}
+                                    </span>
+                                </div>
+                            </router-link>
+                            <router-link v-else-if="section.item_template !== 'circle'"
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="w-full rounded-2xl shadow-xs group">
                                 <img class="w-full object-cover block rounded-tl-2xl rounded-tr-2xl"
@@ -47,7 +59,19 @@
                 <template v-else>
                     <div :class="rowFlexClass(section)">
                         <template v-for="category in section.categories" :key="category.id">
-                            <router-link v-if="section.item_template !== 'circle'"
+                            <router-link v-if="section.item_template === 'overlay'"
+                                :to="{ name: 'frontend.product', query: { category: category.slug } }"
+                                class="rounded-2xl overflow-hidden shadow-xs group block relative w-36 sm:w-52 flex-none">
+                                <img class="w-full object-cover block"
+                                    :style="overlayImageCustomStyle(section)"
+                                    :src="category.thumb" alt="category" />
+                                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 pt-4 sm:p-3 sm:pt-6">
+                                    <span class="text-white text-xs sm:text-base font-semibold capitalize block truncate group-hover:brightness-110 transition">
+                                        {{ category.name }}
+                                    </span>
+                                </div>
+                            </router-link>
+                            <router-link v-else-if="section.item_template !== 'circle'"
                                 :to="{ name: 'frontend.product', query: { category: category.slug } }"
                                 class="rounded-2xl shadow-xs group w-36 sm:w-44 flex-none">
                                 <img class="w-full object-cover block rounded-tl-2xl rounded-tr-2xl"
@@ -251,6 +275,13 @@ export default {
                     1024: { slidesPerView: 8, spaceBetween: 16 },
                 };
             }
+            if (section.item_template === 'overlay') {
+                return {
+                    0:    { slidesPerView: 2, spaceBetween: 12 },
+                    640:  { slidesPerView: 3, spaceBetween: 16 },
+                    1024: { slidesPerView: 4, spaceBetween: 24 },
+                };
+            }
             return {
                 0:    { slidesPerView: 2, spaceBetween: 12 },
                 480:  { slidesPerView: 3, spaceBetween: 16 },
@@ -318,6 +349,14 @@ export default {
         cardImageCustomStyle(section) {
             const size = section.item_image_size || '120px';
             return { height: size };
+        },
+
+        overlayImageCustomStyle(section) {
+            const size = section.item_image_size || '4/3';
+            if (size.includes('px') || size.includes('em') || size.includes('%')) {
+                return { height: size, width: '100%', objectFit: 'cover' };
+            }
+            return { aspectRatio: size, width: '100%', objectFit: 'cover' };
         },
     },
 }
