@@ -1,1 +1,0 @@
-import{_ as e,r as n,k as t,o as r}from"./app-BL5AM-Zd.js";const c={name:"AnalyticComponent"};function s(a,p,_,i,m,f){const o=n("router-view");return r(),t(o)}const u=e(c,[["render",s]]);export{u as default};
